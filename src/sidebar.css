@@ -31,26 +31,13 @@
 [data-petrifyui-header][data-petrifyui-enabled] {
   box-shadow: inset 0 -2px #342217, inset 0 -3px #ab7950 !important;
 }
-/* Broad structural wrappers previously concealed the tile. Give them the same
-   viewport-aligned grain so the wood remains continuous as the list scrolls. */
+/* Share a single wood texture origin. Nested wrappers are transparent. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(
-  [data-petrifyui-underlay], [data-petrifyui-scroll]
+ [data-petrifyui-underlay],[data-petrifyui-scroll]
 ):not([data-petrifyui-row]) {
-  background-color: #63412e !important;
-  background-image:
-    var(--pui-resolved-wood, none),
-    repeating-linear-gradient(90deg,
-      #674530 0px, #674530 27px,
-      #5e3e2d 27px, #5e3e2d 54px,
-      #745139 54px, #745139 63px,
-      #4f3426 63px, #4f3426 65px,
-      #684733 65px, #684733 96px,
-      #543827 96px, #543827 126px,
-      #33231b 126px, #33231b 128px) !important;
-  background-size: 512px 512px, 128px 128px !important;
-  background-repeat: repeat !important;
-  background-position: 0 0 !important;
-  background-attachment: scroll !important;
+ background-color:transparent !important;
+ background-image:none !important;
+ box-shadow:none !important;
 }
 /* Compact VT323 text without repositioning controls or changing their size. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,span,p,small,h2,h3,[role="heading"]),
@@ -84,14 +71,14 @@
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled]
  [data-petrifyui-row][data-petrifyui-selected] {
-  background-color: rgba(233,185,123,.19) !important;
+  background-color: rgba(214,166,111,.14) !important;
   background-image: none !important;
   color: #fff0d5 !important;
   box-shadow: inset 2px 0 #d9a871 !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled]
  [data-petrifyui-row][data-petrifyui-selected]:hover {
-  background-color: rgba(234,186,122,.235) !important;
+  background-color: rgba(214,166,111,.19) !important;
 }
 /* ChatGPT sometimes paints a second highlight on an inner conversation link. */
 [data-petrifyui-sidebar][data-petrifyui-enabled]
@@ -114,26 +101,9 @@
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2,h3,[role="heading"]) {
   color: #f4dcbb !important;
 }
-[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
-  content:"";display:inline-block;vertical-align:middle;
-  width:18px;height:18px;margin-right:6px;
-  background-image:var(--pui-resolved-brand,none);background-position:center;background-size:contain;background-repeat:no-repeat;
-}
-/* Icon-only rail uses the same wood, not separate black paint. */
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
-  background-color: #63412e !important;
-  background-image:
-    var(--pui-resolved-wood, none),
-    repeating-linear-gradient(90deg,
-      #674530 0px, #674530 27px,
-      #5e3e2d 27px, #5e3e2d 54px,
-      #745139 54px, #745139 63px,
-      #4f3426 63px, #4f3426 65px,
-      #684733 65px, #684733 96px,
-      #543827 96px, #543827 126px,
-      #33231b 126px, #33231b 128px) !important;
-  background-size: 512px 512px, 128px 128px !important;
-}
+/* Don't shift the native title and chevron with a pseudo-logo. */
+[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {content:none !important;}
+/* Collapsed rail keeps the same root wood. */
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a,button):hover {
   background-color: rgba(240,193,139,.10) !important;
 }
