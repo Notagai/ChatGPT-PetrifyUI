@@ -8,6 +8,7 @@
   const ADD_LABELS=["Add photos & files","Add from library","Create image"];
   const ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"];
   const styled=new Map();
+  const destructiveMarked=new Set();
   let enabled=true,pending=false,delayed=null;
 
   function geometry(el) {
@@ -80,6 +81,24 @@
     }
     return best;
   }
+  function findDeleteConfirmation(){
+    // Only native delete-confirmation dialogs, not the preceding Delete menu
+    // entry. The buttons and destructive behavior remain ChatGPT's own.
+    let best=null,area=Infinity;
+    for(const el of document.querySelectorAll('[role="alertdialog"],[role="dialog"],[data-slot="alert-dialog-content"]')){
+      if(!visiblePopup(el,760,520))continue;
+      const label=(el.textContent||"").replace(/\s+/g," ").trim();
+      if(!/\bdelete chat\??/i.test(label)||
+         !/\b(cancel|delete chat)\b/i.test(label))continue;
+      const controls=[...el.querySelectorAll('button,[role="button"]')];
+      if(!controls.some(b=>/^\s*cancel\s*$/i.test(b.textContent||""))||
+         !controls.some(b=>/^\s*delete chat\s*$/i.test(b.textContent||"")))continue;
+      const r=geometry(el);
+      const value=r.width*r.height;
+      if(value<area){best=el;area=value;}
+    }
+    return best;
+  }
   function findNormalMenus(){
     const result=new Set();
     for(const el of document.querySelectorAll(OPEN)){
@@ -94,6 +113,18 @@
       result.add(el);
     }
     return result;
+  }
+  function markDestructive(dialog){
+    const current=new Set();
+    if(dialog)for(const button of dialog.querySelectorAll("button,[role='button']")){
+      if(/^\\s*delete chat\\s*$/i.test(button.textContent||"")){
+        button.setAttribute("data-pui-destructive","");
+        current.add(button);
+      }
+    }
+    for(const node of destructiveMarked)if(!current.has(node))node.removeAttribute("data-pui-destructive");
+    destructiveMarked.clear();
+    for(const node of current)destructiveMarked.add(node);
   }
   function reconcile(next){
     for(const [el,kind] of styled)if(!next.has(el)){
@@ -116,15 +147,19 @@
     if(enabled && document.documentElement.hasAttribute("data-petrifyui-active")) {
       const add=findWideAddMenu();
       const effort=findEffortPopup();
+      const confirmation=findDeleteConfirmation();
       for(const el of findNormalMenus()) {
-        if(el===add||el===effort||
+        if(el===add||el===effort||el===confirmation||
            (add&&(el.contains(add)||add.contains(el)))||
-           (effort&&(el.contains(effort)||effort.contains(el))))continue;
+           (effort&&(el.contains(effort)||effort.contains(el)))||
+           (confirmation&&(el.contains(confirmation)||confirmation.contains(el))))continue;
         next.set(el,"normal");
       }
       if(add)next.set(add,"add");
       if(effort)next.set(effort,"effort");
+      if(confirmation)next.set(confirmation,"confirm");
     }
+    markDestructive(next.size ? [...next.entries()].find(([node,kind])=>kind==="confirm")?.[0] : null);
     reconcile(next);
   }
   function schedule(){

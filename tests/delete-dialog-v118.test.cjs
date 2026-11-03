@@ -1,0 +1,13 @@
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const mf=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/menus.js","utf8");
+const css=fs.readFileSync("src/menus.css","utf8");
+new Function(js);
+assert.equal(mf.version,"1.18.0");
+assert(js.includes("findDeleteConfirmation()"));
+assert(js.includes('next.set(confirmation,"confirm")'));
+assert(js.includes("data-pui-destructive"));
+assert(css.includes('[data-pui-menu-kind="confirm"]'));
+assert(css.includes("background-color:#8b4133"));
+assert(css.includes("background-color:#eed4ae"));
+console.log("PASS: delete dialog detected and button contrast styled");

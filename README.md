@@ -178,3 +178,7 @@ No full-page DOM observer or continuous polling was added. Signed-in visual test
 - Styles the model/effort control with dark ink only, dropping the added border and font geometry that could overlap the Thinking effort label.
 - Increases plus/attachment contrast without changing its button size or placement.
 - No page-wide observer or chat-content mutations were added; follow-up visual testing is necessary.
+
+## v1.18: Delete chat confirmation
+
+The delete confirmation uses a separate dialog-specific parchment treatment rather than borrowing a menu row style. Cancel is now a light paper button with dark readable text; Delete chat has a dark brick-red fill with cream text to preserve its destructive meaning. The title, description and X control have consistent dark-ink contrast. Native modal sizing, focus trapping, button handlers and confirmation behavior remain unchanged.

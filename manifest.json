@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Complete pixel-paper Add menu, nonoverlapping effort selector, and corrected plus-button contrast.",
-  "version": "1.17.0",
+  "description": "Pixel-paper delete-chat confirmation with readable Cancel and high-contrast destructive button.",
+  "version": "1.18.0",
   "permissions": [
     "storage"
   ],

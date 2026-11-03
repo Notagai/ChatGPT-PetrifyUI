@@ -245,3 +245,91 @@ html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
   -webkit-text-fill-color:#64432e !important;
   opacity:1 !important;
 }
+
+
+/* v1.18: Delete chat confirmation is a DIALOG, not a navigation menu.
+   Give the parchment a restrained pixel border with properly contrasted
+   Cancel and destructive Delete actions. Never alter actions or layout. */
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] {
+  --pui-menu-ink:#3e291b;
+  --pui-menu-secondary:#60432e;
+  --text-primary:#3e291b;
+  --text-secondary:#60432e;
+  --token-text-primary:#3e291b;
+  --token-text-secondary:#60432e;
+  color:#3e291b !important;
+  color-scheme:light;
+  background-color:#e7c49b !important;
+  background-image:var(--pui-resolved-paper,none),
+    linear-gradient(#f2d9b5,#e6c093) !important;
+  background-repeat:repeat,no-repeat !important;
+  background-size:256px 256px,auto !important;
+  border:2px solid #956943 !important;
+  border-radius:6px !important;
+  box-shadow:3px 4px 0 #24170f6b,inset 1px 1px #ffebcd !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  h1,h2,h3,[role="heading"],[data-slot*="title"]
+) {
+  color:#352316 !important;
+  -webkit-text-fill-color:#352316 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  p,small,[data-slot*="description"],[class*="text-token-text-secondary"],
+  [class*="text-token-text-tertiary"]
+) {
+  color:#634630 !important;
+  -webkit-text-fill-color:#634630 !important;
+  opacity:1 !important;
+}
+/* The default dark Cancel fill in the screenshot has unreadable brown text.
+   Use a legible light-paper secondary button instead. */
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  button,[role="button"]
+):not(:disabled):not([aria-disabled="true"]) {
+  color:#382417 !important;
+  -webkit-text-fill-color:#382417 !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  button,[role="button"]
+):not(:disabled):not([aria-disabled="true"]):not(
+  [data-pui-destructive]
+) {
+  background-color:#eed4ae !important;
+  background-image:none !important;
+  border:1px solid #ae845d !important;
+  box-shadow:inset 1px 1px #fce9ca !important;
+}
+/* Use a stronger warning color for destructive actions instead of a weak
+   pale-peach fill, but only inside the delete-confirmation dialog. */
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  [data-pui-destructive],[data-variant="destructive"],
+  [data-destructive],[class*="bg-red-"],[class*="bg-danger"]
+) {
+  background-color:#8b4133 !important;
+  background-image:none !important;
+  color:#fff0d6 !important;
+  -webkit-text-fill-color:#fff0d6 !important;
+  border:1px solid #572a22 !important;
+  box-shadow:inset 1px 1px #bd7357 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  [data-pui-destructive],[data-variant="destructive"],
+  [data-destructive],[class*="bg-red-"],[class*="bg-danger"]
+) :is(span,svg,svg *) {
+  color:#fff0d6 !important;
+  -webkit-text-fill-color:#fff0d6 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  [data-pui-destructive],[data-variant="destructive"],
+  [data-destructive],[class*="bg-red-"],[class*="bg-danger"]
+):hover {
+  background-color:#a54d3b !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
+  button,[role="button"]
+):focus-visible {
+  outline:2px solid #865637 !important;
+  outline-offset:2px;
+}
