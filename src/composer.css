@@ -1,149 +1,137 @@
-/* PetrifyUI 1.10 - original horizontal parchment scroll, responsive to
-   the native composer height. No stock image, dimensions or behavior changes. */
+/* PetrifyUI 1.12: approved tattered pixel-art edges, no whole-scroll stretching.
+   The editor and controls keep ChatGPT's native layout and hitboxes. */
 html[data-petrifyui-active] [data-petrifyui-composer] {
-  --pui-scroll-text:#392819;
-  --pui-scroll-muted:#785a40;
-  --pui-scroll-wood:#765034;
-  --pui-scroll-cream:#f3e3c9;
-  position:relative;
+  --pui-ink:#402b1c;
+  --pui-muted:#70513b;
+  position:relative !important;
   isolation:isolate;
-  background-color:#e4c9a2 !important;
-  background-image:var(--pui-scroll-left,none),var(--pui-scroll-right,none),
-    var(--pui-scroll-center,none),linear-gradient(#efd8b4,#d7b184) !important;
-  background-position:left center,right center,center center,center center !important;
-  background-repeat:no-repeat,no-repeat,repeat-x,no-repeat !important;
-  background-size:auto 100%,auto 100%,auto 100%,100% 100% !important;
-  image-rendering:pixelated;
-  color:var(--pui-scroll-text) !important;
   color-scheme:light;
+  color:var(--pui-ink) !important;
+  background-color:#e9c399 !important;
+  background-image:
+    var(--pui-scroll-top,none),
+    var(--pui-scroll-bottom,none),
+    var(--pui-scroll-fill,none),
+    linear-gradient(180deg,#f2d9b7,#dab68c) !important;
+  background-position:left top,left bottom,left top,left top !important;
+  background-repeat:repeat-x,repeat-x,repeat,no-repeat !important;
+  background-size:auto 15px,auto 15px,32px 32px,100% 100% !important;
   border:0 !important;
-  border-radius:0 !important;
+  border-radius:3px !important;
   box-shadow:none !important;
-  overflow:visible !important;
 }
+/* The vertical rollers use border-image slicing so top/bottom knobs retain
+   their proportions as the composer grows. Extending outside avoids covering
+   the attachment, plus, microphone and model picker click targets. */
 html[data-petrifyui-active] [data-petrifyui-composer]::before,
 html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  content:none !important;
+  content:"";
+  position:absolute;
+  top:-6px;
+  bottom:-6px;
+  width:26px;
+  box-sizing:border-box;
+  border:18px solid transparent;
+  border-left-width:6px;
+  border-right-width:6px;
+  pointer-events:none;
+  z-index:3;
+  border-image-slice:18 5 18 5 fill;
+  border-image-width:18px 5px 18px 5px;
+  border-image-repeat:stretch;
+  image-rendering:pixelated;
 }
-/* Preserve the original text/attachment layout; no forced composer height.
-   Rich text remains on the parchment when typing or when it is empty. */
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
-  [contenteditable="true"],textarea
-) {
-  background-color: transparent !important;
-  background-image: none !important;
-  color: var(--pui-scroll-text) !important;
-  -webkit-text-fill-color: var(--pui-scroll-text) !important;
-  caret-color: #765034 !important;
+html[data-petrifyui-active] [data-petrifyui-composer]::before {
+  left:-15px;
+  border-image-source:var(--pui-scroll-left,none);
 }
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
-  [contenteditable="true"],textarea
-) :is(p,span) {
-  color: inherit !important;
+html[data-petrifyui-active] [data-petrifyui-composer]::after {
+  right:-15px;
+  border-image-source:var(--pui-scroll-right,none);
 }
-html[data-petrifyui-active] [data-petrifyui-composer] :is(textarea,input)::placeholder,
+/* Avoid painting the native dark wrapper over parchment. Exclude attachment
+   cards, images, popovers and all interactive controls. */
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-placeholder],.is-empty,.ProseMirror.is-editor-empty
-)::before {
-  color: var(--pui-scroll-muted) !important;
-  opacity: 1 !important;
-}
-/* The black bar was a child surface laid over the composer. Clear the tray and
-   the wide native dark structural panels, not the actual action buttons. */
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-petrifyui-composer-darkbar],
+  [data-petrifyui-toolbar],
   [class*="bg-token-main-surface"],
   [class*="bg-token-bg-primary"],
   [class*="bg-token-bg-secondary"],
-  [class*="bg-token-bg-elevated"]
-):not(button):not([role="button"]):not([role="menu"]):not([role="listbox"]) {
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-composer-tool] {
-  color: #493421 !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-composer-tool]:hover {
-  background-color: #9e75452a !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [class*="text-token-text-secondary"],
-  [class*="text-token-text-tertiary"],
-  [class*="text-green"],[class*="text-emerald"]
-) {
-  color: var(--pui-scroll-muted) !important;
-}
-/* Dark walnut for send/voice controls and cream for their SVG icons. */
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-petrifyui-composer-action],
-  button[class*="bg-green"],
-  button[class*="bg-emerald"],
-  button[class*="bg-token-accent"],
-  button[class*="bg-token-bg-accent"]
-):not(:disabled) {
-  background: var(--pui-scroll-wood) !important;
-  color: var(--pui-scroll-cream) !important;
-  box-shadow: inset 0 0 0 1px #b78b5c !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-petrifyui-composer-action],
-  button[class*="bg-green"],
-  button[class*="bg-emerald"],
-  button[class*="bg-token-accent"],
-  button[class*="bg-token-bg-accent"]
-):not(:disabled) :is(svg,svg *) {
-  color: var(--pui-scroll-cream) !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] button:disabled {
-  opacity: .55 !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer]:focus-within {
-  border-color: #a1784f !important;
-}
-html[data-petrifyui-active][data-petrifyui-low-power] [data-petrifyui-composer] {
-  box-shadow: inset 0 0 0 1px #ad855b !important;
-}
-/* Narrow screens still keep both rolled edges and their native tap targets. */
-@media(max-width:560px) {
-  html[data-petrifyui-active] [data-petrifyui-composer] {
-    --pui-scroll-roller-width: 11px;
-    border-radius: 14px !important;
-  }
-}
-
-/* Real live text on a pixel-framed model/effort selector. */
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
-  background:#e6c397 !important;
-  border:2px solid #79502f !important;
-  border-radius:2px !important;
-  box-shadow:inset 2px 2px #f6dcb3,inset -2px -2px #b78b5f !important;
-  color:#432c1d !important;
-  -webkit-text-fill-color:#432c1d !important;
-  font:18px/1.1 "Petrify VT323","Courier New",monospace !important;
-  text-shadow:none !important;
-  min-width:max-content;
-  white-space:nowrap;
-  padding-inline:10px !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
-  color:#432c1d !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-petrifyui-composer-darkbar],[class*="bg-black"],
-  [class*="bg-neutral"],[class*="bg-zinc"]
-):not(button):not([role="button"]):not([role="menu"]) {
+  [class*="bg-token-bg-elevated"],
+  [class*="bg-black"],[class*="bg-neutral"],[class*="bg-zinc"]
+):not(button):not([role="button"]):not([role="menu"]):not([role="listbox"]):not(:has(img)):not(:has(video)) {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
 }
-/* Keep native controls in place; provide a little space for both roller caps. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  #prompt-textarea,[data-testid="prompt-textarea"],
+  .ProseMirror,[contenteditable="true"],textarea
+) {
+  background:transparent !important;
+  color:var(--pui-ink) !important;
+  -webkit-text-fill-color:var(--pui-ink) !important;
+  caret-color:#6f4d32 !important;
+  text-shadow:none !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  #prompt-textarea,[data-testid="prompt-textarea"],
+  .ProseMirror,[contenteditable="true"],textarea
+) :is(p,span) {
+  color:inherit !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(textarea,input)::placeholder,
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+ [data-placeholder],.is-empty,.ProseMirror.is-editor-empty
+)::before {
+  color:var(--pui-muted) !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+  [class*="text-green"],[class*="text-emerald"]
+) {color:var(--pui-muted) !important;}
+/* VT323 stays live in the effort/model selector; no label baked in an image. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
+  background:#ecd0a8 !important;
+  border:1px solid #865b39 !important;
+  border-radius:3px !important;
+  box-shadow:inset 1px 1px #f7e2c0 !important;
+  color:#382618 !important;
+  -webkit-text-fill-color:#382618 !important;
+  font-family:"Petrify VT323","Courier New",monospace !important;
+  font-size:18px !important;
+  line-height:1.15 !important;
+  white-space:nowrap !important;
+  text-shadow:none !important;
+}
 html[data-petrifyui-active] [data-petrifyui-composer]
-  :is(#prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,[contenteditable="true"],textarea) {
-  padding-inline:clamp(12px,2vw,26px) !important;
+ [data-petrifyui-mode-button] :is(span,svg,svg *) {
+  color:#382618 !important;
+  -webkit-text-fill-color:#382618 !important;
+}
+/* Only actionable send/voice controls get dark walnut fills. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],
+  button[aria-label*="voice" i],button[aria-label*="send" i],
+  button[aria-label*="microphone" i]
+):not(:disabled) {
+  background-color:#795239 !important;
+  background-image:none !important;
+  color:#f4e3c6 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],
+  button[aria-label*="voice" i],button[aria-label*="send" i],
+  button[aria-label*="microphone" i]
+):not(:disabled) :is(svg,svg *) {
+  color:#f4e3c6 !important;
+}
+html[data-petrifyui-low-power][data-petrifyui-active] [data-petrifyui-composer] {
+  box-shadow:none !important;
+}
+@media(max-width:560px) {
+  html[data-petrifyui-active] [data-petrifyui-composer]::before {left:-10px;}
+  html[data-petrifyui-active] [data-petrifyui-composer]::after {right:-10px;}
 }

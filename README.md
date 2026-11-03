@@ -129,3 +129,11 @@ v1.9 used only a handful of assumed composer IDs and forms. ChatGPT's input ofte
 ## v1.11: Real pixel-art scroll and live model text
 
 Added genuine transparent pixel-art PNGs from the approved tattered scroll: left wooden end, repeatable parchment center and right wooden end. They're registered as extension assets and referenced with absolute chrome.runtime.getURL paths. The scroll scales with ChatGPT's native composer height. The Medium / other model-effort label remains live VT323 text on a pixel-edged pill, not baked into the image. Existing controls and actions stay native.
+
+## v1.12: Approved-scroll rebuild and attachment/contrast fixes
+
+The prior implementation tiled a strip containing torn borders, stretched the entire roller image, and marked arbitrary dark descendants (including preview surroundings) as toolbar backgrounds. This made the scroll look like repeating wallpaper and allowed attachment previews, model text and action buttons to clash with the art.
+
+This revision uses five **small, genuine pixel-art PNG samples directly derived from the previously approved generated scroll**: left and right roller art, separate top/bottom torn-edge bands, and a seamless parchment fill. No stock-image watermarks or baked-in UI labels are used. The roller art uses CSS border-image slicing, keeping the cap details stable while the middle stretches with the native composer height. The parchment center repeats independently across the width, not its border.
+
+The implementation leaves attachment previews and layout native, does not add a full-page observer, and uses real VT323 text for the model/effort selector. The composer toggle remains controlled by `data-petrifyui-active`.

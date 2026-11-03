@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Genuine pixel-art tattered scroll composer and readable VT323 model selector",
-  "version": "1.11.0",
+  "description": "Fixed tattered pixel parchment composer: real approved-art slices, no stretched borders or dark tray.",
+  "version": "1.12.0",
   "permissions": [
     "storage"
   ],
@@ -67,7 +67,12 @@
         "assets/walnut-wood-v3.svg",
         "assets/composer/scroll-left-cap-pixel.png",
         "assets/composer/scroll-right-cap-pixel.png",
-        "assets/composer/scroll-center-tile-pixel.png"
+        "assets/composer/scroll-center-tile-pixel.png",
+        "assets/composer/v2/roller-left.png",
+        "assets/composer/v2/roller-right.png",
+        "assets/composer/v2/top-edge.png",
+        "assets/composer/v2/bottom-edge.png",
+        "assets/composer/v2/paper-tile.png"
       ],
       "matches": [
         "https://chatgpt.com/*",

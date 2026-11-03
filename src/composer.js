@@ -1,166 +1,103 @@
-/* PetrifyUI 1.10: horizontal parchment-scroll composer.
-   Mark native editor/surface and bottom tray; keep React layout and handlers. */
+/* PetrifyUI 1.12: approved-art pixel scroll, native composer controls. */
 (() => {
   "use strict";
-  const EDITOR = '#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"][role="textbox"],textarea[placeholder]';
-  const ACTION = [
-    'button[data-testid="send-button"]',
-    'button[data-testid="composer-submit-button"]',
-    'button[data-testid="composer-speech-button"]',
-    'button[aria-label*="send" i]',
-    'button[aria-label*="voice" i]',
-    'button[aria-label*="dictate" i]'
-  ].join(",");
-  const UI = 'button,[role="button"]';
-  const html=document.documentElement;
-  // Absolute extension URLs prevent chatgpt.com/assets 404 errors.
-  for(const [property,file] of [
-    ["--pui-scroll-left","scroll-left-cap-pixel.png"],
-    ["--pui-scroll-right","scroll-right-cap-pixel.png"],
-    ["--pui-scroll-center","scroll-center-tile-pixel.png"]
-  ]) html.style.setProperty(property,
-    'url("' + chrome.runtime.getURL("assets/composer/"+file) + '")');
-
-  let surface=null,scheduled=false,hasLayout=false,knownElements=new Set();
-
-  function bounds(el) {
-    if(!(el instanceof HTMLElement))return null;
-    const r=el.getBoundingClientRect();
-    if(r.width<180 || r.height<28 || r.height>Math.max(600,innerHeight*.75) ||
-       r.top>innerHeight || r.bottom<0 || r.right<0 || r.left>innerWidth)return null;
-    return r;
+  const root=document.documentElement;
+  const EDITOR='#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"][role="textbox"],textarea[placeholder]';
+  const ACTION='button[data-testid="send-button"],button[data-testid="composer-submit-button"],button[data-testid="composer-speech-button"],button[aria-label*="send" i],button[aria-label*="voice" i],button[aria-label*="microphone" i],button[aria-label*="dictate" i]';
+  const files={
+    "--pui-scroll-left":"roller-left.png",
+    "--pui-scroll-right":"roller-right.png",
+    "--pui-scroll-top":"top-edge.png",
+    "--pui-scroll-bottom":"bottom-edge.png",
+    "--pui-scroll-fill":"paper-tile.png"
+  };
+  for(const [property,file] of Object.entries(files))root.style.setProperty(property,
+    'url("'+chrome.runtime.getURL("assets/composer/v2/"+file)+'")');
+  let selected=null,mode=null,toolbar=null,scheduled=false;
+  function removeTags(){
+    selected?.removeAttribute("data-petrifyui-composer");
+    mode?.removeAttribute("data-petrifyui-mode-button");
+    toolbar?.removeAttribute("data-petrifyui-toolbar");
+    selected=mode=toolbar=null;
   }
-  function locateEditor() {
+  function isVisible(el){
+    if(!(el instanceof HTMLElement))return false;
+    const r=el.getBoundingClientRect();
+    return r.width>50&&r.height>10&&r.right>0&&r.bottom>0&&r.top<innerHeight;
+  }
+  function editor(){
     for(const el of document.querySelectorAll(EDITOR)){
-      if(!(el instanceof HTMLElement) ||
-         el.closest('[role="dialog"],[role="menu"],[data-petrifyui-menu]'))continue;
-      const r=el.getBoundingClientRect();
-      if(r.width>=70 && r.height>=12 && r.bottom>innerHeight*.40)return el;
+      if(!isVisible(el) || el.closest('[role="dialog"],[role="menu"],[role="listbox"]'))continue;
+      if(el.getBoundingClientRect().bottom>innerHeight*.38)return el;
     }
     return null;
   }
-  function locateSurface(editor) {
-    const er=editor.getBoundingClientRect();
+  function findSurface(el){
+    const known=el.closest('[data-testid="composer-root"],form[data-type="unified-composer"],#composer-background');
+    if(isVisible(known)&&known.querySelector("button,[role=button]"))return known;
+    const inputBox=el.getBoundingClientRect();
     let best=null,score=-Infinity;
-    for(let el=editor.parentElement,depth=0;el && depth<10;el=el.parentElement,depth++){
-      if(!(el instanceof HTMLElement)||el===document.body)break;
-      const r=bounds(el);
-      if(!r || r.width<er.width*.8 || r.top<innerHeight*.18)continue;
-      if(el.querySelectorAll(UI).length<1)continue;
-      const cs=getComputedStyle(el);
-      const rounded=(parseFloat(cs.borderTopLeftRadius)||0)>=12;
-      const painted=cs.backgroundImage!=="none" ||
-        (cs.backgroundColor!=="transparent" && cs.backgroundColor!=="rgba(0, 0, 0, 0)");
-      const native=el.matches('#composer-background,[data-testid="composer-root"],[data-testid="composer-background"],form[data-type="unified-composer"]');
-      const distance=Math.abs(r.width-er.width);
-      const scoreNow=(native?70:0)+(rounded?32:0)+(painted?14:0)+
-        Math.min(el.querySelectorAll(UI).length,6)*3-depth*5-
-        Math.max(0,r.height-190)*.22-distance*.018;
-      if(scoreNow>score){best=el;score=scoreNow;}
-      if(r.height>innerHeight*.58)break;
+    for(let n=el.parentElement,depth=0;n&&n!==document.body&&depth<10;n=n.parentElement,depth++){
+      if(!isVisible(n))continue;
+      const r=n.getBoundingClientRect();
+      if(r.width<inputBox.width*.82||r.height>Math.min(innerHeight*.78,680))continue;
+      const buttons=n.querySelectorAll("button,[role=button]").length;
+      if(!buttons)continue;
+      const radius=parseFloat(getComputedStyle(n).borderTopLeftRadius)||0;
+      const s=(radius>=12?45:0)+Math.min(buttons,7)*6-depth*3-
+        Math.abs(r.width-inputBox.width)*.022-Math.max(0,r.height-200)*.25;
+      if(s>score){score=s;best=n;}
     }
     return best;
   }
-  function clearMarkers(){
-    for(const node of knownElements) {
-      node.removeAttribute("data-petrifyui-composer-darkbar");
-      node.removeAttribute("data-petrifyui-composer-tool");
-      node.removeAttribute("data-petrifyui-mode-button");
-      node.removeAttribute("data-petrifyui-composer-action");
+  function findMode(panel){
+    for(const button of panel.querySelectorAll("button,[role=button]")){
+      const label=(button.textContent||"").trim().replace(/\s+/g," ");
+      const aria=(button.getAttribute("aria-label")||"").toLowerCase();
+      if(/^(instant|medium|high|extra high|thinking|auto)$/i.test(label)||
+        /thinking effort|select model/.test(aria))return button;
     }
-    knownElements.clear();
+    return null;
   }
-  function mark(node,attr){
-    if(node && !node.hasAttribute(attr))node.setAttribute(attr,"");
-    if(node)knownElements.add(node);
-  }
-  function isDark(bg){
-    const m=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/.exec(bg);
-    if(!m)return false;
-    return Math.max(+m[1],+m[2],+m[3])<110 && !/,\s*0(?:\.0+)?\s*\)/.test(bg);
-  }
-  function styleTray(panel) {
-    const outer=bounds(panel);
-    if(!outer)return;
-    const bottom=outer.bottom;
-    // Find only small near-bottom toolbars, not the text editor/attachments.
-    const candidates=panel.querySelectorAll('div,section,footer,nav,form');
-    let scanned=0;
-    for(const node of candidates) {
-      if(++scanned>140)break;
-      if(!(node instanceof HTMLElement)||node===panel)continue;
-      const r=node.getBoundingClientRect();
-      if(r.height<22 || r.height>85 || r.width<outer.width*.18 ||
-         r.width>outer.width+4 || r.bottom<bottom-95 || r.top>bottom ||
-         node.closest('[role="menu"],[role="listbox"]'))continue;
-      const cs=getComputedStyle(node);
-      if(isDark(cs.backgroundColor) ||
-         (cs.backgroundImage!=="none" && isDark(cs.backgroundColor))) {
-        mark(node,"data-petrifyui-composer-darkbar");
-      }
+  function findToolbar(button,panel){
+    if(!button)return null;
+    const outer=panel.getBoundingClientRect();
+    for(let n=button.parentElement,depth=0;n&&n!==panel&&depth<5;n=n.parentElement,depth++){
+      if(!(n instanceof HTMLElement)||n.querySelector("img,video"))continue;
+      const r=n.getBoundingClientRect();
+      if(r.height>=24&&r.height<=96&&r.width>=outer.width*.35&&r.bottom>=outer.bottom-36)
+        return n;
     }
-    // Tool colors must remain correct even when the composer is empty.
-    for(const button of panel.querySelectorAll(UI)) {
-      if(!(button instanceof HTMLElement))continue;
-      const r=button.getBoundingClientRect();
-      if(r.bottom<bottom-94 || r.top>bottom)continue;
-      if(button.matches(ACTION))mark(button,"data-petrifyui-composer-action");
-      else if (/^(instant|medium|high|extra high|thinking|auto)$/i.test((button.textContent||"").trim()) ||
-        /thinking effort|select model/i.test(button.getAttribute("aria-label")||"")) {
-        mark(button,"data-petrifyui-mode-button");
-      } else mark(button,"data-petrifyui-composer-tool");
-    }
+    return null;
   }
-  function decorate(){
+  function apply(){
     scheduled=false;
-    if(document.hidden || !html.hasAttribute("data-petrifyui-active")){
-      surface?.removeAttribute("data-petrifyui-composer");
-      surface=null;
-      clearMarkers();return;
-    }
-    const editor=locateEditor();
-    const next=editor?locateSurface(editor):null;
-    if(surface!==next){
-      surface?.removeAttribute("data-petrifyui-composer");
-      clearMarkers();surface=next;
-    }
-    if(!surface)return;
-    if(!surface.hasAttribute("data-petrifyui-composer"))
-      surface.setAttribute("data-petrifyui-composer","");
-    // No height or width calculations are stored: pseudo-rollers naturally
-    // stretch to whatever height ChatGPT gives the composer.
-    clearMarkers();
-    styleTray(surface);
-    hasLayout=true;
+    if(document.hidden||!root.hasAttribute("data-petrifyui-active")){removeTags();return;}
+    const input=editor();
+    const next=input?findSurface(input):null;
+    if(!next){removeTags();return;}
+    const nextMode=findMode(next);
+    const nextToolbar=findToolbar(nextMode,next);
+    if(selected!==next){selected?.removeAttribute("data-petrifyui-composer");selected=next;}
+    if(mode!==nextMode){mode?.removeAttribute("data-petrifyui-mode-button");mode=nextMode;}
+    if(toolbar!==nextToolbar){toolbar?.removeAttribute("data-petrifyui-toolbar");toolbar=nextToolbar;}
+    selected?.setAttribute("data-petrifyui-composer","");
+    mode?.setAttribute("data-petrifyui-mode-button","");
+    toolbar?.setAttribute("data-petrifyui-toolbar","");
   }
-  function queue(){
-    if(scheduled || document.hidden)return;
-    scheduled=true;
-    requestAnimationFrame(decorate);
-  }
-  function startup(){
-    queue();
-    setTimeout(queue,250);
-    setTimeout(queue,950);
-  }
+  function queue(){if(scheduled||document.hidden)return;scheduled=true;requestAnimationFrame(apply);}
+  function kick(){queue();setTimeout(queue,220);setTimeout(queue,750);}
   if(document.readyState==="loading")
-    document.addEventListener("DOMContentLoaded",startup,{once:true});
-  else startup();
-  document.addEventListener("focusin",e=>{
-    if(e.target instanceof Element &&
-      (e.target.matches(EDITOR)||e.target.closest('[data-petrifyui-composer]')))queue();
-  },{passive:true});
-  document.addEventListener("pointerdown",e=>{
-    if(e.target instanceof Element &&
-      (e.target.closest('[data-petrifyui-composer]')||e.target.closest(EDITOR)))queue();
-  },{passive:true});
-  document.addEventListener("input",e=>{
-    if(e.target instanceof Element && e.target.matches(EDITOR) && !hasLayout)queue();
-  },{passive:true});
+    document.addEventListener("DOMContentLoaded",kick,{once:true});
+  else kick();
+  document.addEventListener("focusin",queue,{passive:true});
+  document.addEventListener("input",e=>{if(e.target instanceof Element&&e.target.matches(EDITOR))queue();},{passive:true});
+  document.addEventListener("pointerdown",queue,{passive:true});
+  document.addEventListener("change",queue,{passive:true});
+  document.addEventListener("drop",kick,{passive:true});
+  document.addEventListener("paste",kick,{passive:true});
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)kick();});
   window.addEventListener("resize",queue,{passive:true});
-  document.addEventListener("visibilitychange",()=>{
-    if(!document.hidden)queue();
-  });
   chrome.storage.onChanged.addListener((changes,area)=>{
     if(area==="local"&&changes.enabled)queue();
   });
