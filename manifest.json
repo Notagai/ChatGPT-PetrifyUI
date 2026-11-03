@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel wood sidebar with VT323, ChatGPT brand picker, and collapsed rail styling. Appearance only.",
-  "version": "0.3.0",
+  "description": "Pixel-carved wood sidebar with visible tiled planks, VT323, and native ChatGPT/Codex switcher skin.",
+  "version": "0.4.0",
   "permissions": [
     "storage"
   ],
@@ -39,7 +39,8 @@
     {
       "resources": [
         "assets/walnut-tile.png",
-        "assets/brand-mark.svg"
+        "assets/brand-mark.svg",
+        "assets/pixel-wood.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",

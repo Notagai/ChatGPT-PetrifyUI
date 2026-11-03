@@ -1,4 +1,4 @@
-/* PetrifyUI 0.3: existing ChatGPT sidebar and its adjacent header ONLY. */
+/* PetrifyUI 0.4: existing ChatGPT sidebar and its adjacent header ONLY. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
@@ -8,9 +8,9 @@
   --pui-hover: rgba(229, 176, 105, .115);
   --pui-font: "VT323", "Courier New", monospace;
   background-color: #3a251a !important;
-  background-image: url("../assets/walnut-tile.png") !important;
+  background-image: url("../assets/pixel-wood.svg") !important;
   background-repeat: repeat !important;
-  background-size: 128px 128px !important;
+  background-size: 256px 256px !important;
   color-scheme: dark;
   font-family: var(--pui-font) !important;
 }
@@ -120,8 +120,8 @@
 /* Shared wood for the ChatGPT / Codex menu, without replacing native controls. */
 [data-petrifyui-brand-menu][data-petrifyui-enabled] {
   --pui-font: "VT323", "Courier New", monospace;
-  background: #3a251a url("../assets/walnut-tile.png") repeat !important;
-  background-size: 128px 128px !important;
+  background: #3a251a url("../assets/pixel-wood.svg") repeat !important;
+  background-size: 256px 256px !important;
   border: 1px solid rgba(235, 190, 130, .4) !important;
   box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 2px rgba(145,91,52,.5) !important;
 }
@@ -147,9 +147,9 @@
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
   background-color: #3a251a !important;
-  background-image: url("../assets/walnut-tile.png") !important;
+  background-image: url("../assets/pixel-wood.svg") !important;
   background-repeat: repeat !important;
-  background-size: 128px 128px !important;
+  background-size: 256px 256px !important;
   box-shadow: inset -2px 0 #20130f, inset -4px 0 #8f5f3a !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a, button):hover {
@@ -158,3 +158,30 @@
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) :is(span,small) {
   font-size: inherit !important;
 }
+
+
+/* v0.4: make the planks visible through full-size inner sidebar wrappers. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-underlay] {
+  background: transparent !important;
+  background-image: none !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled],
+[data-petrifyui-header][data-petrifyui-enabled] {
+  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
+  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
+}
+/* Paint the actual menu panel. Do not put an extra frame on the portal wrapper. */
+[data-petrifyui-brand-menu][data-petrifyui-enabled] {
+  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
+  border: 2px solid #b58755 !important;
+  border-radius: 12px !important;
+  outline: 1px solid #23150f !important;
+  outline-offset: -5px !important;
+  box-shadow: 0 8px 20px #160e0bac, inset 0 0 0 2px #352015 !important;
+  color: #f4e2c6 !important;
+}
+[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(
+  [role="menuitem"],[role="option"],button,a
+) { background-image: none !important; }

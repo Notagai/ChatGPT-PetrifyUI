@@ -52,3 +52,13 @@ Not affiliated with or endorsed by OpenAI. ChatGPT is an OpenAI trademark.
 - All original icons, project colors, messages, links and clicks are preserved.
 
 **Update:** `git pull origin main`, then Reload at `chrome://extensions` and refresh ChatGPT. Fonts may require access to Google Fonts.
+
+## v0.4.0: Stronger wood and native switcher skin
+
+- New 256px repeating SVG pixel-wood asset with visible planks, grain and knots. It is a true tile; no image stretching.
+- Full-size opaque sidebar layout wrappers become transparent so the wood is visible. Chat rows and projects keep native selection surfaces.
+- Improved popover discovery to target the visible ChatGPT/Codex menu panel, not the outer transparent portal.
+- Header and icon-only collapsed rail use the same repeatable wood grain.
+- Sidebar only; no changes to chat message content or behavior.
+
+Reload the extension in `chrome://extensions`, then hard-refresh ChatGPT. If the switcher is still dark, open it and use the browser inspector to check whether `data-petrifyui-brand-menu` is on the visible panel.

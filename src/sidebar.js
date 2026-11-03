@@ -76,25 +76,63 @@
   /* Style only the native ChatGPT/Codex picker near the sidebar header. */
   function findBrandTrigger(toolbar) {
     if (!toolbar) return null;
-    const interactive = [...toolbar.querySelectorAll('button, a, [role="button"]')];
-    return interactive.find(el => /ChatGPT|Codex/i.test((el.textContent || "").trim())) || null;
+    const nodes = toolbar.querySelectorAll('button, a, [role="button"], [aria-haspopup]');
+    return [...nodes].find(el => {
+      const label = (el.textContent || "").replace(/\s+/g, " ").trim();
+      return /^(ChatGPT|Codex)(\s|$)/i.test(label) && rectOf(el).width < 220;
+    }) || null;
   }
 
+  /* Popovers often have a transparent portal wrapper and an opaque nested panel.
+     Choose the actual panel rather than putting a border around its wrapper. */
   function findBrandMenu(sidebar, toolbar) {
     if (!sidebar || !toolbar) return null;
     const side = rectOf(sidebar), bar = rectOf(toolbar);
-    const candidates = document.querySelectorAll(
+    const seeds = document.querySelectorAll(
       '[role="menu"], [role="listbox"], [role="dialog"], [data-radix-popper-content-wrapper], [data-state="open"]'
     );
-    for (const node of candidates) {
-      if (!(node instanceof HTMLElement) || sidebar.contains(node) || toolbar.contains(node)) continue;
-      const box = rectOf(node);
-      if (box.width < 160 || box.width > 440 || box.height < 75 || box.height > 350) continue;
-      if (box.left < side.left - 12 || box.left > side.right || box.top < bar.top || box.top > bar.bottom + 55) continue;
-      const words = node.textContent || "";
-      if (/ChatGPT/.test(words) && /Codex/.test(words)) return node;
+    let best = null, bestScore = -Infinity;
+    const seen = new Set();
+    for (const seed of seeds) {
+      if (!(seed instanceof HTMLElement)) continue;
+      const nodes = [seed, ...seed.querySelectorAll("div,section,nav")].slice(0, 100);
+      for (const el of nodes) {
+        if (!(el instanceof HTMLElement) || seen.has(el)) continue;
+        seen.add(el);
+        if (sidebar.contains(el) || toolbar.contains(el)) continue;
+        const box = rectOf(el);
+        if (box.width < 165 || box.width > 420 || box.height < 78 || box.height > 310) continue;
+        if (box.left < side.left - 15 || box.left > side.right ||
+            box.top < bar.top || box.top > bar.bottom + 70) continue;
+        const words = (el.textContent || "").replace(/\s+/g, " ");
+        if (!/ChatGPT/.test(words) || !/Codex/.test(words)) continue;
+        const style = getComputedStyle(el);
+        const bg = style.backgroundColor;
+        const opaque = bg && bg !== "transparent" && !/^rgba?\([^)]*,\s*0\)$/.test(bg);
+        const hasImage = style.backgroundImage !== "none";
+        const depth = (() => { let n = el, d = 0; while (n && d < 45) { d++; n = n.parentElement; } return d; })();
+        const score = (opaque ? 90 : 0) + (hasImage ? 8 : 0) + depth * .35 -
+          Math.abs(box.left - side.left) * .04 - Math.abs(box.top - bar.bottom) * .04;
+        if (score > bestScore) { bestScore = score; best = el; }
+      }
     }
-    return null;
+    return best;
+  }
+
+  /* Only remove opaque backgrounds from layout-sized sidebar wrappers.
+     Selected chat rows and project cards retain their original surfaces. */
+  function clearSidebarUnderlays(sidebar) {
+    const frame = rectOf(sidebar);
+    const children = sidebar.querySelectorAll(':scope > div, :scope > section, :scope > nav, :scope > div > div, :scope > div > section');
+    for (const el of children) {
+      if (!(el instanceof HTMLElement)) continue;
+      const box = rectOf(el);
+      const isPanel = box.width >= frame.width * .82 &&
+        box.height >= Math.min(125, frame.height * .2) &&
+        box.left >= frame.left - 10 && box.right <= frame.right + 10;
+      if (isPanel) el.setAttribute("data-petrifyui-underlay", "");
+      else el.removeAttribute("data-petrifyui-underlay");
+    }
   }
 
   function loadVT323() {
@@ -165,6 +203,7 @@
       else surface.removeAttribute("data-petrifyui-enabled");
     }
     decorateRows(root);
+    clearSidebarUnderlays(root);
   }
 
   function scheduleRender() {
