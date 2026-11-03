@@ -1,100 +1,130 @@
-/* PetrifyUI 0.6: existing ChatGPT sidebar and its adjacent header ONLY. */
+/* PetrifyUI v0.8: quiet walnut cabinet with separate parchment labels.
+   Native sidebar layout, project icons, chat data and handlers remain unchanged. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
 [data-petrifyui-header][data-petrifyui-enabled] {
-  --pui-text: #f2dec0;
-  --pui-gold: #e9bd83;
-  --pui-hover: rgba(229, 176, 105, .115);
+  --pui-wood: url("../assets/walnut-grain-v2.svg");
+  --pui-paper: url("../assets/paper-fiber-v2.svg");
+  --pui-ink: #3d281c;
+  --pui-cream: #f0ddba;
   --pui-font: "VT323", "Courier New", monospace;
-  background-color: #3a251a !important;
-  background-image: url("../assets/pixel-wood.svg") !important;
-  background-repeat: repeat !important;
-  background-size: 256px 256px !important;
+  font-family: var(--pui-font) !important;
+  background: #503527 var(--pui-wood) 0 0 / 256px 256px repeat !important;
   color-scheme: dark;
-  font-family: var(--pui-font) !important;
 }
-
-/* The separate ChatGPT / search / collapse toolbar is themed as one surface. */
-[data-petrifyui-header][data-petrifyui-enabled] {
-  box-shadow: inset 0 -3px #21140e, inset 0 -5px #855937 !important;
-  color: var(--pui-text) !important;
-}
-
-/* A narrow carved boundary, never a positioned overlay. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] {
-  box-shadow: inset -2px 0 #24150e, inset -3px 0 #9b6b43 !important;
+  box-shadow: inset -1px 0 #26180f,inset -3px 0 #8d6643 !important;
 }
-
-/* Pixel typeface only. Preserve original positions and click targets. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button, span, p, h2, h3, small, [role="heading"]),
-[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, span, p, h1, h2, [role="heading"]) {
+[data-petrifyui-header][data-petrifyui-enabled] {
+  box-shadow: inset 0 -2px #26180f,inset 0 -4px #9c734c !important;
+}
+/* Broad native layout backgrounds may otherwise obscure the walnut. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(
+  [data-petrifyui-underlay],[data-petrifyui-scroll]
+) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* VT323 typography with consistent, restrained sizes. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,span,p,small,h2,h3,[role="heading"]),
+[data-petrifyui-header][data-petrifyui-enabled] :is(a,button,span,p,small,h1,h2) {
   font-family: var(--pui-font) !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) {
-  font-size: 16px !important;
-  line-height: 1.15 !important;
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) {
+  font-size: 17px !important;
+  line-height: 1.1 !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) :is(span, p) {
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) :is(span,p) {
   font-size: inherit !important;
   line-height: inherit !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2, h3, [role="heading"]) {
-  font-size: 18px !important;
-  line-height: 1.15 !important;
-  letter-spacing: .025em;
-  color: var(--pui-gold) !important;
-  text-shadow: 1px 1px 0 rgba(22, 12, 8, .7);
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2,h3,[role="heading"]) {
+  font-size: 19px !important;
+  color: var(--pui-cream) !important;
 }
-[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, [role="button"]) {
-  font-size: 18px !important;
-  font-family: var(--pui-font) !important;
-  line-height: 1.12 !important;
-  color: #f4e3ca !important;
+[data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]) {
+  color: #f7e5c9 !important;
+  font-size: 19px !important;
 }
-[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, [role="button"]) :is(span, p) {
-  font-size: inherit !important;
-  font-family: inherit !important;
+/* One subtle paper slip per native full-width navigation/chat/project row.
+   Crucially: no long parchment sheet behind an entire section. */
+[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
+ :is(a,button,[role="button"])[data-petrifyui-row] {
+  background-color: #d4b38c !important;
+  background-image: var(--pui-paper) !important;
+  background-position: 0 0 !important;
+  background-size: 256px 256px !important;
+  background-repeat: repeat !important;
+  color: var(--pui-ink) !important;
+  border-radius: 5px !important;
+  box-shadow: inset 0 0 0 1px #a7855a,inset 0 1px #f5e1bc,0 2px 0 #2f1e13ad !important;
 }
-
-/* Legible rows without overriding project-specific color states. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-link] {
-  color: var(--pui-text) !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-link] :is(span, p) {
+[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
+ :is(a,button,[role="button"])[data-petrifyui-row] :is(span,p,small) {
   color: inherit !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] > button,
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-testid="create-new-chat-button"] {
-  color: var(--pui-text) !important;
+[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
+ :is(a,button,[role="button"])[data-petrifyui-row]:hover {
+  background-image: linear-gradient(#f8e5c326,#f8e5c326),var(--pui-paper) !important;
+  box-shadow: inset 0 0 0 1px #6f492c,inset 3px 0 #95613a,0 2px 0 #291b13bf !important;
 }
-
-/* One hover surface per navigation row. Never blanket-style nested buttons. */
+[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
+ :is(a,button,[role="button"])[data-petrifyui-row]:is(
+   [aria-current="page"],[data-active="true"],[data-state="active"]
+ ) {
+  background-image: linear-gradient(#6a3c2740,#6a3c2740),var(--pui-paper) !important;
+  box-shadow: inset 0 0 0 1px #6d492e,inset 3px 0 #70472e,0 2px 0 #2b1c13bf !important;
+}
+/* Preserve native colored project folder/terminal icons. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-project] svg {
+  color: revert-layer;
+}
+/* Section labels stay on wood, not giant parchment blocks. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-section-title] {
+  color: var(--pui-cream) !important;
+  font: 20px/1.1 var(--pui-font) !important;
+  text-shadow: 1px 1px #27180e;
+}
 [data-petrifyui-sidebar][data-petrifyui-enabled]
-  a[data-petrifyui-row]:not([aria-current="page"]):not([data-active="true"]):hover {
-  background-color: var(--pui-hover) !important;
-  box-shadow: inset 2px 0 #b98954 !important;
+ :is(small,[class*="text-token-text-tertiary"]) {
+  opacity: 1 !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-row]:focus-visible,
-[data-petrifyui-header][data-petrifyui-enabled] :is(a, button):focus-visible {
-  outline: 2px solid var(--pui-gold) !important;
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,[role="button"]):focus-visible,
+[data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]):focus-visible {
+  outline: 2px solid #f6cf96 !important;
   outline-offset: -2px;
 }
-
-/* The native selected-row styles and all original icons remain untouched. */
-[data-petrifyui-header][data-petrifyui-enabled] :is(a, button):hover {
-  background-color: rgba(240, 195, 128, .12) !important;
+[data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]):hover {
+  background-color: #d6ae7730 !important;
 }
-
-/* Only the real scroll container is styled, not every nested descendant. */
+/* Brand mark only: original ChatGPT/Codex selector still owns its click event. */
+[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+  background: url("../assets/brand-mark.svg") center / contain no-repeat;
+}
+/* Collapsed rail is wood, with no wide parchment slips. */
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
+  background: #503527 var(--pui-wood) 0 0 / 256px 256px repeat !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a,button):hover {
+  background-color: #dcb98b38 !important;
+  box-shadow: inset 2px 0 #ce9c61 !important;
+}
+/* Keep the native scroll position and touch targets. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll],
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll] {
   scrollbar-width: thin;
-  scrollbar-color: #a5744c transparent;
+  scrollbar-color: #a57c54 transparent;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar,
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar {
-  width: 9px;
+  width: 7px;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-track,
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-track {
@@ -102,127 +132,13 @@
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-thumb,
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-thumb {
-  background: #9b6946;
-  border: 2px solid #3a251a;
-  border-radius: 6px;
+  background: #986e4d;
+  border: 1px solid #483122;
+  border-radius: 4px;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-button,
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-button {
-  display: none;
-  height: 0;
-  width: 0;
+@media(prefers-reduced-motion:reduce){
+  [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button),
+  [data-petrifyui-header][data-petrifyui-enabled] :is(a,button) {
+    transition: none !important;
+  }
 }
-@media (prefers-reduced-motion: reduce) {
-  [data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-row] { transition: none !important; }
-}
-
-
-/* A branded prefix on the existing ChatGPT selector. No new click handlers. */
-[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
-  background: url("../assets/brand-mark.svg") center / contain no-repeat;
-  image-rendering: pixelated;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
-  background-color: #3a251a !important;
-  background-image: url("../assets/pixel-wood.svg") !important;
-  background-repeat: repeat !important;
-  background-size: 256px 256px !important;
-  box-shadow: inset -2px 0 #20130f, inset -4px 0 #8f5f3a !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a, button):hover {
-  background-color: rgba(239,193,135,.12) !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) :is(span,small) {
-  font-size: inherit !important;
-}
-
-
-/* v0.4: make the planks visible through full-size inner sidebar wrappers. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-underlay] {
-  background: transparent !important;
-  background-image: none !important;
-  background-color: transparent !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-header][data-petrifyui-enabled] {
-  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
-  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
-}
-
-/* Visible pixel wood: image plus an independent plank-pattern fallback.
-   If an extension image is blocked, the planks still render in CSS. */
-[data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-header][data-petrifyui-enabled] {
-  background-color: #482c1c !important;
-  background-image:
-    url("../assets/pixel-wood.svg"),
-    repeating-linear-gradient(to bottom,
-      #966139 0px, #966139 3px,
-      #6c4128 3px, #6c4128 14px,
-      #402718 14px, #402718 17px,
-      #764a2c 17px, #764a2c 29px,
-      #291b13 29px, #291b13 32px) !important;
-  background-position: 0 0, 0 0 !important;
-  background-size: 256px 256px, 256px 256px !important;
-  background-repeat: repeat !important;
-  image-rendering: pixelated;
-}
-/* The direct scroll container and tall structural wrappers may otherwise
-   draw a flat surface on top of the wood. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(
-  [data-petrifyui-underlay], [data-petrifyui-scroll]
-) {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-
-/* v0.7 overrides: quiet vertical-grain walnut, not horizontal striping. */
-[data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-header][data-petrifyui-enabled],
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
-  --pui-wood: url("../assets/walnut-grain.svg");
-  background-color: #503527 !important;
-  background-image: var(--pui-wood) !important;
-  background-size: 256px 256px !important;
-  background-repeat: repeat !important;
-  background-position: 0 0 !important;
-}
-/* One parchment surface per native sidebar group: top navigation, projects,
-   recents and profile. Rows remain inside the existing group, with no reflow. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper] {
-  background: #ead7b6 url("../assets/paper-fiber.svg") 0 0 / 256px 256px repeat !important;
-  color: #493022 !important;
-  border-radius: 8px !important;
-  box-shadow: inset 0 0 0 1px #a67b50,inset 0 2px 0 #f9e9cd,
-    inset 0 -2px 0 #b99667, 2px 3px 0 #24160e77 !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
- :is(a[data-petrifyui-link],button,[role="button"]) {
-  color: #493022 !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
- :is(h2,h3,[role="heading"]) {color:#67432d !important;text-shadow:none !important;}
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
- a[data-petrifyui-link]:not([aria-current="page"]):hover {
-  background-color: #bb98726e !important;
-  box-shadow: inset 2px 0 #8a603a !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
- a[data-petrifyui-link][aria-current="page"] {
-  background-color: #b9977299 !important;
-  box-shadow: inset 3px 0 #795032 !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) {
-  font-size: 16px !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
- :is(small,[class*="text-token-text-tertiary"]) {color:#866d55 !important;}

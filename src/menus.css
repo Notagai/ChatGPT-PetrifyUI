@@ -1,114 +1,63 @@
-/* PetrifyUI 0.6: Native in-page ChatGPT menus everywhere: projects, chats, account, models,
-   header switcher, nested submenus and select/popover menus. Never restyle content. */
+/* PetrifyUI v0.8: native in-page ChatGPT menus and nested popovers. */
 [data-petrifyui-menu][data-petrifyui-enabled] {
-  --pui-menu-ink: #f7e7cd;
-  --pui-menu-accent: #e8bc7c;
-  --pui-menu-border: #9a6d44;
-  --pui-menu-hover: rgba(239, 190, 114, .18);
-  color-scheme: dark;
-  color: var(--pui-menu-ink);
-  font-family: "VT323", "Courier New", monospace !important;
-  background-color: #482b1b !important;
-  background-image: url("../assets/pixel-wood.svg"),
-    repeating-linear-gradient(to bottom, #956038 0 3px, #5b3622 3px 27px, #24170f 27px 32px) !important;
-  background-position: 0 0, 0 0 !important;
-  background-size: 256px 256px, 256px 256px !important;
-  background-repeat: repeat !important;
-  image-rendering: pixelated;
-  border: 2px solid var(--pui-menu-border) !important;
-  border-radius: 9px !important;
-  box-shadow: 0 7px 0 #24150e, 0 14px 22px rgba(13, 7, 4, .42),
-    inset 0 0 0 2px #2d1b13, inset 0 2px 0 rgba(244, 205, 146, .22) !important;
+  --pui-menu-ink: #3e2a1d;
+  --pui-menu-hover: #7a533126;
+  --pui-menu-focus: #9a6a40;
+  color: var(--pui-menu-ink) !important;
+  color-scheme: light;
+  font-family: "VT323","Courier New",monospace !important;
+  background: #d4b38c url("../assets/paper-fiber-v2.svg") 0 0 / 256px 256px repeat !important;
+  border: 3px solid #62402a !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 0 #281911,0 10px 21px #100b09a3,
+    inset 0 0 0 1px #9f754f,inset 0 2px 0 #f2dab2 !important;
 }
-
-/* Transparent internal panels only when they overlap the whole menu. */
-[data-petrifyui-menu][data-petrifyui-enabled] [data-petrifyui-menu-underlay] {
-  background: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-}
-
-/* Text only. Do not replace SVGs, icons, controls or special action colors. */
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  button, a, [role="menuitem"], [role="menuitemcheckbox"],
-  [role="menuitemradio"], [role="option"], [cmdk-item]
-) {
-  font-family: "VT323", "Courier New", monospace !important;
-  font-size: 18px !important;
-  line-height: 1.15 !important;
-  border-radius: 4px !important;
-}
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  button, a, [role="menuitem"], [role="menuitemcheckbox"],
-  [role="menuitemradio"], [role="option"], [cmdk-item]
-) :is(span, p, small) {
-  font-family: inherit !important;
-}
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  button, a, [role="menuitem"], [role="menuitemcheckbox"],
-  [role="menuitemradio"], [role="option"], [cmdk-item]
-):is(:hover, [data-highlighted], [aria-selected="true"]) {
-  background-color: var(--pui-menu-hover) !important;
-  box-shadow: inset 2px 0 0 var(--pui-menu-accent);
-}
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  button, a, [role="menuitem"], [role="option"]
-):focus-visible {
-  outline: 2px solid var(--pui-menu-accent) !important;
-  outline-offset: -2px;
-}
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  [role="separator"], [data-slot$="-separator"], hr
-) {
-  border-color: rgba(229, 177, 113, .4) !important;
-  background-color: rgba(229, 177, 113, .4) !important;
-}
-
-/* Preserve clearly destructive actions such as Delete, and their existing icons. */
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  [data-destructive], [data-variant="destructive"],
-  [class*="text-red"], [class*="text-danger"],
-  [class*="text-error"]
-) {
-  color: #ff7770 !important;
-}
-
-/* Disabled controls remain visually distinct and non-interactive as in ChatGPT. */
-[data-petrifyui-menu][data-petrifyui-enabled] :is(
-  [aria-disabled="true"], [data-disabled], :disabled
-) { opacity: .56; }
-
-@media (prefers-reduced-motion: reduce) {
-  [data-petrifyui-menu][data-petrifyui-enabled] * {
-    transition: none !important;
-  }
-}
-
-/* Let the wood show through any full-menu portal content wrappers, without
-   changing native items or red destructive actions. */
 [data-petrifyui-menu][data-petrifyui-enabled] [data-petrifyui-menu-underlay] {
   background-color: transparent !important;
   background-image: none !important;
-}
-
-
-/* v0.7: parchment menu interior with restrained dark walnut trim. */
-[data-petrifyui-menu][data-petrifyui-enabled] {
-  --pui-menu-ink: #493022;
-  --pui-menu-accent: #9e7044;
-  --pui-menu-hover: #bd9a7199;
-  color: #493022 !important;
-  color-scheme: light;
-  background: #ead7b6 url("../assets/paper-fiber.svg") 0 0 / 256px 256px repeat !important;
-  border: 3px solid #60402b !important;
-  box-shadow: 0 5px 0 #27190f, 0 12px 18px #26160d85,
-    inset 0 0 0 1px #bb9063, inset 0 2px #f9e9cb !important;
+  box-shadow: none !important;
 }
 [data-petrifyui-menu][data-petrifyui-enabled] :is(
-  a,button,[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"],[role="option"],[cmdk-item]
+  button,a,[role="menuitem"],[role="menuitemcheckbox"],
+  [role="menuitemradio"],[role="option"],[cmdk-item]
+) {
+  font-family: "VT323","Courier New",monospace !important;
+  font-size: 18px !important;
+  line-height: 1.16 !important;
+  border-radius: 4px !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  button,a,[role="menuitem"],[role="menuitemcheckbox"],
+  [role="menuitemradio"],[role="option"],[cmdk-item]
 ):not([data-destructive]):not([data-variant="destructive"]):not([class*="text-red"]):not([class*="text-danger"]) {
-  color: #493022 !important;
+  color: var(--pui-menu-ink) !important;
 }
 [data-petrifyui-menu][data-petrifyui-enabled] :is(
- [data-destructive],[data-variant="destructive"],[class*="text-red"],[class*="text-danger"]
-) { color:#bd3d2e !important; }
+  button,a,[role="menuitem"],[role="menuitemcheckbox"],
+  [role="menuitemradio"],[role="option"],[cmdk-item]
+):is(:hover,[data-highlighted],[aria-selected="true"]) {
+  background-color: var(--pui-menu-hover) !important;
+  box-shadow: inset 2px 0 0 var(--pui-menu-focus) !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  button,a,[role="menuitem"],[role="option"]
+):focus-visible {
+  outline: 2px solid #996539 !important;
+  outline-offset: -2px;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [role="separator"],[data-slot$="-separator"],hr
+) {
+  background-color: #9f764d91 !important;
+  border-color: #9f764d91 !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [data-destructive],[data-variant="destructive"],
+  [class*="text-red"],[class*="text-danger"],[class*="text-error"]
+) {color: #b3382b !important;}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [aria-disabled="true"],[data-disabled],:disabled
+) {opacity: .56 !important;}
+@media(prefers-reduced-motion:reduce) {
+  [data-petrifyui-menu][data-petrifyui-enabled] * {transition: none !important;}
+}

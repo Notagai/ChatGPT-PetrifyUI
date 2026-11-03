@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Quiet walnut shell and parchment sidebar sections and menus, preserving original UI.",
-  "version": "0.7.0",
+  "description": "Subtle pixel walnut with separate parchment row labels and wood-framed menus; content unchanged.",
+  "version": "0.8.0",
   "permissions": [
     "storage"
   ],
@@ -44,7 +44,9 @@
         "assets/brand-mark.svg",
         "assets/pixel-wood.svg",
         "assets/walnut-grain.svg",
-        "assets/paper-fiber.svg"
+        "assets/paper-fiber.svg",
+        "assets/walnut-grain-v2.svg",
+        "assets/paper-fiber-v2.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",

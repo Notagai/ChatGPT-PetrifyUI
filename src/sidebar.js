@@ -120,77 +120,33 @@
   }
 
 
-  // Find existing sidebar section wrappers, without inserting panels or altering layout.
-  const paperGroups = new Set();
-  function panelForLabel(sidebar,label) {
-    const frame=rectOf(sidebar);
-    const labelNode=[...sidebar.querySelectorAll("h2,h3,button,span,[role='heading']")]
-      .find(n=>(n.textContent||"").trim()===label&&rectOf(n).height>=10);
-    if (!labelNode) return null;
-    for(let el=labelNode.parentElement, step=0; el&&el!==sidebar&&step<9; el=el.parentElement,step++){
-      const r=rectOf(el), text=el.textContent||"";
-      if (r.width<frame.width*.60||r.width>frame.width+4||r.height<70) continue;
-      if(label==="Projects"&&text.includes("Recents")) break;
-      if(label==="Recents"&&text.includes("Projects")) break;
-      const hasItems=label==="Projects"?
-        !!el.querySelector('a[href^="/g/"],a[href^="/projects"]'):
-        !!el.querySelector('a[href^="/c/"]');
-      if(hasItems) return el;
-    }
-    return null;
-  }
-  function navPanel(sidebar) {
-    const frame=rectOf(sidebar);
-    const btn=sidebar.querySelector('[data-testid="create-new-chat-button"]')||
-      [...sidebar.querySelectorAll('a,button')].find(el=>/New chat/i.test((el.textContent||"").trim()));
-    if(!btn)return null;
-    for(let el=btn.parentElement,i=0;el&&el!==sidebar&&i<7;el=el.parentElement,i++){
-      const r=rectOf(el),text=el.textContent||"";
-      if(r.width>frame.width*.62&&r.height>90&&r.height<380&&
-        el.querySelectorAll("a,button").length>=3&&
-        !text.includes("Projects")&&!text.includes("Recents")) return el;
-    }
-    return null;
-  }
-  function footerPanel(sidebar){
-    const frame=rectOf(sidebar);
-    const b=[...sidebar.querySelectorAll('button,[role="button"]')]
-      .find(el=>rectOf(el).top>frame.bottom-160&&el.querySelector("img"));
-    if(!b)return null;
-    for(let el=b.parentElement,i=0;el&&el!==sidebar&&i<5;el=el.parentElement,i++){
-      const r=rectOf(el);
-      if(r.width>frame.width*.6&&r.height>=38&&r.height<=120)return el;
-    }
-    return null;
-  }
-  function markPaperGroups(sidebar) {
-    const candidate=rectOf(sidebar).width<90?[]:
-      [navPanel(sidebar),panelForLabel(sidebar,"Projects"),
-       panelForLabel(sidebar,"Recents"),footerPanel(sidebar)];
-    const next=new Set(candidate.filter(Boolean));
-    for(const previous of paperGroups)if(!next.has(previous))previous.removeAttribute("data-petrifyui-paper");
-    for(const element of next)element.setAttribute("data-petrifyui-paper","");
-    paperGroups.clear();
-    for(const element of next)paperGroups.add(element);
-  }
-
   function decorateRows(sidebar) {
-    const side = rectOf(sidebar);
-    if (side.width <= 80) sidebar.setAttribute("data-petrifyui-collapsed", "");
-    else sidebar.removeAttribute("data-petrifyui-collapsed");
-    for (const link of sidebar.querySelectorAll('a[href]')) {
-      // Keep all native selected/deselected project colors.
-      let project = false;
-      try {
-        const pathname = new URL(link.getAttribute("href"), document.baseURI).pathname;
-        project = /^\/(g|project|projects)(\/|$)/.test(pathname);
-      } catch { /* Native links remain intact. */ }
-      if (project) link.removeAttribute("data-petrifyui-link");
-      else link.setAttribute("data-petrifyui-link", "");
-      const box = rectOf(link);
-      const isRow = !project && box.width >= side.width * 0.55 && box.height >= 25 && box.height <= 76;
-      if (isRow) link.setAttribute("data-petrifyui-row", "");
-      else link.removeAttribute("data-petrifyui-row");
+    const frame = rectOf(sidebar);
+    const collapsed = frame.width <= 85;
+    sidebar.toggleAttribute("data-petrifyui-collapsed", collapsed);
+    // Use native rows as individual parchment slips, never whole section wrappers.
+    for (const item of sidebar.querySelectorAll('a[href],button,[role="button"]')) {
+      if (!(item instanceof HTMLElement)) continue;
+      const b = rectOf(item);
+      const isRow = !collapsed && b.width >= frame.width * .56 &&
+        b.height >= 24 && b.height <= 76;
+      item.toggleAttribute("data-petrifyui-row", isRow);
+      if (item.tagName === "A") {
+        let project = false;
+        try { project = /^\/(g|project|projects)(\/|$)/.test(new URL(item.getAttribute("href"),document.baseURI).pathname); }
+        catch { /* Keep native links intact. */ }
+        item.toggleAttribute("data-petrifyui-project",project);
+        item.toggleAttribute("data-petrifyui-link",!project);
+      }
+    }
+    // Undo v0.7's oversized Recents paper background.
+    for (const panel of sidebar.querySelectorAll('[data-petrifyui-paper]')) panel.removeAttribute("data-petrifyui-paper");
+    for (const label of sidebar.querySelectorAll('h2,h3,span,[role="heading"]')) {
+      if (!(label instanceof HTMLElement)) continue;
+      const sectionTitle = label.childElementCount === 0 &&
+        /^(Projects|Recents)$/.test((label.textContent||"").trim()) &&
+        rectOf(label).height >= 10;
+      label.toggleAttribute("data-petrifyui-section-title",sectionTitle);
     }
   }
 
@@ -208,8 +164,6 @@
       changeTracked(header, null, "data-petrifyui-header");
       changeTracked(scroller, null, "data-petrifyui-scroll");
       changeTracked(brandTrigger, null, "data-petrifyui-brand-trigger");
-      for(const element of paperGroups) element.removeAttribute('data-petrifyui-paper');
-      paperGroups.clear();
       root = header = scroller = brandTrigger = null;
       return;
     }
@@ -232,7 +186,6 @@
     }
     decorateRows(root);
     clearSidebarUnderlays(root);
-    markPaperGroups(root);
   }
 
   function scheduleRender() {
