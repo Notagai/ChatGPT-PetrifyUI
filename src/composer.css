@@ -100,17 +100,13 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
 }
 /* Tinted real model/effort button; no fake label or fixed-width black bar. */
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
-  color:#503521 !important;
-  -webkit-text-fill-color:#503521 !important;
-  font-family:"Petrify VT323","Courier New",monospace !important;
-  font-size:18px !important;
-  line-height:1.2 !important;
-  white-space:nowrap !important;
-  background-color:#eecda5 !important;
+  /* Pure recolor: do not override native font size, line height, borders,
+     padding or dimensions. Those caused overlapping effort labels. */
+  color:#442b1c !important;
+  -webkit-text-fill-color:#442b1c !important;
+  background-color:transparent !important;
   background-image:none !important;
-  border:1px solid #ac7e55 !important;
-  border-radius:4px !important;
-  box-shadow:inset 1px 1px #fce4be !important;
+  box-shadow:none !important;
   text-shadow:none !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
@@ -233,14 +229,41 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
 }
 /* Stronger explicit contrast for Medium/Instant/High and the dropdown chevron. */
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
-  background:#e9c89c !important;
+  background:transparent !important;
   color:#382416 !important;
   -webkit-text-fill-color:#382416 !important;
-  border-color:#93653f !important;
   opacity:1 !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
   color:#382416 !important;
   -webkit-text-fill-color:#382416 !important;
   opacity:1 !important;
+}
+
+
+/* v1.17: native plus/attach control gets a visible ink color on paper,
+   without resizing or shifting its click target. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[aria-label*="attach" i],button[aria-label*="add" i],
+  button[aria-label*="upload" i],button[data-testid*="attach" i],
+  button[data-testid*="add-file" i]
+) {
+  color:#422a1b !important;
+  -webkit-text-fill-color:#422a1b !important;
+  opacity:1 !important;
+  background-color:transparent !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[aria-label*="attach" i],button[aria-label*="add" i],
+  button[aria-label*="upload" i],button[data-testid*="attach" i],
+  button[data-testid*="add-file" i]
+) :is(svg,svg *) {
+  color:#422a1b !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[aria-label*="attach" i],button[aria-label*="add" i],
+  button[aria-label*="upload" i]
+):hover {
+  background-color:#bb89572b !important;
 }

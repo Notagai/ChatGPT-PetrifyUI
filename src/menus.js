@@ -6,6 +6,7 @@
   const OPEN='[role="menu"],[role="listbox"],[role="dialog"],[data-radix-popper-content-wrapper],[data-slot*="popover"],[data-slot*="menu-content"],[data-side][data-state="open"]';
   const ITEMS='[role="menuitem"],[role="option"],[role="menuitemcheckbox"],[role="menuitemradio"],button,a';
   const ADD_LABELS=["Add photos & files","Add from library","Create image"];
+  const ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"];
   const styled=new Map();
   let enabled=true,pending=false,delayed=null;
 
@@ -26,19 +27,25 @@
     const text=el.textContent||"";
     return ADD_LABELS.every(label=>text.includes(label));
   }
+  function fullAddListFound(el) {
+    const text=el.textContent||"";
+    return addLabelsFound(el)&&ADD_LOWER_LABELS.some(label=>text.includes(label));
+  }
   function findWideAddMenu(){
     // Use a bounded list of likely portal/content elements first, then anchor
     // from one real menu item if ChatGPT uses a nonstandard popover role.
     let best=null,area=Infinity;
     function consider(el){
-      if(!visiblePopup(el)||!addLabelsFound(el))return;
+      // Ignore partial option groups. They caused only the upper half of
+      // the attachment menu to get paper styling.
+      if(!visiblePopup(el)||!fullAddListFound(el))return;
       const r=geometry(el);
-      if(r.width<310||r.height<130)return;
+      if(r.width<310||r.height<170)return;
       const a=r.width*r.height;
       if(a<area){area=a;best=el;}
     }
     for(const el of document.querySelectorAll(OPEN)) {
-      if(!(el instanceof HTMLElement)||!addLabelsFound(el))continue;
+      if(!(el instanceof HTMLElement)||!fullAddListFound(el))continue;
       consider(el);
       for(const child of el.querySelectorAll(":scope > div,:scope > section,:scope > nav"))consider(child);
     }
@@ -49,8 +56,8 @@
     for(const candidate of document.querySelectorAll('button,[role="menuitem"],[role="option"]')){
       if(tested++>450)break;
       if(!(candidate instanceof HTMLElement)||!(candidate.textContent||"").includes(ADD_LABELS[0]))continue;
-      for(let parent=candidate.parentElement,depth=0;parent&&depth<9;parent=parent.parentElement,depth++){
-        if(addLabelsFound(parent))consider(parent);
+      for(let parent=candidate.parentElement,depth=0;parent&&depth<12;parent=parent.parentElement,depth++){
+        if(fullAddListFound(parent))consider(parent);
       }
     }
     return best;
@@ -110,7 +117,9 @@
       const add=findWideAddMenu();
       const effort=findEffortPopup();
       for(const el of findNormalMenus()) {
-        if(el===add||el===effort||el.contains(add)||el.contains(effort))continue;
+        if(el===add||el===effort||
+           (add&&(el.contains(add)||add.contains(el)))||
+           (effort&&(el.contains(effort)||effort.contains(el))))continue;
         next.set(el,"normal");
       }
       if(add)next.set(add,"add");

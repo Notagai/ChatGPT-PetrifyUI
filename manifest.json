@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel-paper composer and themed Add/Thinking effort menus with readable controls.",
-  "version": "1.16.0",
+  "description": "Complete pixel-paper Add menu, nonoverlapping effort selector, and corrected plus-button contrast.",
+  "version": "1.17.0",
   "permissions": [
     "storage"
   ],

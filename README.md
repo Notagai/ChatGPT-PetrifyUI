@@ -170,3 +170,11 @@ No full-page DOM observer or continuous polling was added. Signed-in visual test
 - Adds separate detection for the Thinking effort slider popup, previously excluded from theming. Recolors its paper surface, text and green slider accent to walnut brown while retaining the native slider and buttons.
 - Avoids classifying the composer button by a generic `thinking effort` accessibility label. The actual Medium/Instant/High text stays live VT323 and its chevron remains native.
 - Only event-triggered popup discovery and a shallow body-portal insertion observer are used. Chat messages and streaming are not observed.
+
+## v1.17: Full Add popover and native-size composer selector
+
+- Recognizes the **entire** Add menu by looking for both early options and one of the lower section entries (Sketch, Spotify, Notion, Cloudflare), rather than styling only the first six entries.
+- Clears dark inner panels under the main paper surface so lower integrations stay consistent; keeps provider icon colors, scroll position and native menu interactions.
+- Styles the model/effort control with dark ink only, dropping the added border and font geometry that could overlap the Thinking effort label.
+- Increases plus/attachment contrast without changing its button size or placement.
+- No page-wide observer or chat-content mutations were added; follow-up visual testing is necessary.

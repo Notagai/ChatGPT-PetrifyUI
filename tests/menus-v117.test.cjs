@@ -1,0 +1,14 @@
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const menu=fs.readFileSync("src/menus.js","utf8");
+const menuCss=fs.readFileSync("src/menus.css","utf8");
+const composerCss=fs.readFileSync("src/composer.css","utf8");
+new Function(menu);
+assert.equal(m.version,"1.17.0");
+assert(menu.includes('fullAddListFound'));
+assert(menu.includes('ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"]'));
+assert(menu.includes('fullAddListFound(parent)'));
+assert(menuCss.includes('[data-pui-menu-kind="add"]'));
+assert(composerCss.includes('Pure recolor: do not override native font size'));
+assert(composerCss.includes('button[aria-label*="attach" i]'));
+console.log("PASS: full Add menu and native-sized effort selector");

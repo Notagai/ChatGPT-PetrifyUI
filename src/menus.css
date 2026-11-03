@@ -206,3 +206,42 @@ html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
 ) {
   border-color:#805335 !important;
 }
+
+
+/* v1.17: paint the entire Add menu, including Sketch / integrations at
+   the bottom. Inner custom scroll panels previously remained dark. */
+html[data-petrifyui-active] [data-pui-menu-kind="add"] {
+  color:#3b281c !important;
+  background-color:#e6c39a !important;
+  background-image:var(--pui-resolved-paper,none),
+    linear-gradient(#f4d8b4,#e4ba8c) !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  div,section,nav,ul,ol,footer,header,[role="group"],[role="presentation"],
+  [class*="overflow-y-auto"],[class*="overflow-y-scroll"]
+):not([role="menuitem"]):not([role="option"]):not([role="slider"]):not(:has(img,video,canvas)) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  button,[role="menuitem"],[role="option"],a
+):not(:disabled):not([aria-disabled="true"]) {
+  color:#3b281c !important;
+  -webkit-text-fill-color:#3b281c !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  button,[role="menuitem"],[role="option"],a
+):is(:hover,:focus-visible,[data-highlighted],[aria-selected="true"]) {
+  background-color:#bb895754 !important;
+  box-shadow:inset 3px 0 0 #946444 !important;
+}
+/* Preserve the provider icon's own fill/stroke rather than forcing browns. */
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+  [data-slot*="description"],small
+) {
+  color:#64432e !important;
+  -webkit-text-fill-color:#64432e !important;
+  opacity:1 !important;
+}
