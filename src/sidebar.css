@@ -1,4 +1,4 @@
-/* PetrifyUI 0.2: existing ChatGPT sidebar and its adjacent header ONLY. */
+/* PetrifyUI 0.3: existing ChatGPT sidebar and its adjacent header ONLY. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
@@ -10,7 +10,7 @@
   background-color: #3a251a !important;
   background-image: url("../assets/walnut-tile.png") !important;
   background-repeat: repeat !important;
-  background-size: 256px 256px !important;
+  background-size: 128px 128px !important;
   color-scheme: dark;
   font-family: var(--pui-font) !important;
 }
@@ -32,7 +32,7 @@
   font-family: var(--pui-font) !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) {
-  font-size: 20px !important;
+  font-size: 16px !important;
   line-height: 1.15 !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) :is(span, p) {
@@ -40,14 +40,14 @@
   line-height: inherit !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2, h3, [role="heading"]) {
-  font-size: 21px !important;
+  font-size: 18px !important;
   line-height: 1.15 !important;
   letter-spacing: .025em;
   color: var(--pui-gold) !important;
   text-shadow: 1px 1px 0 rgba(22, 12, 8, .7);
 }
 [data-petrifyui-header][data-petrifyui-enabled] :is(a, button, [role="button"]) {
-  font-size: 23px !important;
+  font-size: 18px !important;
   font-family: var(--pui-font) !important;
   line-height: 1.12 !important;
   color: #f4e3ca !important;
@@ -114,4 +114,47 @@
 }
 @media (prefers-reduced-motion: reduce) {
   [data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-row] { transition: none !important; }
+}
+
+
+/* Shared wood for the ChatGPT / Codex menu, without replacing native controls. */
+[data-petrifyui-brand-menu][data-petrifyui-enabled] {
+  --pui-font: "VT323", "Courier New", monospace;
+  background: #3a251a url("../assets/walnut-tile.png") repeat !important;
+  background-size: 128px 128px !important;
+  border: 1px solid rgba(235, 190, 130, .4) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 2px rgba(145,91,52,.5) !important;
+}
+[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(button, a, span, p, [role="menuitem"], [role="option"]) {
+  font-family: "VT323", "Courier New", monospace !important;
+  font-size: 17px !important;
+  line-height: 1.1 !important;
+  color: #f2dec0 !important;
+}
+[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(button, a, [role="menuitem"], [role="option"]):hover {
+  background-color: rgba(239,193,135,.13) !important;
+}
+/* A branded prefix on the existing ChatGPT selector. No new click handlers. */
+[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  background: url("../assets/brand-mark.svg") center / contain no-repeat;
+  image-rendering: pixelated;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
+  background-color: #3a251a !important;
+  background-image: url("../assets/walnut-tile.png") !important;
+  background-repeat: repeat !important;
+  background-size: 128px 128px !important;
+  box-shadow: inset -2px 0 #20130f, inset -4px 0 #8f5f3a !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a, button):hover {
+  background-color: rgba(239,193,135,.12) !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) :is(span,small) {
+  font-size: inherit !important;
 }

@@ -2,7 +2,7 @@
 
 An unofficial Chrome/Chromium Manifest V3 extension that styles **only ChatGPT's existing sidebar and sidebar header**, using carved walnut and VT323 from Google Fonts.
 
-## Version 0.2.0
+## Version 0.3.0
 
 - VT323 for sidebar text, chat rows, section labels and sidebar header.
 - Wooden ChatGPT/search/collapse header instead of a separate black strip.
@@ -42,3 +42,13 @@ If already installed, run `git pull`, click **Reload** on the extension card and
 - A synthetic browser test is included at `tests/smoke.py`; it does not validate a live signed-in ChatGPT page.
 
 Not affiliated with or endorsed by OpenAI. ChatGPT is an OpenAI trademark.
+
+## v0.3 sidebar update
+
+- Smaller sidebar text with VT323 loaded through Google Fonts.
+- Stronger pixel wood background, including narrow/collapsed sidebar.
+- A small ChatGPT mark on the existing header selector.
+- ChatGPT/Codex dropdown styling when rendered in a popover near the header.
+- All original icons, project colors, messages, links and clicks are preserved.
+
+**Update:** `git pull origin main`, then Reload at `chrome://extensions` and refresh ChatGPT. Fonts may require access to Google Fonts.

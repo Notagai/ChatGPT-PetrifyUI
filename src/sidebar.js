@@ -14,6 +14,8 @@
   let root = null;
   let header = null;
   let scroller = null;
+  let brandTrigger = null;
+  let brandMenu = null;
   let enabled = true;
   let queued = false;
 
@@ -24,7 +26,7 @@
       const element = document.querySelector(selector);
       if (!(element instanceof HTMLElement)) continue;
       const bounds = rectOf(element);
-      if (bounds.width < 120 || bounds.height < 110) continue;
+      if (bounds.width < 42 || bounds.height < 110) continue;
       if (element.id === "stage-slideover-sidebar" || element.id === "sidebar") return element;
       if (element.querySelector('[data-testid="create-new-chat-button"], a[href^="/c/"], a[href^="/g/"], a[href^="/projects"]')) return element;
     }
@@ -70,8 +72,44 @@
     return matches.sort((a, b) => b.clientHeight - a.clientHeight)[0] || null;
   }
 
+
+  /* Style only the native ChatGPT/Codex picker near the sidebar header. */
+  function findBrandTrigger(toolbar) {
+    if (!toolbar) return null;
+    const interactive = [...toolbar.querySelectorAll('button, a, [role="button"]')];
+    return interactive.find(el => /ChatGPT|Codex/i.test((el.textContent || "").trim())) || null;
+  }
+
+  function findBrandMenu(sidebar, toolbar) {
+    if (!sidebar || !toolbar) return null;
+    const side = rectOf(sidebar), bar = rectOf(toolbar);
+    const candidates = document.querySelectorAll(
+      '[role="menu"], [role="listbox"], [role="dialog"], [data-radix-popper-content-wrapper], [data-state="open"]'
+    );
+    for (const node of candidates) {
+      if (!(node instanceof HTMLElement) || sidebar.contains(node) || toolbar.contains(node)) continue;
+      const box = rectOf(node);
+      if (box.width < 160 || box.width > 440 || box.height < 75 || box.height > 350) continue;
+      if (box.left < side.left - 12 || box.left > side.right || box.top < bar.top || box.top > bar.bottom + 55) continue;
+      const words = node.textContent || "";
+      if (/ChatGPT/.test(words) && /Codex/.test(words)) return node;
+    }
+    return null;
+  }
+
+  function loadVT323() {
+    if (document.getElementById("petrifyui-vt323-font")) return;
+    const font = document.createElement("link");
+    font.id = "petrifyui-vt323-font";
+    font.rel = "stylesheet";
+    font.href = "https://fonts.googleapis.com/css2?family=VT323&display=swap";
+    document.head.appendChild(font);
+  }
+
   function decorateRows(sidebar) {
     const side = rectOf(sidebar);
+    if (side.width <= 80) sidebar.setAttribute("data-petrifyui-collapsed", "");
+    else sidebar.removeAttribute("data-petrifyui-collapsed");
     for (const link of sidebar.querySelectorAll('a[href]')) {
       // Keep all native selected/deselected project colors.
       let project = false;
@@ -95,24 +133,33 @@
 
   function render() {
     queued = false;
+    loadVT323();
     const nextRoot = findSidebar();
     if (!nextRoot) {
       changeTracked(root, null, "data-petrifyui-sidebar");
       changeTracked(header, null, "data-petrifyui-header");
       changeTracked(scroller, null, "data-petrifyui-scroll");
-      root = header = scroller = null;
+      changeTracked(brandTrigger, null, "data-petrifyui-brand-trigger");
+      changeTracked(brandMenu, null, "data-petrifyui-brand-menu");
+      root = header = scroller = brandTrigger = brandMenu = null;
       return;
     }
     const nextHeader = findHeader(nextRoot);
     const nextScroller = findScroller(nextRoot);
+    const nextBrandTrigger = findBrandTrigger(nextHeader);
+    const nextBrandMenu = findBrandMenu(nextRoot, nextHeader);
     changeTracked(root, nextRoot, "data-petrifyui-sidebar");
     changeTracked(header, nextHeader, "data-petrifyui-header");
     changeTracked(scroller, nextScroller, "data-petrifyui-scroll");
+    changeTracked(brandTrigger, nextBrandTrigger, "data-petrifyui-brand-trigger");
+    changeTracked(brandMenu, nextBrandMenu, "data-petrifyui-brand-menu");
     root = nextRoot;
     header = nextHeader;
     scroller = nextScroller;
+    brandTrigger = nextBrandTrigger;
+    brandMenu = nextBrandMenu;
 
-    for (const surface of [root, header]) {
+    for (const surface of [root, header, brandMenu, brandTrigger]) {
       if (!surface) continue;
       if (enabled) surface.setAttribute("data-petrifyui-enabled", "");
       else surface.removeAttribute("data-petrifyui-enabled");
@@ -129,7 +176,9 @@
   const observer = new MutationObserver(records => {
     if (!root?.isConnected || !header?.isConnected || records.some(record =>
       root?.contains(record.target) || root?.parentElement === record.target ||
-      header?.parentElement === record.target
+      header?.parentElement === record.target ||
+      record.target === document.body ||
+      (record.target instanceof Element && record.target.hasAttribute("data-radix-popper-content-wrapper"))
     )) scheduleRender();
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });

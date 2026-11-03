@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "A VT323 pixel-font, carved-walnut skin for ChatGPT's existing sidebar and sidebar header. No content or icon replacement.",
-  "version": "0.2.0",
+  "description": "Pixel wood sidebar with VT323, ChatGPT brand picker, and collapsed rail styling. Appearance only.",
+  "version": "0.3.0",
   "permissions": [
     "storage"
   ],
@@ -38,7 +38,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "assets/walnut-tile.png"
+        "assets/walnut-tile.png",
+        "assets/brand-mark.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",
