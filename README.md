@@ -62,3 +62,17 @@ Not affiliated with or endorsed by OpenAI. ChatGPT is an OpenAI trademark.
 - Sidebar only; no changes to chat message content or behavior.
 
 Reload the extension in `chrome://extensions`, then hard-refresh ChatGPT. If the switcher is still dark, open it and use the browser inspector to check whether `data-petrifyui-brand-menu` is on the visible panel.
+
+## v0.5.0: All in-page menus
+
+PetrifyUI now themes native ChatGPT popup menus throughout the interface: conversation actions (Rename, Pin, Share, Archive, Delete, Move to project), project menus, header ChatGPT/Codex picker, profile/account menus, model and tool dropdowns, and nested submenus.
+
+- Detects menus and their actual visible surfaces, including portal-rendered popovers.
+- Uses the same pixel-wood texture and VT323 text as the sidebar.
+- Does not replace menu items, icons, click handlers, DOM structure, or destinations.
+- Preserves destructive red actions, disabled controls, and selected menu states.
+- Does not modify main chat content or full-screen modal layouts.
+- Native browser/Chrome context menus are outside extension styling.
+- If ChatGPT changes its DOM, update `src/menus.js` selectors and the visual candidate heuristic.
+
+Regression checks: open conversation menu, Move to project submenu, project overflow, ChatGPT/Codex picker, account profile, and model picker. Confirm normal navigation, red Delete, scrolling, and accessibility.

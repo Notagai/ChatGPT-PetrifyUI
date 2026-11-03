@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel-carved wood sidebar with visible tiled planks, VT323, and native ChatGPT/Codex switcher skin.",
-  "version": "0.4.0",
+  "description": "Pixel wood sidebar and native ChatGPT menu skins. Retains content, icons, colors and interactions.",
+  "version": "0.5.0",
   "permissions": [
     "storage"
   ],
@@ -27,10 +27,12 @@
         "https://www.chatgpt.com/*"
       ],
       "js": [
-        "src/sidebar.js"
+        "src/sidebar.js",
+        "src/menus.js"
       ],
       "css": [
-        "src/sidebar.css"
+        "src/sidebar.css",
+        "src/menus.css"
       ],
       "run_at": "document_idle"
     }

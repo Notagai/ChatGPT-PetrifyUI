@@ -15,7 +15,6 @@
   let header = null;
   let scroller = null;
   let brandTrigger = null;
-  let brandMenu = null;
   let enabled = true;
   let queued = false;
 
@@ -85,56 +84,6 @@
 
   /* Popovers often have a transparent portal wrapper and an opaque nested panel.
      Choose the actual panel rather than putting a border around its wrapper. */
-  function findBrandMenu(sidebar, toolbar) {
-    if (!sidebar || !toolbar) return null;
-    const side = rectOf(sidebar), bar = rectOf(toolbar);
-    const seeds = document.querySelectorAll(
-      '[role="menu"], [role="listbox"], [role="dialog"], [data-radix-popper-content-wrapper], [data-state="open"]'
-    );
-    let best = null, bestScore = -Infinity;
-    const seen = new Set();
-    for (const seed of seeds) {
-      if (!(seed instanceof HTMLElement)) continue;
-      const nodes = [seed, ...seed.querySelectorAll("div,section,nav")].slice(0, 100);
-      for (const el of nodes) {
-        if (!(el instanceof HTMLElement) || seen.has(el)) continue;
-        seen.add(el);
-        if (sidebar.contains(el) || toolbar.contains(el)) continue;
-        const box = rectOf(el);
-        if (box.width < 165 || box.width > 420 || box.height < 78 || box.height > 310) continue;
-        if (box.left < side.left - 15 || box.left > side.right ||
-            box.top < bar.top || box.top > bar.bottom + 70) continue;
-        const words = (el.textContent || "").replace(/\s+/g, " ");
-        if (!/ChatGPT/.test(words) || !/Codex/.test(words)) continue;
-        const style = getComputedStyle(el);
-        const bg = style.backgroundColor;
-        const opaque = bg && bg !== "transparent" && !/^rgba?\([^)]*,\s*0\)$/.test(bg);
-        const hasImage = style.backgroundImage !== "none";
-        const depth = (() => { let n = el, d = 0; while (n && d < 45) { d++; n = n.parentElement; } return d; })();
-        const score = (opaque ? 90 : 0) + (hasImage ? 8 : 0) + depth * .35 -
-          Math.abs(box.left - side.left) * .04 - Math.abs(box.top - bar.bottom) * .04;
-        if (score > bestScore) { bestScore = score; best = el; }
-      }
-    }
-    return best;
-  }
-
-  /* Only remove opaque backgrounds from layout-sized sidebar wrappers.
-     Selected chat rows and project cards retain their original surfaces. */
-  function clearSidebarUnderlays(sidebar) {
-    const frame = rectOf(sidebar);
-    const children = sidebar.querySelectorAll(':scope > div, :scope > section, :scope > nav, :scope > div > div, :scope > div > section');
-    for (const el of children) {
-      if (!(el instanceof HTMLElement)) continue;
-      const box = rectOf(el);
-      const isPanel = box.width >= frame.width * .82 &&
-        box.height >= Math.min(125, frame.height * .2) &&
-        box.left >= frame.left - 10 && box.right <= frame.right + 10;
-      if (isPanel) el.setAttribute("data-petrifyui-underlay", "");
-      else el.removeAttribute("data-petrifyui-underlay");
-    }
-  }
-
   function loadVT323() {
     if (document.getElementById("petrifyui-vt323-font")) return;
     const font = document.createElement("link");
@@ -178,26 +127,22 @@
       changeTracked(header, null, "data-petrifyui-header");
       changeTracked(scroller, null, "data-petrifyui-scroll");
       changeTracked(brandTrigger, null, "data-petrifyui-brand-trigger");
-      changeTracked(brandMenu, null, "data-petrifyui-brand-menu");
-      root = header = scroller = brandTrigger = brandMenu = null;
+      root = header = scroller = brandTrigger = null;
       return;
     }
     const nextHeader = findHeader(nextRoot);
     const nextScroller = findScroller(nextRoot);
     const nextBrandTrigger = findBrandTrigger(nextHeader);
-    const nextBrandMenu = findBrandMenu(nextRoot, nextHeader);
     changeTracked(root, nextRoot, "data-petrifyui-sidebar");
     changeTracked(header, nextHeader, "data-petrifyui-header");
     changeTracked(scroller, nextScroller, "data-petrifyui-scroll");
     changeTracked(brandTrigger, nextBrandTrigger, "data-petrifyui-brand-trigger");
-    changeTracked(brandMenu, nextBrandMenu, "data-petrifyui-brand-menu");
     root = nextRoot;
     header = nextHeader;
     scroller = nextScroller;
     brandTrigger = nextBrandTrigger;
-    brandMenu = nextBrandMenu;
 
-    for (const surface of [root, header, brandMenu, brandTrigger]) {
+    for (const surface of [root, header, brandTrigger]) {
       if (!surface) continue;
       if (enabled) surface.setAttribute("data-petrifyui-enabled", "");
       else surface.removeAttribute("data-petrifyui-enabled");

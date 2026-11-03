@@ -1,4 +1,4 @@
-/* PetrifyUI 0.4: existing ChatGPT sidebar and its adjacent header ONLY. */
+/* PetrifyUI 0.5: existing ChatGPT sidebar and its adjacent header ONLY. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
@@ -117,23 +117,6 @@
 }
 
 
-/* Shared wood for the ChatGPT / Codex menu, without replacing native controls. */
-[data-petrifyui-brand-menu][data-petrifyui-enabled] {
-  --pui-font: "VT323", "Courier New", monospace;
-  background: #3a251a url("../assets/pixel-wood.svg") repeat !important;
-  background-size: 256px 256px !important;
-  border: 1px solid rgba(235, 190, 130, .4) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 2px rgba(145,91,52,.5) !important;
-}
-[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(button, a, span, p, [role="menuitem"], [role="option"]) {
-  font-family: "VT323", "Courier New", monospace !important;
-  font-size: 17px !important;
-  line-height: 1.1 !important;
-  color: #f2dec0 !important;
-}
-[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(button, a, [role="menuitem"], [role="option"]):hover {
-  background-color: rgba(239,193,135,.13) !important;
-}
 /* A branded prefix on the existing ChatGPT selector. No new click handlers. */
 [data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
   content: "";
@@ -172,16 +155,3 @@
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
   background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
 }
-/* Paint the actual menu panel. Do not put an extra frame on the portal wrapper. */
-[data-petrifyui-brand-menu][data-petrifyui-enabled] {
-  background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
-  border: 2px solid #b58755 !important;
-  border-radius: 12px !important;
-  outline: 1px solid #23150f !important;
-  outline-offset: -5px !important;
-  box-shadow: 0 8px 20px #160e0bac, inset 0 0 0 2px #352015 !important;
-  color: #f4e2c6 !important;
-}
-[data-petrifyui-brand-menu][data-petrifyui-enabled] :is(
-  [role="menuitem"],[role="option"],button,a
-) { background-image: none !important; }
