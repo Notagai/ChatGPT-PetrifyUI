@@ -1,20 +1,19 @@
 /* PetrifyUI v0.8: native in-page ChatGPT menus and nested popovers. */
 [data-petrifyui-menu][data-petrifyui-enabled] {
-  --pui-menu-ink: #3e2a1d;
-  --pui-menu-hover: #7a533126;
-  --pui-menu-focus: #9a6a40;
+  --pui-menu-ink: #493222;
+  --pui-menu-hover: rgba(137,96,56,.13);
+  --pui-menu-focus: #b88757;
   color: var(--pui-menu-ink) !important;
   color-scheme: light;
   font-family: "Petrify VT323","Courier New",monospace !important;
   background-color: #d4b38c !important;
-  background-image: var(--pui-resolved-paper, none), linear-gradient(135deg,#efd3ab,#d4b38c) !important;
+  background-image: var(--pui-resolved-paper, none), linear-gradient(135deg,#e2c59e,#d4b38c) !important;
   background-position: 0 0, 0 0 !important;
   background-size: 256px 256px, auto !important;
   background-repeat: repeat !important;
-  border: 3px solid #62402a !important;
+  border: 2px solid #765030 !important;
   border-radius: 8px !important;
-  box-shadow: 0 4px 0 #281911,0 10px 21px #100b09a3,
-    inset 0 0 0 1px #9f754f,inset 0 2px 0 #f2dab2 !important;
+  box-shadow: 0 5px 15px #24150f66,inset 0 0 0 1px #f2d5ab !important;
 }
 [data-petrifyui-menu][data-petrifyui-enabled] [data-petrifyui-menu-underlay] {
   background-color: transparent !important;
@@ -27,7 +26,7 @@
 ) {
   font-family: "Petrify VT323","Courier New",monospace !important;
   font-size: 18px !important;
-  line-height: 1.16 !important;
+  line-height: 1.2 !important;
   border-radius: 4px !important;
 }
 [data-petrifyui-menu][data-petrifyui-enabled] :is(
@@ -64,4 +63,12 @@
 ) {opacity: .56 !important;}
 @media(prefers-reduced-motion:reduce) {
   [data-petrifyui-menu][data-petrifyui-enabled] * {transition: none !important;}
+}
+
+/* Secondary labels remain readable on parchment. */
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+ p,small,[class*="text-token-text-secondary"],[class*="text-token-text-tertiary"]
+) {
+ color:#755c45 !important;
+ opacity:1 !important;
 }
