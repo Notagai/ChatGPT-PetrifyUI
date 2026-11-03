@@ -79,3 +79,9 @@ Update with `git pull origin main`, reload the extension in `chrome://extensions
 - Leaves original project colors, menu functionality, content and texture/font loader intact.
 
 Test after updating: expand/collapse repeatedly with the toolbar button and Ctrl+Shift+S, including pointer hover; verify the toggle tooltip disappears normally, the compact rail keeps its native icons, and main chat controls remain unchanged.
+
+## v1.5: performance and native toggle reliability
+
+PetrifyUI now runs minimal, event-driven sidebar discovery instead of continuously traversing every ChatGPT DOM mutation. It no longer scans and adds markers to every conversation row on every update. Popup menus refresh on relevant pointer/keyboard interactions and direct body portal changes rather than every streamed message. The top bar, sidebar toggle and tooltip are intentionally left completely native to prevent misalignment and stuck UI; the wood texture still applies to the expanded sidebar and independently rendered collapsed rail. The VT323/asset loading from v1.2 remains.
+
+For an A/B performance comparison, use the extension toggle, hard-refresh the page, and repeat the same ChatGPT action. If ChatGPT is laggy with the extension disabled too, that baseline isn't from PetrifyUI.

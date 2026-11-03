@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Collapsed rail wood, native toggle safeguards and lightweight device optimizations.",
-  "version": "1.4.0",
+  "description": "Performance: event-driven sidebar and popup skin; native toggle and header left intact.",
+  "version": "1.5.0",
   "permissions": [
     "storage"
   ],
