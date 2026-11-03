@@ -10,16 +10,18 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 css = (ROOT / "src/sidebar.css").read_text()
-css = css.replace('@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");', "")
 wood = base64.b64encode((ROOT / "assets/walnut-wood-v3.svg").read_bytes()).decode("ascii")
 # Reproduce the content script's resolved extension URL, not a relative
 # stylesheet path. The regression in 1.0 was a relative URL stored in a var().
 assert 'var(--pui-wood)' not in css
-assert 'var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg"))' in css
-css = css.replace('url("../assets/walnut-wood-v3.svg")', f'url("data:image/svg+xml;base64,{wood}")')
+assert 'var(--pui-resolved-wood, none)' in css
+assert '../assets/' not in css
+assert 'fonts.googleapis.com' not in css
+css = css.replace('var(--pui-resolved-wood, none)', f'url("data:image/svg+xml;base64,{wood}")')
 # The runtime must supply a fully qualified extension URI, not an unresolved
 # relative URL stored inside a CSS custom property.
-assert 'chrome.runtime.getURL("assets/walnut-wood-v3.svg")' in (ROOT / "src/sidebar.js").read_text()
+assert 'chrome.runtime.getURL("assets/"+name)' in (ROOT / "src/sidebar.js").read_text()
+assert 'loadAsset("walnut-wood-v3.svg"' in (ROOT / "src/sidebar.js").read_text()
 
 
 html = """<!doctype html><html><head><meta charset="utf-8"><style>
