@@ -68,3 +68,14 @@ Disable any duplicate older installed copies before testing. Reload the extensio
 - Texture asset loading and VT323 font fixes from v1.2 remain intact.
 
 Update with `git pull origin main`, reload the extension in `chrome://extensions`, and hard refresh ChatGPT. Live signed-in appearance still needs verification.
+
+## v1.4: Collapsed rail, toggle safety and low power
+
+- Themes the separately rendered narrow collapsed sidebar as walnut without changing its icon sizes, flex layout, native toggle or tooltips.
+- Never hides or intercepts the sidebar toggle; cleans up expansion-only markers when the rail replaces the full sidebar.
+- Incremental row marker reconciliation replaces clearing every item on every render. No mutations are observed from extension-owned data attributes.
+- Avoids expensive full-tree scroller scans, and skips redundant underlay scans on low-power devices.
+- Low-power mode activates automatically for reduced motion, data saver, limited memory, or four-or-fewer CPU threads. It drops decorative shadows and lowers popup scanning work.
+- Leaves original project colors, menu functionality, content and texture/font loader intact.
+
+Test after updating: expand/collapse repeatedly with the toolbar button and Ctrl+Shift+S, including pointer hover; verify the toggle tooltip disappears normally, the compact rail keeps its native icons, and main chat controls remain unchanged.

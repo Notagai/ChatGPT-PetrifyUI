@@ -26,6 +26,7 @@
   let enabled = true;
   let scheduled = false;
   let marked = new Set();
+  const lowPower = document.documentElement.hasAttribute('data-petrifyui-low-power');
 
   function visibleBox(el) {
     if (!(el instanceof HTMLElement)) return null;
@@ -53,7 +54,7 @@
   }
 
   function choosePanel(seed) {
-    const alternatives = [seed, ...seed.querySelectorAll(PANELS)].slice(0, 70);
+    const alternatives = [seed, ...seed.querySelectorAll(PANELS)].slice(0, lowPower ? 25 : 70);
     let winner = null;
     let score = -Infinity;
 
@@ -97,7 +98,7 @@
     const outer = panel.getBoundingClientRect();
     // A popup can have several nested opaque panels, not just direct children.
     // Never strip backgrounds from the individual actions.
-    for (const child of panel.querySelectorAll('div,section,nav,ul')) {
+    for (const child of lowPower ? panel.querySelectorAll(":scope > div,:scope > section") : panel.querySelectorAll("div,section,nav,ul")) {
       if (!(child instanceof HTMLElement) || child.matches(ITEMS)) continue;
       const b = child.getBoundingClientRect();
       const coversMenu = b.width >= outer.width * .78 &&
@@ -139,6 +140,7 @@
   }
 
   const observer = new MutationObserver(records => {
+    if(document.visibilityState==="hidden")return;
     if (records.some(r => r.type === "childList" ?
       [...r.addedNodes, ...r.removedNodes].some(n => n.nodeType === Node.ELEMENT_NODE) :
       r.attributeName !== "data-petrifyui-menu")) schedule();
@@ -160,5 +162,6 @@
       }
     });
   }
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")schedule();});
   schedule();
 })();

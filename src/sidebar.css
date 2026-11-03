@@ -1,7 +1,8 @@
-/* PetrifyUI v1.0: visible walnut grain; restrained translucent highlights.
+/* PetrifyUI v1.4: visible walnut grain; restrained translucent highlights.
    Style only the existing ChatGPT sidebar and its own header. */
 [data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-header][data-petrifyui-enabled] {
+[data-petrifyui-header][data-petrifyui-enabled],
+[data-petrifyui-rail][data-petrifyui-enabled] {
   /* A fully resolved extension URL is supplied by sidebar.js. The direct URL
      is the fallback. Never keep a relative asset URL inside a custom property. */
   --pui-cream: #f2dfc2;
@@ -130,4 +131,48 @@
   [data-petrifyui-header][data-petrifyui-enabled] :is(a,button) {
     transition:none !important;
   }
+}
+
+
+/* v1.4: independently rendered icon-only rail. No icon/button geometry changes. */
+[data-petrifyui-rail][data-petrifyui-enabled] {
+  --pui-font:"Petrify VT323","Courier New",monospace;
+  background-color:#63412e !important;
+  background-image:var(--pui-resolved-wood, none),
+    repeating-linear-gradient(90deg,#674530 0 27px,#5e3e2d 27px 54px,
+      #745139 54px 63px,#4f3426 63px 65px,#684733 65px 96px,
+      #543827 96px 126px,#33231b 126px 128px) !important;
+  background-position:0 0 !important;
+  background-size:512px 512px,128px 128px !important;
+  background-repeat:repeat !important;
+  box-shadow:inset -2px 0 #342217 !important;
+}
+[data-petrifyui-rail][data-petrifyui-enabled] :is(
+  [class*="bg-token-sidebar"],[class*="bg-black"],[class*="bg-neutral"]
+) {
+  background-color:transparent !important;
+}
+[data-petrifyui-rail][data-petrifyui-enabled] :is(a,button,[role="button"]):hover {
+  background-color:rgba(240,193,139,.10) !important;
+}
+/* No tooltip positioning overrides. Native sidebar toggle works unchanged. */
+/* Lighter theme profile for battery saver, low-memory and reduced motion. */
+html[data-petrifyui-low-power] :is(
+  [data-petrifyui-sidebar][data-petrifyui-enabled],
+  [data-petrifyui-header][data-petrifyui-enabled],
+  [data-petrifyui-rail][data-petrifyui-enabled]
+) {
+  box-shadow:none !important;
+  background-size:256px 256px,128px 128px !important;
+}
+html[data-petrifyui-low-power] [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-section-title] {
+  text-shadow:none !important;
+}
+html[data-petrifyui-low-power] :is(
+  [data-petrifyui-sidebar][data-petrifyui-enabled],
+  [data-petrifyui-header][data-petrifyui-enabled],
+  [data-petrifyui-rail][data-petrifyui-enabled],
+  [data-petrifyui-menu][data-petrifyui-enabled]
+) :is(a,button,[role="button"]) {
+  transition:none !important;
 }

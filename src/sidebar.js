@@ -3,21 +3,31 @@
   "use strict";
 
   const ROOT_SELECTORS = [
-    "#stage-slideover-sidebar",
-    "#sidebar",
-    '[data-testid="sidebar"]',
-    '[data-testid="sidebar-container"]',
-    'nav[aria-label="Chat history"]',
+    "#stage-slideover-sidebar", "#sidebar", '[data-testid="sidebar"]',
+    '[data-testid="sidebar-container"]', 'nav[aria-label="Chat history"]',
     'nav[aria-label="Sidebar"]'
   ];
+  const RAIL_SELECTORS = [
+    '[data-testid="sidebar-mini"]',
+    '[data-testid="sidebar-collapsed"]',
+    '[data-testid="collapsed-sidebar"]',
+    '#sidebar',
+    '[data-testid="sidebar"]',
+    '[data-testid="sidebar-container"]'
+  ];
 
-  let root = null;
-  let header = null;
-  let scroller = null;
-  let brandTrigger = null;
-  let enabled = true;
-  let queued = false;
-
+  let root = null, header = null, scroller = null, brandTrigger = null, rail = null;
+  let enabled = true, queued = false, lastRootWidth = -1, lastRootHeight = -1;
+  const markedRows = new Set();
+  const markedUnderlays = new Set();
+  const markedHeadings = new Set();
+  const lightweight = (
+    matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    navigator.connection?.saveData === true ||
+    (typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4) ||
+    (typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 4)
+  );
+  document.documentElement.toggleAttribute("data-petrifyui-low-power",lightweight);
 
   // Resolve extension assets explicitly. Never use chatgpt.com/assets.
   let assetsStarted=false, fontStarted=false;
@@ -88,14 +98,40 @@
 
   function findSidebar() {
     for (const selector of ROOT_SELECTORS) {
-      const element = document.querySelector(selector);
-      if (!(element instanceof HTMLElement)) continue;
-      const bounds = rectOf(element);
-      if (bounds.width < 42 || bounds.height < 110) continue;
-      if (element.id === "stage-slideover-sidebar" || element.id === "sidebar") return element;
-      if (element.querySelector('[data-testid="create-new-chat-button"], a[href^="/c/"], a[href^="/g/"], a[href^="/projects"]')) return element;
+      const el = document.querySelector(selector);
+      if (!(el instanceof HTMLElement)) continue;
+      const r=rectOf(el);
+      if (r.width < 39 || r.height < 110 || r.left > 100) continue;
+      if (el.id === "stage-slideover-sidebar" || el.id === "sidebar") return el;
+      if (el.querySelector('[data-testid="create-new-chat-button"],a[href^="/c/"],a[href^="/g/"]')) return el;
     }
     return null;
+  }
+
+  // Compact rails may live outside the full sidebar tree. Only match actual
+  // sidebar navigation; don't touch its toggle, tooltip, or native click handler.
+  function findCollapsedRail(sidebar) {
+    if (sidebar && rectOf(sidebar).width > 95) return null;
+    for (const selector of RAIL_SELECTORS) {
+      const el=document.querySelector(selector);
+      if (!(el instanceof HTMLElement)) continue;
+      const r=rectOf(el);
+      if (r.width < 39 || r.width > 95 || r.height < innerHeight*.45 ||
+          r.left > 30 || r.top > 120) continue;
+      if (!el.querySelector('button,a,[role="button"]')) continue;
+      return el;
+    }
+    // ChatGPT sometimes renders the collapsed rail with no stable test ID.
+    // Find a narrow nav near the left viewport edge, but avoid generic dialog UI.
+    for (const el of document.querySelectorAll('nav,aside')) {
+      if (!(el instanceof HTMLElement) || el.closest('[role="dialog"],[role="menu"]')) continue;
+      const r=rectOf(el);
+      if (r.width < 39 || r.width > 95 || r.height < innerHeight*.55 ||
+          r.left > 25 || r.top > 100) continue;
+      if (el.querySelectorAll('button,a,[role="button"]').length < 3) continue;
+      return el;
+    }
+    return sidebar && rectOf(sidebar).width <= 95 ? sidebar : null;
   }
 
   /**
@@ -125,16 +161,14 @@
   }
 
   function findScroller(sidebar) {
-    const bounds = rectOf(sidebar);
-    const list = [sidebar, ...sidebar.querySelectorAll("*")];
-    const matches = list.filter(element => {
-      if (!(element instanceof HTMLElement)) return false;
-      const box = rectOf(element);
-      if (box.width < bounds.width * 0.65 || box.height < 140) return false;
-      if (element.scrollHeight <= element.clientHeight + 10) return false;
-      return /auto|scroll/.test(getComputedStyle(element).overflowY);
-    });
-    return matches.sort((a, b) => b.clientHeight - a.clientHeight)[0] || null;
+    // Prefer real overflow containers rather than measuring every descendant.
+    const candidates=[sidebar,...sidebar.querySelectorAll('[class*="overflow-y"],[class*="scroll"],[data-testid*="scroll"]')];
+    for (const el of candidates) {
+      if (!(el instanceof HTMLElement) || el.clientHeight < 140) continue;
+      if (el.scrollHeight <= el.clientHeight+10) continue;
+      if (/auto|scroll/.test(getComputedStyle(el).overflowY)) return el;
+    }
+    return null;
   }
 
 
@@ -157,24 +191,23 @@
    * Clear only those broad layout panels; leave links, project cards, avatars
    * and selected rows to ChatGPT's own styling.
    */
+  function reconcileMarkers(oldSet,nextSet,attribute) {
+    for (const el of oldSet) if (!nextSet.has(el)) el.removeAttribute(attribute);
+    for (const el of nextSet) if (!el.hasAttribute(attribute)) el.setAttribute(attribute,"");
+    oldSet.clear();
+    for (const el of nextSet) oldSet.add(el);
+  }
   function clearSidebarUnderlays(sidebar) {
-    const outer = rectOf(sidebar);
-    const minW = outer.width * .78;
-    const minH = Math.min(110, outer.height * .2);
-    for (const el of sidebar.querySelectorAll("div, section, nav, aside")) {
+    const outer=rectOf(sidebar);
+    const next=new Set();
+    for (const el of sidebar.querySelectorAll('div,section,nav,aside')) {
       if (!(el instanceof HTMLElement)) continue;
-      const box = rectOf(el);
-      const broad = box.width >= minW && box.height >= minH &&
-        box.left >= outer.left - 10 && box.right <= outer.right + 10 &&
-        box.top >= outer.top - 8 && box.bottom <= outer.bottom + 12;
-      if (!broad) {
-        if (el.hasAttribute("data-petrifyui-underlay")) el.removeAttribute("data-petrifyui-underlay");
-        continue;
-      }
-      // Mark structural wrappers consistently. Checking computed background after
-      // adding the class would make the marker toggle on every rerender.
-      el.setAttribute("data-petrifyui-underlay", "");
+      const r=rectOf(el);
+      if (r.width >= outer.width*.78 && r.height >= Math.min(110,outer.height*.2) &&
+          r.left >= outer.left-10 && r.right <= outer.right+10 &&
+          r.top >= outer.top-8 && r.bottom <= outer.bottom+12) next.add(el);
     }
+    reconcileMarkers(markedUnderlays,next,"data-petrifyui-underlay");
   }
 
 
@@ -200,50 +233,46 @@
   }
 
   function decorateRows(sidebar) {
-    const collapsed = rectOf(sidebar).width <= 85;
+    const collapsed=rectOf(sidebar).width <= 95;
     sidebar.toggleAttribute("data-petrifyui-collapsed",collapsed);
-
-    // Clean up old markers to avoid placing parchment behind old wrappers.
-    for(const el of sidebar.querySelectorAll('[data-petrifyui-row],[data-petrifyui-row-kind],[data-petrifyui-selected]')){
-      el.removeAttribute("data-petrifyui-row");
-      el.removeAttribute("data-petrifyui-row-kind");
-      el.removeAttribute("data-petrifyui-selected");
-    }
-    for (const el of sidebar.querySelectorAll('[data-petrifyui-paper]')) el.removeAttribute('data-petrifyui-paper');
-
+    const rows=new Set(), headings=new Set();
     if (!collapsed) {
-      for(const item of sidebar.querySelectorAll('a[href],button,[role="button"]')){
+      for(const item of sidebar.querySelectorAll('a[href],button,[role="button"]')) {
         if (!(item instanceof HTMLElement)) continue;
         const label=(item.textContent||"").trim();
-        // Section headings can be buttons. They must never become paper cards.
         if (/^(Projects|Recents)(\s*[⌄▾∨])?$/.test(label)) continue;
-        let type=null, pathname=null;
-        if(item.tagName==="A"){
-          try {pathname=new URL(item.getAttribute("href"),document.baseURI).pathname;}catch{continue;}
-          if(/^\/c\//.test(pathname)) type="chat";
-          else if(/^\/(g|projects?)(\/|$)/.test(pathname)) type="project";
-          else if(label) type="nav";
+        let type=null,pathname=null;
+        if(item.tagName==="A") {
+          try {pathname=new URL(item.getAttribute("href"),document.baseURI).pathname;}
+          catch {continue;}
+          if(/^\/c\//.test(pathname))type="chat";
+          else if(/^\/(g|projects?)(\/|$)/.test(pathname))type="project";
+          else if(label)type="nav";
         } else if (/^(New chat|Scheduled|Library|Plugins|Explore)$/i.test(label) ||
-                  item.getAttribute("data-testid")==="create-new-chat-button") type="nav";
-        if(!type) continue;
+                   item.getAttribute("data-testid")==="create-new-chat-button")type="nav";
+        if(!type)continue;
         const row=nearestRow(item,sidebar);
-        if(!(row instanceof HTMLElement)) continue;
-        row.setAttribute("data-petrifyui-row","");
-        row.setAttribute("data-petrifyui-row-kind",type);
-        if(item.getAttribute("aria-current")==="page" ||
-           item.getAttribute("data-active")==="true" ||
-           (pathname && pathname!=="/" && pathname===location.pathname)) {
-          row.setAttribute("data-petrifyui-selected","");
-        }
+        if(!(row instanceof HTMLElement))continue;
+        rows.add(row);
+        if(row.getAttribute("data-petrifyui-row-kind")!==type)
+          row.setAttribute("data-petrifyui-row-kind",type);
+        const selected=item.getAttribute("aria-current")==="page" ||
+          item.getAttribute("data-active")==="true" ||
+          !!(pathname&&pathname!=="/"&&pathname===location.pathname);
+        row.toggleAttribute("data-petrifyui-selected",selected);
       }
     }
-    for(const el of sidebar.querySelectorAll('h2,h3,span,[role="heading"]')){
-      if (!(el instanceof HTMLElement)) continue;
-      const label=(el.textContent||"").trim();
-      const isHeading=el.childElementCount===0 && /^(Projects|Recents)$/.test(label) &&
-        rectOf(el).height>=10;
-      el.toggleAttribute("data-petrifyui-section-title",isHeading);
+    for(const el of sidebar.querySelectorAll('h2,h3,span,[role="heading"]')) {
+      if(!(el instanceof HTMLElement))continue;
+      if(el.childElementCount===0&&/^(Projects|Recents)$/.test((el.textContent||"").trim())&&rectOf(el).height>=10)
+        headings.add(el);
     }
+    for(const previous of markedRows)if(!rows.has(previous)){
+      previous.removeAttribute("data-petrifyui-row-kind");
+      previous.removeAttribute("data-petrifyui-selected");
+    }
+    reconcileMarkers(markedRows,rows,"data-petrifyui-row");
+    reconcileMarkers(markedHeadings,headings,"data-petrifyui-section-title");
   }
 
   function changeTracked(previous, next, marker) {
@@ -252,58 +281,66 @@
   }
 
   function render() {
-    queued = false;
+    queued=false;
+    if(document.visibilityState==="hidden") return;
     loadVT323();
     configureAssets();
-    const nextRoot = findSidebar();
-    if (!nextRoot) {
-      changeTracked(root, null, "data-petrifyui-sidebar");
-      changeTracked(header, null, "data-petrifyui-header");
-      changeTracked(scroller, null, "data-petrifyui-scroll");
-      changeTracked(brandTrigger, null, "data-petrifyui-brand-trigger");
-      root = header = scroller = brandTrigger = null;
-      return;
+    const nextRoot=findSidebar();
+    const nextRail=findCollapsedRail(nextRoot);
+    const expanded=nextRoot&&rectOf(nextRoot).width>95;
+    const nextHeader=expanded?findHeader(nextRoot):null;
+    const nextScroller=expanded?findScroller(nextRoot):null;
+    const nextBrandTrigger=expanded?findBrandTrigger(nextHeader):null;
+    if(root!==nextRoot) {
+      reconcileMarkers(markedRows,new Set(),"data-petrifyui-row");
+      reconcileMarkers(markedHeadings,new Set(),"data-petrifyui-section-title");
+      reconcileMarkers(markedUnderlays,new Set(),"data-petrifyui-underlay");
+      lastRootWidth=-1;lastRootHeight=-1;
     }
-    const nextHeader = findHeader(nextRoot);
-    const nextScroller = findScroller(nextRoot);
-    const nextBrandTrigger = findBrandTrigger(nextHeader);
-    changeTracked(root, nextRoot, "data-petrifyui-sidebar");
-    changeTracked(header, nextHeader, "data-petrifyui-header");
-    changeTracked(scroller, nextScroller, "data-petrifyui-scroll");
-    changeTracked(brandTrigger, nextBrandTrigger, "data-petrifyui-brand-trigger");
-    root = nextRoot;
-    header = nextHeader;
-    scroller = nextScroller;
-    brandTrigger = nextBrandTrigger;
-
-    for (const surface of [root, header, brandTrigger]) {
-      if (!surface) continue;
-      if (enabled) surface.setAttribute("data-petrifyui-enabled", "");
-      else surface.removeAttribute("data-petrifyui-enabled");
+    changeTracked(root,nextRoot,"data-petrifyui-sidebar");
+    changeTracked(header,nextHeader,"data-petrifyui-header");
+    changeTracked(scroller,nextScroller,"data-petrifyui-scroll");
+    changeTracked(brandTrigger,nextBrandTrigger,"data-petrifyui-brand-trigger");
+    changeTracked(rail,nextRail,"data-petrifyui-rail");
+    root=nextRoot;header=nextHeader;scroller=nextScroller;
+    brandTrigger=nextBrandTrigger;rail=nextRail;
+    for(const el of [root,header,brandTrigger,rail]){
+      if(!el)continue;
+      el.toggleAttribute("data-petrifyui-enabled",enabled);
+    }
+    if(!root||!enabled)return;
+    const size=rectOf(root);
+    if(size.width<=95){
+      root.toggleAttribute("data-petrifyui-collapsed",true);
+      return; // Only icons remain; never restructure them.
+    }
+    root.removeAttribute("data-petrifyui-collapsed");
+    if(!lightweight||size.width!==lastRootWidth||size.height!==lastRootHeight){
+      clearSidebarUnderlays(root);
     }
     decorateRows(root);
-    clearSidebarUnderlays(root);
+    lastRootWidth=size.width;lastRootHeight=size.height;
   }
-
-  function scheduleRender() {
-    if (queued) return;
-    queued = true;
+  function scheduleRender(){
+    if(queued||document.visibilityState==="hidden")return;
+    queued=true;
     requestAnimationFrame(render);
   }
-
-  const observer = new MutationObserver(records => {
-    if (!root?.isConnected || !header?.isConnected || records.some(record =>
-      root?.contains(record.target) || root?.parentElement === record.target ||
-      header?.parentElement === record.target ||
-      record.target === document.body ||
-      (record.target instanceof Element && record.target.hasAttribute("data-radix-popper-content-wrapper"))
-    )) scheduleRender();
+  // Watch structural changes only. Our data-* markers never trigger the observer.
+  const observer=new MutationObserver(records=>{
+    if(records.some(r=>{
+      if(r.type!=="childList")return false;
+      if(!root?.isConnected||!rail?.isConnected)return true;
+      return r.target===document.body||r.target===document.documentElement||
+        root?.contains(r.target)||header?.contains(r.target)||
+        r.target?.contains?.(root)||r.target?.contains?.(rail);
+    }))scheduleRender();
   });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  window.addEventListener("popstate", scheduleRender);
-  window.addEventListener("hashchange", scheduleRender);
-  window.addEventListener("resize", scheduleRender, { passive: true });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener("popstate",scheduleRender);
+  window.addEventListener("hashchange",scheduleRender);
+  window.addEventListener("resize",scheduleRender,{passive:true});
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")scheduleRender();});
 
   // No click interception. Original links and controls retain their handlers.
   if (typeof chrome !== "undefined" && chrome.storage?.local) {
