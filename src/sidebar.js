@@ -330,7 +330,7 @@
   const observer=new MutationObserver(records=>{
     if(records.some(r=>{
       if(r.type!=="childList")return false;
-      if(!root?.isConnected||!rail?.isConnected)return true;
+      if((root && !root.isConnected) || (rail && !rail.isConnected) || (!root && !rail)) return true;
       return r.target===document.body||r.target===document.documentElement||
         root?.contains(r.target)||header?.contains(r.target)||
         r.target?.contains?.(root)||r.target?.contains?.(rail);
