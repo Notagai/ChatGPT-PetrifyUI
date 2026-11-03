@@ -93,3 +93,9 @@ Previous versions marked a specific DOM element at runtime. ChatGPT can replace 
 The menu logic stays a separate idle-time script, so it can safely inspect native popovers after the DOM exists. Existing wood/font asset loading, low-power profile, and original ChatGPT layout and controls remain unchanged.
 
 For troubleshooting, inspect `document.documentElement.hasAttribute("data-petrifyui-active")`. If true but the sidebar is unstyled, ChatGPT introduced a new sidebar container selector and this version will need a selector update, not more mutation scanning.
+
+## v1.7: Fix the black ChatGPT top-left header
+
+The top-left toolbar was intentionally left unstyled in v1.5/1.6 to protect its toggle button, but this caused a black strip above the walnut sidebar. v1.7 gives that existing header the same wood background. Detection checks only the ancestors of one point in the toolbar, on startup and after relevant sidebar toggles/window resizing. It never observes streamed messages, changes click handlers, inserts fake icons, resizes buttons, or styles tooltip overlays.
+
+The sidebar still uses stable CSS selectors. Use `git pull origin main`, reload the Chrome extension, then hard-refresh ChatGPT.

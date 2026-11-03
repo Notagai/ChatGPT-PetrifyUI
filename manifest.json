@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Stable, persistent sidebar styling: no React-dependent DOM marker observer, zero full-page scans.",
-  "version": "1.6.0",
+  "description": "Reliable walnut header and sidebar styling with native controls unchanged.",
+  "version": "1.7.0",
   "permissions": [
     "storage"
   ],

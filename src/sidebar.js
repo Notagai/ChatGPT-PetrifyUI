@@ -46,6 +46,45 @@
     }
   }
 
+  // Locate the existing top-left toolbar by its rendered bounds.
+  // Restrict inspection to ancestors of a point in the left header; do not
+  // scan ChatGPT's chat tree and never modify the toolbar's controls.
+  let header=null, headerFrameQueued=false;
+  function findHeader() {
+    if(document.hidden || !document.body)return null;
+    const el=document.elementFromPoint(18,24);
+    if(!el)return null;
+    for(let n=el,steps=0;n&&n!==document.body&&steps<12;n=n.parentElement,steps++){
+      if(!(n instanceof HTMLElement))continue;
+      const r=n.getBoundingClientRect();
+      const eligible=r.left>=-6&&r.left<=20&&r.top>=-4&&r.top<=12&&
+        r.width>=220&&r.width<=430&&r.height>=40&&r.height<=75;
+      if(!eligible)continue;
+      const hasControls=n.querySelectorAll('button,[role="button"],a[href]').length>=2;
+      if(hasControls)return n;
+    }
+    return null;
+  }
+  function refreshHeader() {
+    headerFrameQueued=false;
+    const next=findHeader();
+    if(next!==header){
+      header?.removeAttribute("data-petrifyui-topbar");
+      header=next;
+    }
+    header?.setAttribute("data-petrifyui-topbar","");
+  }
+  function queueHeader() {
+    if(headerFrameQueued||document.hidden)return;
+    headerFrameQueued=true;
+    requestAnimationFrame(refreshHeader);
+  }
+  function delayedHeaderCheck() {
+    queueHeader();
+    setTimeout(queueHeader,200);
+    setTimeout(queueHeader,750);
+  }
+
   function loadFont(){
     chrome.runtime.sendMessage({type:"petrifyui-font-vt323"},async result=>{
       if(chrome.runtime.lastError||!result?.ok||!Array.isArray(result.bytes)){
@@ -67,4 +106,19 @@
   void addAsset("walnut-wood-v3.svg","--pui-resolved-wood","petrifyuiTexture");
   void addAsset("paper-fiber-v2.svg","--pui-resolved-paper","petrifyuiPaper");
   loadFont();
+  // Small, event-driven header checks for React's sidebar transitions.
+  if(document.readyState==="loading")
+    document.addEventListener("DOMContentLoaded",delayedHeaderCheck,{once:true});
+  else delayedHeaderCheck();
+  document.addEventListener("click",event=>{
+    const el=event.target;
+    if(el instanceof Element && el.closest(
+      'button[aria-label*="sidebar" i],button[title*="sidebar" i],'+
+      '[data-testid="sidebar-toggle"],[data-testid="sidebar-button"]'
+    )) delayedHeaderCheck();
+  },{passive:true});
+  window.addEventListener("resize",queueHeader,{passive:true});
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden)queueHeader();
+  });
 })();

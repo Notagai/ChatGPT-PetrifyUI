@@ -1,4 +1,4 @@
-/* PetrifyUI 1.6: Stable selectors survive React sidebar remounts.
+/* PetrifyUI 1.7: Stable selectors survive React sidebar remounts.
    Sidebar only, no geometry/toggle/tooltip overrides, no element observation. */
 
 /* Native expanded and collapsed sidebar containers. These CSS selectors match
@@ -111,4 +111,29 @@ html[data-petrifyui-low-power][data-petrifyui-active] :is(
     [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
     [data-testid="collapsed-sidebar"]
   ) :is(a,button) {transition:none !important;}
+}
+
+
+/* Top-left ChatGPT toolbar: background only. No child styles, transforms,
+   dimensions, pseudo-elements, pointer rules or tooltip customizations. */
+html[data-petrifyui-active] [data-petrifyui-topbar] {
+  background-color:#63412e !important;
+  background-image:var(--pui-resolved-wood,none),
+    repeating-linear-gradient(90deg,
+      #674530 0 27px,#5e3e2d 27px 54px,
+      #745139 54px 63px,#4f3426 63px 65px,
+      #684733 65px 96px,#543827 96px 126px,
+      #33231b 126px 128px) !important;
+  background-repeat:repeat !important;
+  background-size:512px 512px,128px 128px !important;
+  background-position:0 0 !important;
+}
+/* Avoid a black inner surface masking the toolbar while leaving the buttons
+   and tooltips fully under the native ChatGPT styling. */
+html[data-petrifyui-active] [data-petrifyui-topbar] >
+ :is([class*="bg-token-sidebar"],[class*="bg-black"],[class*="bg-neutral"]) {
+  background-color:transparent !important;
+}
+html[data-petrifyui-low-power][data-petrifyui-active] [data-petrifyui-topbar] {
+  background-size:256px 256px,128px 128px !important;
 }
