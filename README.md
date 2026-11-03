@@ -117,3 +117,11 @@ The rules live in `src/composer.css`, limited to known ChatGPT composer elements
 ## v1.9.1: Composer targeting fix
 
 v1.9 used only a handful of assumed composer IDs and forms. ChatGPT's input often uses a nested ProseMirror contenteditable element, so the visible rounded composer was never selected. v1.9.1 locates the editor, walks upward a few ancestors to the nearest rounded interactive panel, and applies a marker used by `src/composer.css`. It checks at startup, on editor focus and input, and on resize. There are no continuous timers or full-page mutation observers. Send/voice controls use walnut rather than green; the layout and click actions remain native.
+
+## v1.10: Height-responsive horizontal scroll composer
+
+- Replaces the plain parchment card appearance with original CSS-drawn scroll dowels at both ends. The dowels run from the top to the bottom of the native composer and automatically grow as ChatGPT expands for long prompts or attachment previews.
+- Keeps the full native input width, line wrapping, buttons, model picker and event handlers. Scroll ends are visual only (`pointer-events:none`), so no UI behavior is intercepted.
+- Removes the dark toolbar surface that could appear with both empty and nonempty prompts, while converting the model/add controls to brown-on-paper and keeping send/voice action circles walnut/cream.
+- Uses the existing extension-owned paper-fiber tile and VT323. No external image or stock-photo usage, and no added full-page mutation observer.
+- Scopes styling to the composer marker; sidebar and menu styling remain unchanged.

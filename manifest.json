@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Reliable parchment composer targeting and neutral brown action accents, preserving native ChatGPT behavior.",
-  "version": "1.9.1",
+  "description": "Horizontal parchment-scroll composer with scalable rolled edges, responsive height and neutral controls.",
+  "version": "1.10.0",
   "permissions": [
     "storage"
   ],
