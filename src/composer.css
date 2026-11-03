@@ -206,7 +206,6 @@ html[data-petrifyui-active] [data-petrifyui-composer]
   ) :is(svg,svg *,span,[class*="text-token-text-"],[class*="text-gray-"]) {
   color:#4b3020 !important;
   -webkit-text-fill-color:#4b3020 !important;
-  opacity:1 !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
   button[data-testid="send-button"],button[data-testid="composer-submit-button"],
@@ -232,12 +231,10 @@ html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-butto
   background:transparent !important;
   color:#382416 !important;
   -webkit-text-fill-color:#382416 !important;
-  opacity:1 !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
   color:#382416 !important;
   -webkit-text-fill-color:#382416 !important;
-  opacity:1 !important;
 }
 
 
@@ -269,38 +266,10 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
 }
 
 
-/* v1.19: The native effort selector animates/replaces text labels.
-   Do not stack font effects or independent transitions on nested copies.
-   Keep a single text paint and native button geometry/click handling. */
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button],
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
-  span,div,p
-) {
-  font-family:"Petrify VT323","Courier New",monospace !important;
-  font-weight:400 !important;
-  font-style:normal !important;
-  font-synthesis:none !important;
-  letter-spacing:normal !important;
-  text-shadow:none !important;
-  -webkit-text-stroke:0 transparent !important;
-  text-decoration:none !important;
-  filter:none !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
-  span,div,p
-) {
-  animation:none !important;
-  transition-property:color,background-color !important;
-}
-/* Keep the selector's model name and chevron dark on light paper.
-   Avoid non-native line-height, positioning, padding and size overrides. */
+/* v1.20: Preserve ChatGPT's native layered model labels. The hidden label
+   needs its inline opacity 0; the visible label has opacity 1.
+   Do not force descendant opacity or disable the native transitions. */
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
-  color:#3c281b !important;
-  -webkit-text-fill-color:#3c281b !important;
-}
-html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
-  span,div,p
-) {
   color:#3c281b !important;
   -webkit-text-fill-color:#3c281b !important;
 }
