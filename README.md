@@ -107,3 +107,9 @@ The sidebar still uses stable CSS selectors. Use `git pull origin main`, reload 
 - The existing on/off switch controls the global font, and the existing CSP-safe font loader remains unchanged.
 
 Reload the unpacked extension after updating, then hard refresh chatgpt.com.
+
+## v1.9: Parchment composer and neutral accents
+
+The existing message composer is styled as a paper surface with dark brown text, readable placeholder text, and a restrained inset border. Green send/voice action buttons inside the composer use dark walnut brown with cream icons. The existing extension-owned paper fiber SVG (`--pui-resolved-paper`) is reused, with a CSS gradient fallback. No page-relative asset URLs, new observers, layout modifications, or event interception are introduced. The switch in the extension popup also disables composer styling.
+
+The rules live in `src/composer.css`, limited to known ChatGPT composer elements (`#composer-background`, composer test IDs, and the unified-composer form). This avoids changing other forms or message content.

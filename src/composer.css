@@ -1,0 +1,152 @@
+/* PetrifyUI 1.9: parchment message composer, no ChatGPT-green accent.
+   Target composer surfaces only. Do not style every form or change layout. */
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) {
+  --pui-composer-ink: #3d2b1d;
+  --pui-composer-muted: #74573e;
+  --pui-composer-brown: #765034;
+  --pui-composer-paper: #dfc6a2;
+  color: var(--pui-composer-ink) !important;
+  color-scheme: light;
+  background-color: var(--pui-composer-paper) !important;
+  background-image: var(--pui-resolved-paper, none),
+    linear-gradient(165deg, #e8d2b1, #d8b994) !important;
+  background-repeat: repeat, no-repeat !important;
+  background-size: 256px 256px, auto !important;
+  box-shadow: inset 0 0 0 1px #98714f,
+    inset 0 2px 0 #f3e0c2, 0 3px 7px #24170f30 !important;
+}
+
+/* ChatGPT can paint its native dark surface over the composer paper.
+   Clear only noninteractive dark wrappers, never buttons, menus or attachment chips. */
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(
+  [class*="bg-token-main-surface"],
+  [class*="bg-token-bg-primary"],
+  [class*="bg-token-bg-elevated"],
+  [class*="bg-token-bg-secondary"]
+):not(button):not([role="button"]):not([role="menu"]):not([role="listbox"]) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Rich-text editor and textarea variants, with readable placeholder text. */
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(#prompt-textarea,[data-testid="prompt-textarea"],textarea,[contenteditable="true"]) {
+  background: transparent !important;
+  color: #3d2b1d !important;
+  caret-color: #765034 !important;
+  -webkit-text-fill-color: #3d2b1d !important;
+}
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(textarea,input)::placeholder {
+  color: #74573e !important;
+  opacity: 1 !important;
+}
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is([data-placeholder],.is-empty)::before {
+  color: #74573e !important;
+  opacity: 1 !important;
+}
+
+/* Native controls stay in place. Subtle brown foregrounds replace light-gray
+   and green text that becomes hard to read over paper. */
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(button,[role="button"]) {
+  color: #493322 !important;
+  accent-color: #765034 !important;
+}
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(
+  [class*="text-token-text-secondary"],
+  [class*="text-token-text-tertiary"],
+  [class*="text-token-text-accent"],
+  [class*="text-green"],
+  [class*="text-emerald"]
+) {
+  color: #74573e !important;
+}
+
+/* Specifically neutralize send / voice action circles, without altering
+   microphone and attachment icons or their click handlers. */
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(
+  button[data-testid="send-button"],
+  button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],
+  button[aria-label="Send prompt"],
+  button[aria-label="Send message"],
+  button[aria-label*="voice mode" i],
+  button[aria-label*="start voice" i]
+):not(:disabled) {
+  background-color: #765034 !important;
+  background-image: none !important;
+  color: #f3e2c8 !important;
+  box-shadow: inset 0 0 0 1px #b98b60 !important;
+}
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) :is(
+  button[data-testid="send-button"],
+  button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],
+  button[aria-label="Send prompt"],
+  button[aria-label="Send message"],
+  button[aria-label*="voice mode" i],
+  button[aria-label*="start voice" i]
+):not(:disabled) :is(svg,svg *) {
+  color: #f3e2c8 !important;
+}
+html[data-petrifyui-active] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) button:disabled {
+  opacity: .55 !important;
+}
+
+/* Low-power devices skip the decorative drop shadow. */
+html[data-petrifyui-active][data-petrifyui-low-power] :is(
+  #composer-background,
+  [data-testid="composer-root"],
+  [data-testid="composer-background"],
+  form[data-type="unified-composer"]
+) {
+  box-shadow: inset 0 0 0 1px #98714f !important;
+}
