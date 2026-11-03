@@ -2,7 +2,9 @@
 Requires playwright and Chromium; no ChatGPT login or API requests.
 """
 import base64
+import io
 import os
+from PIL import Image, ImageStat
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -15,6 +17,9 @@ wood = base64.b64encode((ROOT / "assets/walnut-wood-v3.svg").read_bytes()).decod
 assert 'var(--pui-wood)' not in css
 assert 'var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg"))' in css
 css = css.replace('url("../assets/walnut-wood-v3.svg")', f'url("data:image/svg+xml;base64,{wood}")')
+# The runtime must supply a fully qualified extension URI, not an unresolved
+# relative URL stored inside a CSS custom property.
+assert 'chrome.runtime.getURL("assets/walnut-wood-v3.svg")' in (ROOT / "src/sidebar.js").read_text()
 
 
 html = """<!doctype html><html><head><meta charset="utf-8"><style>
@@ -53,6 +58,11 @@ with sync_playwright() as p:
     alpha = selected.evaluate("e => getComputedStyle(e).backgroundColor")
     assert alpha == "rgba(233, 185, 123, 0.19)", alpha
     assert selected.inner_text() == "Selected"
+    # Computed background-image alone can claim an image URL while rendering
+    # nothing. Check actual pixels in an empty wood region for visible grain.
+    shot = Image.open(io.BytesIO(page.screenshot())).convert("RGB")
+    grain = ImageStat.Stat(shot.crop((110, 350, 210, 405))).stddev
+    assert grain[0] > 3, f"Wood is flat fallback color: RGB deviation {grain}"
     sidebar.evaluate("e => e.removeAttribute('data-petrifyui-enabled')")
     assert sidebar.evaluate("e => getComputedStyle(e).backgroundImage") == "none"
     print("PASS: wood on sidebar and scroll layer, translucent selection, no inactive blocks, toggle")
