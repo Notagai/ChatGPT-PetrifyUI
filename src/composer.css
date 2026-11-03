@@ -1,69 +1,103 @@
-/* PetrifyUI 1.13: Foldered/Geekify-style pixel paper, no scroll decorations.
-   Real Geekify 256x256 crisp-edge grain is used as a seamless surface tile.
-   No layout, sizing or event handling overrides on the native composer. */
+/* PetrifyUI 1.14: actual pixel-torn parchment with stable native sizing.
+   No roller motif, no stretched paper screenshot, no height/width overrides. */
 html[data-petrifyui-active] [data-petrifyui-composer] {
   --pui-ink:#503521;
   --pui-muted:#785b42;
-  --pui-border:#9a7049;
   --pui-paper:#f5d9b3;
   color-scheme:light;
   color:var(--pui-ink) !important;
   background-color:var(--pui-paper) !important;
   background-image:var(--pui-paper-composer,none) !important;
-  background-repeat:repeat !important;
   background-position:0 0 !important;
+  background-repeat:repeat !important;
   background-size:256px 256px !important;
-  border:2px solid var(--pui-border) !important;
-  border-radius:8px !important;
-  box-shadow:inset 2px 2px 0 #ffe8c8,inset -2px -2px 0 #d5a579,3px 3px 0 #30201440 !important;
+  border:2px solid #be9170 !important;
+  border-radius:2px !important;
+  box-shadow:inset 2px 0 #fce3c3,inset -2px 0 #d4a77f,2px 2px 0 #30201433 !important;
   image-rendering:pixelated;
+  position:relative;
+  isolation:isolate;
 }
-/* Defensively cancel remnants of the old roller pseudo-elements. */
+/* Top/bottom torn edges repeat at FIXED pixel dimensions. Their shapes don't
+   stretch or change as the native contenteditable expands. */
 html[data-petrifyui-active] [data-petrifyui-composer]::before,
 html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  content:none !important;
-  background:none !important;
-  border:none !important;
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  pointer-events:none;
+  background-repeat:repeat-x;
+  z-index:0;
+  image-rendering:pixelated;
 }
-/* Only native editor-shell layers that were identified on the editor ancestry;
-   never flatten images, attachments or popover cards. */
-html[data-petrifyui-active] [data-petrifyui-composer] [data-pui-paper-inner] {
+html[data-petrifyui-active] [data-petrifyui-composer]::before {
+  top:-12px;
+  height:36px;
+  background-image:var(--pui-torn-paper-top,none);
+  background-size:256px 36px;
+}
+html[data-petrifyui-active] [data-petrifyui-composer]::after {
+  bottom:-11px;
+  height:34px;
+  background-image:var(--pui-torn-paper-bottom,none);
+  background-size:256px 34px;
+}
+/* Native children remain above paper decoration, with no layout movement. */
+html[data-petrifyui-active] [data-petrifyui-composer] > * {
+  position:relative;
+  z-index:1;
+}
+/* Precisely marked dark structural layers and bottom toolbar: don't apply to
+   attachment cards, thumbnails, modal menus or actual buttons. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  [data-pui-paper-inner],[data-pui-paper-toolbar]
+) {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
- #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
- [contenteditable="true"],textarea
+  [data-pui-paper-inner],[data-pui-paper-toolbar]
+)::before,
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  [data-pui-paper-inner],[data-pui-paper-toolbar]
+)::after {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  #prompt-textarea,[data-testid="prompt-textarea"],
+  .ProseMirror,[contenteditable="true"],textarea
 ) {
   color:var(--pui-ink) !important;
   caret-color:#805534 !important;
   -webkit-text-fill-color:var(--pui-ink) !important;
   background-color:transparent !important;
+  background-image:none !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
- #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
- [contenteditable="true"],textarea
+  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+  [contenteditable="true"],textarea
 ) :is(p,span) {
   color:inherit !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
- textarea,input
+  textarea,input
 )::placeholder,
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
- [data-placeholder],.is-empty,.ProseMirror.is-editor-empty
+  [data-placeholder],.is-empty,.ProseMirror.is-editor-empty
 )::before {
   color:var(--pui-muted) !important;
   opacity:1 !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
- [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
- [class*="text-green"],[class*="text-emerald"]
+  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+  [class*="text-green"],[class*="text-emerald"]
 ) {
   color:var(--pui-muted) !important;
 }
-/* Do not turn the model/effort selector into a bar or change its width.
-   The live VT323 label has a warm light fill and dark, readable ink. */
+/* Tinted real model/effort button; no fake label or fixed-width black bar. */
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
   color:#503521 !important;
   -webkit-text-fill-color:#503521 !important;
@@ -71,38 +105,39 @@ html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-butto
   font-size:18px !important;
   line-height:1.2 !important;
   white-space:nowrap !important;
-  background-color:#f0cfa5 !important;
+  background-color:#eecda5 !important;
   background-image:none !important;
-  border:1px solid #a57c54 !important;
-  border-radius:5px !important;
-  box-shadow:inset 1px 1px #ffe4bc !important;
+  border:1px solid #ac7e55 !important;
+  border-radius:4px !important;
+  box-shadow:inset 1px 1px #fce4be !important;
   text-shadow:none !important;
 }
-html[data-petrifyui-active] [data-petrifyui-composer]
- [data-petrifyui-mode-button] :is(span,svg,svg *) {
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
   color:#503521 !important;
   -webkit-text-fill-color:#503521 !important;
 }
-/* Preserve native SVG shapes, alignments, keyboard and pointer handlers. */
-html[data-petrifyui-active] [data-petrifyui-composer]
- :is(button[data-testid="send-button"],button[data-testid="composer-submit-button"],
-     button[data-testid="composer-speech-button"],button[aria-label*="send" i],
-     button[aria-label*="voice" i],button[aria-label*="microphone" i]):not(:disabled) {
+/* Neutral walnut action buttons; native icons, padding and click targets stay. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+  button[aria-label*="voice" i],button[aria-label*="microphone" i]
+):not(:disabled) {
   background-color:#805639 !important;
   background-image:none !important;
   color:#fbe7c8 !important;
 }
-html[data-petrifyui-active] [data-petrifyui-composer]
- :is(button[data-testid="send-button"],button[data-testid="composer-submit-button"],
-     button[data-testid="composer-speech-button"],button[aria-label*="send" i],
-     button[aria-label*="voice" i],button[aria-label*="microphone" i]):not(:disabled) :is(svg,svg *) {
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+  button[aria-label*="voice" i],button[aria-label*="microphone" i]
+):not(:disabled) :is(svg,svg *) {
   color:#fbe7c8 !important;
 }
 html[data-petrifyui-low-power][data-petrifyui-active] [data-petrifyui-composer] {
-  box-shadow:inset 1px 1px #dfb58c !important;
+  box-shadow:inset 1px 0 #d5aa80 !important;
 }
-@media(max-width:560px){
-  html[data-petrifyui-active] [data-petrifyui-composer]{
-    border-radius:6px !important;
+@media(max-width:560px) {
+  html[data-petrifyui-active] [data-petrifyui-composer] {
+    border-radius:2px !important;
   }
 }

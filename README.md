@@ -145,3 +145,13 @@ The composer is now a single, responsive **pixel-paper** surface inspired by Fol
 The script only identifies the native composer, live model selector and the editor's direct structural layers. The inner editor surface becomes transparent; **attachment cards, previews, voice/send actions and layout are not replaced**. Model/effort names like Medium remain live VT323 text with a contrasting paper selector. The paper texture repeats at its native 256px grid, so multiline expansion stays consistent without JavaScript height calculations, intrusive global MutationObservers or a custom DOM composer.
 
 Legacy scroll sprites are superseded and excluded from web-accessible resources. The native ChatGPT composer layout, accessibility roles and event handlers remain in charge.
+
+## v1.14: Stable tattered-paper composer
+
+The v1.13 screenshot exposed two bugs: a broad dark toolbar still remained underneath the input, and the script could reselect a different composer ancestor when the editor grew, making the paper jump or deform. The new code **pins the selected native composer while the editor remains inside it** and does not re-run the full panel-selection heuristic on every keystroke.
+
+The design keeps Geekify's reusable 256×256 paper-grain tile, and adds its genuine, independent `torn-top.svg` and `torn-bottom.svg` pixel edges at fixed 256px repeats. Neither paper nor its edges is stretched as the native composer grows. There are no wooden rollers or flattened scroll sprites.
+
+The toolbar cleaner checks only short, dark, bottom-aligned wrappers inside the selected composer, leaving image attachments, previews, buttons and popovers alone. It removes dark backgrounds without changing element dimensions, padding or event handlers. The Medium selector remains real VT323 text on a light paper chip. All new edge assets are copied from Geekify and bundled in this extension with extension URLs, not page-relative links.
+
+No full-page DOM observer or continuous polling was added. Signed-in visual testing remains necessary.

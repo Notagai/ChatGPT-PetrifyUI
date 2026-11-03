@@ -1,0 +1,21 @@
+const fs=require("node:fs"),assert=require("node:assert/strict");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/composer.js","utf8");
+const css=fs.readFileSync("src/composer.css","utf8");
+const top=fs.readFileSync("assets/composer/paper-torn-top.svg","utf8");
+const bottom=fs.readFileSync("assets/composer/paper-torn-bottom.svg","utf8");
+new Function(js);
+assert.equal(m.version,"1.14.0");
+for(const p of ["paper-grain-geekify.svg","paper-torn-top.svg","paper-torn-bottom.svg"])
+ assert(m.web_accessible_resources[0].resources.includes("assets/composer/"+p));
+assert(top.includes('shape-rendering="crispEdges"'));
+assert(bottom.includes('shape-rendering="crispEdges"'));
+assert(js.includes("activePanel.contains(el)"));
+assert(js.includes('data-pui-paper-toolbar'));
+assert(css.includes("background-size:256px 36px"));
+assert(css.includes("background-size:256px 34px"));
+assert(css.includes("[data-pui-paper-toolbar]"));
+assert(css.includes("[data-petrifyui-mode-button]"));
+assert(!css.includes("border-image"));
+assert(!js.includes("MutationObserver"));
+console.log("PASS: fixed torn edges, stable composer ancestor, dark toolbar cleanup");
