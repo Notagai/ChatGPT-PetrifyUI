@@ -113,3 +113,7 @@ Reload the unpacked extension after updating, then hard refresh chatgpt.com.
 The existing message composer is styled as a paper surface with dark brown text, readable placeholder text, and a restrained inset border. Green send/voice action buttons inside the composer use dark walnut brown with cream icons. The existing extension-owned paper fiber SVG (`--pui-resolved-paper`) is reused, with a CSS gradient fallback. No page-relative asset URLs, new observers, layout modifications, or event interception are introduced. The switch in the extension popup also disables composer styling.
 
 The rules live in `src/composer.css`, limited to known ChatGPT composer elements (`#composer-background`, composer test IDs, and the unified-composer form). This avoids changing other forms or message content.
+
+## v1.9.1: Composer targeting fix
+
+v1.9 used only a handful of assumed composer IDs and forms. ChatGPT's input often uses a nested ProseMirror contenteditable element, so the visible rounded composer was never selected. v1.9.1 locates the editor, walks upward a few ancestors to the nearest rounded interactive panel, and applies a marker used by `src/composer.css`. It checks at startup, on editor focus and input, and on resize. There are no continuous timers or full-page mutation observers. Send/voice controls use walnut rather than green; the layout and click actions remain native.

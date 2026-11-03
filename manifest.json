@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "PetrifyUI: walnut navigation, VT323 throughout ChatGPT, and neutral parchment message composer.",
-  "version": "1.9.0",
+  "description": "Reliable parchment composer targeting and neutral brown action accents, preserving native ChatGPT behavior.",
+  "version": "1.9.1",
   "permissions": [
     "storage"
   ],
@@ -30,7 +30,8 @@
         "https://www.chatgpt.com/*"
       ],
       "js": [
-        "src/sidebar.js"
+        "src/sidebar.js",
+        "src/composer.js"
       ],
       "css": [
         "src/sidebar.css",
