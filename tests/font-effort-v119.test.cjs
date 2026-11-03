@@ -1,0 +1,13 @@
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const mf=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const g=fs.readFileSync("src/global.css","utf8");
+const c=fs.readFileSync("src/composer.css","utf8");
+assert.equal(mf.version,"1.19.0");
+assert(g.includes("font-size: 106.25% !important"));
+assert(g.includes('font-family: "Petrify VT323"'));
+assert(!g.includes("calc(100% + 1px)"));
+assert(c.includes('[data-petrifyui-mode-button]'));
+assert(c.includes("font-synthesis:none !important"));
+assert(c.includes("animation:none !important"));
+assert(!c.includes("display:none !important"));
+console.log("PASS: proportional font increase and non-layout effort label cleanup");

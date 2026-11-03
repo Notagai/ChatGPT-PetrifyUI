@@ -267,3 +267,40 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
 ):hover {
   background-color:#bb89572b !important;
 }
+
+
+/* v1.19: The native effort selector animates/replaces text labels.
+   Do not stack font effects or independent transitions on nested copies.
+   Keep a single text paint and native button geometry/click handling. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button],
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
+  span,div,p
+) {
+  font-family:"Petrify VT323","Courier New",monospace !important;
+  font-weight:400 !important;
+  font-style:normal !important;
+  font-synthesis:none !important;
+  letter-spacing:normal !important;
+  text-shadow:none !important;
+  -webkit-text-stroke:0 transparent !important;
+  text-decoration:none !important;
+  filter:none !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
+  span,div,p
+) {
+  animation:none !important;
+  transition-property:color,background-color !important;
+}
+/* Keep the selector's model name and chevron dark on light paper.
+   Avoid non-native line-height, positioning, padding and size overrides. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
+  color:#3c281b !important;
+  -webkit-text-fill-color:#3c281b !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(
+  span,div,p
+) {
+  color:#3c281b !important;
+  -webkit-text-fill-color:#3c281b !important;
+}

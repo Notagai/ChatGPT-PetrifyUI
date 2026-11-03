@@ -190,3 +190,10 @@ Corrected the Delete button's exact-label matcher and strengthened specificity s
 ### v1.18.1 Thinking effort correction
 
 The previous effort-popup detector selected the smallest slider-containing element, often an inner wrapper, leaving the outer dark popup and green track unthemed. The detector now prioritizes the visible rounded/painted popup shell, with an event-driven fallback for slider implementations without an explicit ARIA role. Added focused paper, ink, slider-track, fill and thumb color rules, without changing layout, slider behavior or keyboard accessibility. Live signed-in appearance still requires confirmation.
+
+## v1.19: Slight universal font increase and effort-label cleanup
+
+- Increased the root font size to 106.25% of the browser default (typically 16px to 17px). This improves the relative-size, rem-based VT323 typography without recursively boosting nested elements or forcing every heading/label to the same absolute pixel size.
+- The "Medium" effort selector keeps its live VT323 label, but its text descendants now have consistent font weight and no duplicate shadow/stroke/animation effects. It retains ChatGPT's native button sizing, chevron, padding and event handlers.
+- No change to paper textures, menu discovery, popup geometry or the existing compact-sidebar logic. Text hardcoded in px by ChatGPT may not scale with root sizing.
+- Because the exact source of overlapping text cannot be confirmed from screenshots alone, the selector needs a real browser visual check after updating.

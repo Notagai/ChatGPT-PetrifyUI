@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Fix Thinking effort popup detection and its full pixel-paper slider surface.",
-  "version": "1.18.1",
+  "description": "Slightly larger VT323 UI typography and stabilized Thinking effort label rendering.",
+  "version": "1.19.0",
   "permissions": [
     "storage"
   ],

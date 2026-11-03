@@ -7,3 +7,11 @@ html[data-petrifyui-active] body *:not(svg):not(svg *) {
 html[data-petrifyui-active] :is(input,textarea)::placeholder {
   font-family: "Petrify VT323", "Courier New", monospace !important;
 }
+
+
+/* v1.19: A small, proportional font increase, without incrementing font
+   size on every nested child (which would compound and break layouts).
+   106.25% respects the browser's default font-size preference. */
+html[data-petrifyui-active] {
+  font-size: 106.25% !important;
+}
