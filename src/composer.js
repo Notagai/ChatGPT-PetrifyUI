@@ -1,4 +1,4 @@
-/* PetrifyUI 1.14: fixed-surface paper composer, tattered pixel edges.
+/* PetrifyUI 1.15: fixed-surface paper composer, tattered pixel edges.
    Keep ChatGPT in charge of all geometry, attachments and button actions. */
 (() => {
   "use strict";
@@ -15,7 +15,6 @@
 
   let activePanel=null,activeMode=null,pending=false;
   const activeShells=new Set();
-  const darkBars=new Set();
   function rect(el){
     if(!(el instanceof HTMLElement))return null;
     const r=el.getBoundingClientRect();
@@ -62,15 +61,6 @@
     }
     return null;
   }
-  function backgroundDark(el){
-    const css=getComputedStyle(el);
-    const match=/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(css.backgroundColor);
-    if(match){
-      const alpha=match[4]===undefined?1:Number(match[4]);
-      if(alpha>.65&&Math.max(Number(match[1]),Number(match[2]),Number(match[3]))<85)return true;
-    }
-    return /(?:bg-black|bg-zinc-[6789]|bg-neutral-[6789]|bg-token-main-surface)/.test(String(el.className));
-  }
   function reconcile(current,next,attribute){
     for(const node of current)if(!next.has(node))node.removeAttribute(attribute);
     for(const node of next)if(!node.hasAttribute(attribute))node.setAttribute(attribute,"");
@@ -80,36 +70,15 @@
     const next=new Set();
     for(let n=input.parentElement,d=0;n&&n!==panel&&d<8;n=n.parentElement,d++){
       if(!(n instanceof HTMLElement)||n.querySelector('img,video,canvas'))continue;
-      if(n.matches('[class*="bg-token-"],[class*="bg-black"],[class*="bg-zinc"],[class*="bg-neutral"]')||backgroundDark(n))
+      if(n.matches('[class*="bg-token-"],[class*="bg-black"],[class*="bg-zinc"],[class*="bg-neutral"]'))
         next.add(n);
     }
     reconcile(activeShells,next,"data-pui-paper-inner");
-  }
-  function markToolbar(panel){
-    const r=rect(panel);
-    if(!r)return;
-    const next=new Set();
-    // Examine the composer's own descendants, never the entire ChatGPT page.
-    // Catch unnamed dark divs as well as token-colored bars; don't modify
-    // attachment preview cards or the actual interactive controls.
-    let scanned=0;
-    for(const node of panel.querySelectorAll("div,section,footer,nav,form")){
-      if(++scanned>160)break;
-      if(!(node instanceof HTMLElement)||node===panel||
-         node.querySelector('img,video,canvas'))continue;
-      const b=rect(node);if(!b)continue;
-      if(b.width<Math.min(110,r.width*.26)||b.width>r.width+8||
-         b.height<20||b.height>90||b.bottom<r.bottom-45||b.top>r.bottom)continue;
-      if(!node.querySelector("button,[role='button']"))continue;
-      if(backgroundDark(node))next.add(node);
-    }
-    reconcile(darkBars,next,"data-pui-paper-toolbar");
   }
   function clear(){
     activePanel?.removeAttribute("data-petrifyui-composer");
     activeMode?.removeAttribute("data-petrifyui-mode-button");
     reconcile(activeShells,new Set(),"data-pui-paper-inner");
-    reconcile(darkBars,new Set(),"data-pui-paper-toolbar");
     activePanel=activeMode=null;
   }
   function update(){
@@ -130,7 +99,6 @@
     panel.setAttribute("data-petrifyui-composer","");
     mode?.setAttribute("data-petrifyui-mode-button","");
     markShells(input,panel);
-    markToolbar(panel);
   }
   function schedule(){
     if(pending||document.hidden)return;

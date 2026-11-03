@@ -1,0 +1,15 @@
+const fs=require("node:fs"),assert=require("node:assert/strict");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/composer.js","utf8");
+const css=fs.readFileSync("src/composer.css","utf8");
+new Function(js);
+assert.equal(m.version,"1.15.0");
+assert(css.includes("background-size:256px 36px"));
+assert(css.includes("background-size:256px 34px"));
+assert(css.includes("):has(button):not(:has(img,video,canvas))"));
+assert(css.includes('button:not(:disabled)'));
+assert(css.includes('[data-petrifyui-mode-button]'));
+assert(!js.includes("markToolbar("));
+assert(!js.includes("darkBars"));
+assert(!js.includes("MutationObserver"));
+console.log("PASS: native controls preserved; deterministic focus-bar and contrast styling");

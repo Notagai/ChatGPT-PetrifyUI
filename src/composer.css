@@ -1,4 +1,4 @@
-/* PetrifyUI 1.14: actual pixel-torn parchment with stable native sizing.
+/* PetrifyUI 1.15: actual pixel-torn parchment with stable native sizing.
    No roller motif, no stretched paper screenshot, no height/width overrides. */
 html[data-petrifyui-active] [data-petrifyui-composer] {
   --pui-ink:#503521;
@@ -91,10 +91,11 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
   color:var(--pui-muted) !important;
   opacity:1 !important;
 }
+/* Muted text is limited to the actual editable field, NOT the toolbar. */
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
-  [class*="text-green"],[class*="text-emerald"]
-) {
+  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+  [contenteditable="true"],textarea
+) :is([class*="text-token-text-secondary"],[class*="text-token-text-tertiary"]) {
   color:var(--pui-muted) !important;
 }
 /* Tinted real model/effort button; no fake label or fixed-width black bar. */
@@ -140,4 +141,106 @@ html[data-petrifyui-low-power][data-petrifyui-active] [data-petrifyui-composer] 
   html[data-petrifyui-active] [data-petrifyui-composer] {
     border-radius:2px !important;
   }
+}
+
+/* v1.15: Keep live toolbar surfaces paper-coloured from the FIRST paint.
+   ChatGPT can assign a dark background during focus. No asynchronous
+   marking, animation or mutation observer is necessary for this fix.
+   Structural wrappers only, excluding interactive buttons, media and menus. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  div,section,footer,nav,form
+):has(button):not(:has(img,video,canvas)):not([role="menu"]):not([role="listbox"]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+/* Some native control trays use an opaque inline background, gradient, or
+   a ::before/::after decoration. Prevent those layers becoming a black pill. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  [data-pui-paper-inner],[data-pui-paper-toolbar],
+  [class*="bg-black"],[class*="bg-neutral"],[class*="bg-zinc"],
+  [class*="bg-token-main-surface"],[class*="bg-token-bg-"],
+  [class*="from-black"],[class*="from-neutral"],[class*="from-zinc"]
+):not(button):not([role="button"]):not([role="menu"]):not([role="listbox"]):not(:has(img,video,canvas)) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  div,section,footer,nav
+):has(button):not(:has(img,video,canvas)):not([role="menu"]):not([role="listbox"])::before,
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  div,section,footer,nav
+):has(button):not(:has(img,video,canvas)):not([role="menu"]):not([role="listbox"])::after {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* Correct ChatGPT's dark-theme CSS variables for the light-paper island.
+   The declarations inherit into dynamically mounted focused toolbars. */
+html[data-petrifyui-active] [data-petrifyui-composer] {
+  --text-primary:#40291a;
+  --text-secondary:#634530;
+  --text-tertiary:#6a4d37;
+  --main-surface-primary:transparent;
+  --main-surface-secondary:transparent;
+  --main-surface-tertiary:transparent;
+  --token-text-primary:#40291a;
+  --token-text-secondary:#634530;
+  --token-text-tertiary:#6a4d37;
+  --token-main-surface-primary:transparent;
+  --token-main-surface-secondary:transparent;
+}
+/* All ordinary toolbar buttons and icons are dark, not faint white/grey.
+   Disabled buttons keep their native disabled state/opacity. */
+html[data-petrifyui-active] [data-petrifyui-composer]
+  button:not(:disabled):not([aria-disabled="true"]):not(
+    [data-testid="send-button"],[data-testid="composer-submit-button"],
+    [data-testid="composer-speech-button"],[aria-label*="send" i],
+    [aria-label*="voice" i],[aria-label*="microphone" i]
+  ) {
+  color:#4b3020 !important;
+  -webkit-text-fill-color:#4b3020 !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer]
+  button:not(:disabled):not([aria-disabled="true"]):not(
+    [data-testid="send-button"],[data-testid="composer-submit-button"],
+    [data-testid="composer-speech-button"],[aria-label*="send" i],
+    [aria-label*="voice" i],[aria-label*="microphone" i]
+  ) :is(svg,svg *,span,[class*="text-token-text-"],[class*="text-gray-"]) {
+  color:#4b3020 !important;
+  -webkit-text-fill-color:#4b3020 !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+  button[aria-label*="voice" i],button[aria-label*="microphone" i]
+):not(:disabled) {
+  background:#805639 !important;
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+  button[aria-label*="voice" i],button[aria-label*="microphone" i]
+):not(:disabled) :is(svg,svg *,span) {
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+  opacity:1 !important;
+}
+/* Stronger explicit contrast for Medium/Instant/High and the dropdown chevron. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
+  background:#e9c89c !important;
+  color:#382416 !important;
+  -webkit-text-fill-color:#382416 !important;
+  border-color:#93653f !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
+  color:#382416 !important;
+  -webkit-text-fill-color:#382416 !important;
+  opacity:1 !important;
 }

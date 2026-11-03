@@ -155,3 +155,11 @@ The design keeps Geekify's reusable 256×256 paper-grain tile, and adds its genu
 The toolbar cleaner checks only short, dark, bottom-aligned wrappers inside the selected composer, leaving image attachments, previews, buttons and popovers alone. It removes dark backgrounds without changing element dimensions, padding or event handlers. The Medium selector remains real VT323 text on a light paper chip. All new edge assets are copied from Geekify and bundled in this extension with extension URLs, not page-relative links.
 
 No full-page DOM observer or continuous polling was added. Signed-in visual testing remains necessary.
+
+## v1.15: Composer contrast and focus-black-bar fix
+
+- Muted-text CSS is now scoped to editor text rather than washing out all toolbar elements.
+- Added immediate, CSS-only transparent surfaces for native control trays, including focus-triggered dark backgrounds. No delayed JavaScript scan is required to clear the bar.
+- Improved contrast for add/attachment, microphone, send, and live VT323 Medium/model selector controls. Disabled actions keep their disabled state.
+- Removed JavaScript scanning of toolbar backgrounds on every interaction. Keeps the pinned composer and Geekify pixel-torn paper edges from v1.14.
+- No event-handler changes, extra layout measurements or additional DOM observers. Visual verification on signed-in ChatGPT is still required.
