@@ -119,6 +119,61 @@
     }
   }
 
+
+  // Find existing sidebar section wrappers, without inserting panels or altering layout.
+  const paperGroups = new Set();
+  function panelForLabel(sidebar,label) {
+    const frame=rectOf(sidebar);
+    const labelNode=[...sidebar.querySelectorAll("h2,h3,button,span,[role='heading']")]
+      .find(n=>(n.textContent||"").trim()===label&&rectOf(n).height>=10);
+    if (!labelNode) return null;
+    for(let el=labelNode.parentElement, step=0; el&&el!==sidebar&&step<9; el=el.parentElement,step++){
+      const r=rectOf(el), text=el.textContent||"";
+      if (r.width<frame.width*.60||r.width>frame.width+4||r.height<70) continue;
+      if(label==="Projects"&&text.includes("Recents")) break;
+      if(label==="Recents"&&text.includes("Projects")) break;
+      const hasItems=label==="Projects"?
+        !!el.querySelector('a[href^="/g/"],a[href^="/projects"]'):
+        !!el.querySelector('a[href^="/c/"]');
+      if(hasItems) return el;
+    }
+    return null;
+  }
+  function navPanel(sidebar) {
+    const frame=rectOf(sidebar);
+    const btn=sidebar.querySelector('[data-testid="create-new-chat-button"]')||
+      [...sidebar.querySelectorAll('a,button')].find(el=>/New chat/i.test((el.textContent||"").trim()));
+    if(!btn)return null;
+    for(let el=btn.parentElement,i=0;el&&el!==sidebar&&i<7;el=el.parentElement,i++){
+      const r=rectOf(el),text=el.textContent||"";
+      if(r.width>frame.width*.62&&r.height>90&&r.height<380&&
+        el.querySelectorAll("a,button").length>=3&&
+        !text.includes("Projects")&&!text.includes("Recents")) return el;
+    }
+    return null;
+  }
+  function footerPanel(sidebar){
+    const frame=rectOf(sidebar);
+    const b=[...sidebar.querySelectorAll('button,[role="button"]')]
+      .find(el=>rectOf(el).top>frame.bottom-160&&el.querySelector("img"));
+    if(!b)return null;
+    for(let el=b.parentElement,i=0;el&&el!==sidebar&&i<5;el=el.parentElement,i++){
+      const r=rectOf(el);
+      if(r.width>frame.width*.6&&r.height>=38&&r.height<=120)return el;
+    }
+    return null;
+  }
+  function markPaperGroups(sidebar) {
+    const candidate=rectOf(sidebar).width<90?[]:
+      [navPanel(sidebar),panelForLabel(sidebar,"Projects"),
+       panelForLabel(sidebar,"Recents"),footerPanel(sidebar)];
+    const next=new Set(candidate.filter(Boolean));
+    for(const previous of paperGroups)if(!next.has(previous))previous.removeAttribute("data-petrifyui-paper");
+    for(const element of next)element.setAttribute("data-petrifyui-paper","");
+    paperGroups.clear();
+    for(const element of next)paperGroups.add(element);
+  }
+
   function decorateRows(sidebar) {
     const side = rectOf(sidebar);
     if (side.width <= 80) sidebar.setAttribute("data-petrifyui-collapsed", "");
@@ -153,6 +208,8 @@
       changeTracked(header, null, "data-petrifyui-header");
       changeTracked(scroller, null, "data-petrifyui-scroll");
       changeTracked(brandTrigger, null, "data-petrifyui-brand-trigger");
+      for(const element of paperGroups) element.removeAttribute('data-petrifyui-paper');
+      paperGroups.clear();
       root = header = scroller = brandTrigger = null;
       return;
     }
@@ -175,6 +232,7 @@
     }
     decorateRows(root);
     clearSidebarUnderlays(root);
+    markPaperGroups(root);
   }
 
   function scheduleRender() {

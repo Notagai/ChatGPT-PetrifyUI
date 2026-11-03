@@ -90,3 +90,25 @@
   background-color: transparent !important;
   background-image: none !important;
 }
+
+
+/* v0.7: parchment menu interior with restrained dark walnut trim. */
+[data-petrifyui-menu][data-petrifyui-enabled] {
+  --pui-menu-ink: #493022;
+  --pui-menu-accent: #9e7044;
+  --pui-menu-hover: #bd9a7199;
+  color: #493022 !important;
+  color-scheme: light;
+  background: #ead7b6 url("../assets/paper-fiber.svg") 0 0 / 256px 256px repeat !important;
+  border: 3px solid #60402b !important;
+  box-shadow: 0 5px 0 #27190f, 0 12px 18px #26160d85,
+    inset 0 0 0 1px #bb9063, inset 0 2px #f9e9cb !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  a,button,[role="menuitem"],[role="menuitemcheckbox"],[role="menuitemradio"],[role="option"],[cmdk-item]
+):not([data-destructive]):not([data-variant="destructive"]):not([class*="text-red"]):not([class*="text-danger"]) {
+  color: #493022 !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+ [data-destructive],[data-variant="destructive"],[class*="text-red"],[class*="text-danger"]
+) { color:#bd3d2e !important; }

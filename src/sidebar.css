@@ -183,3 +183,46 @@
   background-color: transparent !important;
   background-image: none !important;
 }
+
+
+/* v0.7 overrides: quiet vertical-grain walnut, not horizontal striping. */
+[data-petrifyui-sidebar][data-petrifyui-enabled],
+[data-petrifyui-header][data-petrifyui-enabled],
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
+  --pui-wood: url("../assets/walnut-grain.svg");
+  background-color: #503527 !important;
+  background-image: var(--pui-wood) !important;
+  background-size: 256px 256px !important;
+  background-repeat: repeat !important;
+  background-position: 0 0 !important;
+}
+/* One parchment surface per native sidebar group: top navigation, projects,
+   recents and profile. Rows remain inside the existing group, with no reflow. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper] {
+  background: #ead7b6 url("../assets/paper-fiber.svg") 0 0 / 256px 256px repeat !important;
+  color: #493022 !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 0 0 1px #a67b50,inset 0 2px 0 #f9e9cd,
+    inset 0 -2px 0 #b99667, 2px 3px 0 #24160e77 !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
+ :is(a[data-petrifyui-link],button,[role="button"]) {
+  color: #493022 !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
+ :is(h2,h3,[role="heading"]) {color:#67432d !important;text-shadow:none !important;}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
+ a[data-petrifyui-link]:not([aria-current="page"]):hover {
+  background-color: #bb98726e !important;
+  box-shadow: inset 2px 0 #8a603a !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
+ a[data-petrifyui-link][aria-current="page"] {
+  background-color: #b9977299 !important;
+  box-shadow: inset 3px 0 #795032 !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) {
+  font-size: 16px !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-paper]
+ :is(small,[class*="text-token-text-tertiary"]) {color:#866d55 !important;}

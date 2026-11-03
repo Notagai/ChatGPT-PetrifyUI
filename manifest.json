@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Visible pixel wood on all sidebar and menu surfaces, with robust underlay detection.",
-  "version": "0.6.0",
+  "description": "Quiet walnut shell and parchment sidebar sections and menus, preserving original UI.",
+  "version": "0.7.0",
   "permissions": [
     "storage"
   ],
@@ -42,7 +42,9 @@
       "resources": [
         "assets/walnut-tile.png",
         "assets/brand-mark.svg",
-        "assets/pixel-wood.svg"
+        "assets/pixel-wood.svg",
+        "assets/walnut-grain.svg",
+        "assets/paper-fiber.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",

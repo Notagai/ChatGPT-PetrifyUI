@@ -86,3 +86,9 @@ Regression checks: open conversation menu, Move to project submenu, project over
 - Preserves ChatGPT menu content, icons, colors (including destructive actions), layout and click handlers.
 
 After `git pull origin main`, reload the extension at `chrome://extensions`, then hard refresh ChatGPT.
+
+## v0.7: Wood frame with paper surfaces
+
+Replaced harsh horizontal planks with subtle vertical walnut grain. The expanded sidebar remains a wooden shell; native grouped navigation, Projects, Recents and profile containers are styled as parchment sheets when detected. Existing conversation/action/model menus use parchment interiors with wood borders. All icons, links, project colors, and interaction behavior are retained.
+
+Update: `git pull origin main`, reload the unpacked extension at `chrome://extensions`, and hard refresh ChatGPT.
