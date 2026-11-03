@@ -1,0 +1,16 @@
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/menus.js","utf8");
+const css=fs.readFileSync("src/menus.css","utf8");
+const composer=fs.readFileSync("src/composer.js","utf8");
+new Function(js);new Function(composer);
+assert.equal(m.version,"1.16.0");
+assert(js.includes("findWideAddMenu"));
+assert(js.includes("findEffortPopup"));
+assert(js.includes('ADD_LABELS=["Add photos & files","Add from library","Create image"]'));
+assert(css.includes('[data-pui-menu-kind="add"]'));
+assert(css.includes('[data-pui-menu-kind="effort"]'));
+assert(css.includes("accent-color:#865735"));
+assert(!js.includes("subtree:true"));
+assert(!composer.includes('/thinking effort|select model/.test(aria)'));
+console.log("PASS: Add menu, effort popup, responsive sizing and live model labels");

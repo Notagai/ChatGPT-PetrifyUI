@@ -56,8 +56,7 @@
     for(const button of panel.querySelectorAll("button,[role='button']")){
       const label=(button.textContent||"").trim().replace(/\s+/g," ");
       const aria=(button.getAttribute("aria-label")||"").toLowerCase();
-      if(/^(instant|medium|high|extra high|thinking|auto)$/i.test(label)||
-         /thinking effort|select model/.test(aria))return button;
+      if(/^(instant|medium|high|extra high|thinking|auto)$/i.test(label))return button;
     }
     return null;
   }

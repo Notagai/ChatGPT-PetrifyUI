@@ -163,3 +163,10 @@ No full-page DOM observer or continuous polling was added. Signed-in visual test
 - Improved contrast for add/attachment, microphone, send, and live VT323 Medium/model selector controls. Disabled actions keep their disabled state.
 - Removed JavaScript scanning of toolbar backgrounds on every interaction. Keeps the pinned composer and Geekify pixel-torn paper edges from v1.14.
 - No event-handler changes, extra layout measurements or additional DOM observers. Visual verification on signed-in ChatGPT is still required.
+
+## v1.16: Wide Add menu and Thinking effort popup
+
+- Fixes the old menu detector's 450px size limit: the wide Add/attachments menu is now recognized and given a warm paper surface with dark text, muted-brown descriptions and hover highlighting. Native colorful service icons, scroll area, menu actions and layout stay unchanged.
+- Adds separate detection for the Thinking effort slider popup, previously excluded from theming. Recolors its paper surface, text and green slider accent to walnut brown while retaining the native slider and buttons.
+- Avoids classifying the composer button by a generic `thinking effort` accessibility label. The actual Medium/Instant/High text stays live VT323 and its chevron remains native.
+- Only event-triggered popup discovery and a shallow body-portal insertion observer are used. Chat messages and streaming are not observed.

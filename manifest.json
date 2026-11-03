@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Contrast-correct tattered pixel-paper composer with focus-stable transparent toolbar and VT323 controls.",
-  "version": "1.15.0",
+  "description": "Pixel-paper composer and themed Add/Thinking effort menus with readable controls.",
+  "version": "1.16.0",
   "permissions": [
     "storage"
   ],

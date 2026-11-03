@@ -107,3 +107,102 @@
 [data-petrifyui-menu][data-petrifyui-enabled] :is(
   [aria-disabled="true"],[data-disabled],:disabled
 ) { opacity: .56 !important; }
+
+
+/* v1.16: The wide Add/attachments menu and the effort slider use native
+   popovers rather than the small menu roles covered by earlier releases. */
+html[data-petrifyui-active] [data-pui-menu-kind="add"],
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] {
+  --pui-menu-ink:#402a1c;
+  --pui-menu-secondary:#6c4b34;
+  --text-primary:#402a1c;
+  --text-secondary:#6c4b34;
+  --text-tertiary:#77573e;
+  --token-text-primary:#402a1c;
+  --token-text-secondary:#6c4b34;
+  --token-text-tertiary:#77573e;
+  color:#402a1c !important;
+  color-scheme:light;
+  background-color:#f5d9b3 !important;
+  background-image:var(--pui-resolved-paper,none),
+    linear-gradient(155deg,#f7dfbe,#e5bf91) !important;
+  background-size:256px 256px,auto !important;
+  background-repeat:repeat,no-repeat !important;
+  border:2px solid #9f7049 !important;
+  border-radius:8px !important;
+  box-shadow:3px 4px 0 #24170f58,inset 1px 1px #ffe9c5 !important;
+  font-family:"Petrify VT323","Courier New",monospace !important;
+}
+/* Clear gray/dark internal surfaces, but not clickable rows, image previews,
+   brand icons or the actual slider track and thumb. */
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  [class*="bg-token-main-surface"],
+  [class*="bg-token-bg-"],
+  [class*="bg-neutral-"],
+  [class*="bg-zinc-"],
+  [class*="bg-gray-"]
+):not(button):not([role="button"]):not([role="menuitem"]):not([role="slider"]):not(:has(img,video,canvas)) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* The custom attachment menu can be wide. Keep its original responsive width,
+   scroll region and native item placement. Only change paints and text colors. */
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  button,[role="menuitem"],[role="option"],[cmdk-item],a
+) {
+  color:#402a1c !important;
+  -webkit-text-fill-color:#402a1c !important;
+  font-family:"Petrify VT323","Courier New",monospace !important;
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  button,[role="menuitem"],[role="option"],[cmdk-item],a
+):is(:hover,:focus-visible,[data-highlighted],[aria-selected="true"]) {
+  background-color:#cb9b6845 !important;
+  box-shadow:inset 3px 0 0 #99653f !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+  [class*="text-gray-"],[class*="text-zinc-"],[class*="text-neutral-"],
+  small,[data-slot*="description"]
+) {
+  color:#6c4b34 !important;
+  -webkit-text-fill-color:#6c4b34 !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="add"] :is(
+  [class*="overflow-y-auto"],[class*="overflow-y-scroll"],[role="listbox"]
+) {
+  scrollbar-color:#aa7952 transparent !important;
+  scrollbar-width:thin;
+}
+/* Thinking effort should be a small paper slider popup, not gray-on-gray
+   with ChatGPT's default green accent. Keep its actual slider functional. */
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
+  span,p,label,small,button,[role="button"]
+) {
+  color:#402a1c !important;
+  -webkit-text-fill-color:#402a1c !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
+  input[type="range"],[role="slider"]
+) {
+  accent-color:#865735 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
+  [data-slot*="slider-range"],[data-radix-slider-range],
+  [class*="bg-green-"],[class*="bg-emerald-"]
+) {
+  background-color:#95643d !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
+  [data-slot*="slider-track"],[data-radix-slider-track]
+) {
+  background-color:#d3aa7d !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
+  [data-slot*="slider-thumb"],[data-radix-slider-thumb],[role="slider"]
+) {
+  border-color:#805335 !important;
+}
