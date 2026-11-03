@@ -1,4 +1,4 @@
-/* Native in-page ChatGPT menus everywhere: projects, chats, account, models,
+/* PetrifyUI 0.6: Native in-page ChatGPT menus everywhere: projects, chats, account, models,
    header switcher, nested submenus and select/popover menus. Never restyle content. */
 [data-petrifyui-menu][data-petrifyui-enabled] {
   --pui-menu-ink: #f7e7cd;
@@ -8,7 +8,13 @@
   color-scheme: dark;
   color: var(--pui-menu-ink);
   font-family: "VT323", "Courier New", monospace !important;
-  background: #482b1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
+  background-color: #482b1b !important;
+  background-image: url("../assets/pixel-wood.svg"),
+    repeating-linear-gradient(to bottom, #956038 0 3px, #5b3622 3px 27px, #24170f 27px 32px) !important;
+  background-position: 0 0, 0 0 !important;
+  background-size: 256px 256px, 256px 256px !important;
+  background-repeat: repeat !important;
+  image-rendering: pixelated;
   border: 2px solid var(--pui-menu-border) !important;
   border-radius: 9px !important;
   box-shadow: 0 7px 0 #24150e, 0 14px 22px rgba(13, 7, 4, .42),
@@ -76,4 +82,11 @@
   [data-petrifyui-menu][data-petrifyui-enabled] * {
     transition: none !important;
   }
+}
+
+/* Let the wood show through any full-menu portal content wrappers, without
+   changing native items or red destructive actions. */
+[data-petrifyui-menu][data-petrifyui-enabled] [data-petrifyui-menu-underlay] {
+  background-color: transparent !important;
+  background-image: none !important;
 }

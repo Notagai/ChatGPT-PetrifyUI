@@ -76,3 +76,13 @@ PetrifyUI now themes native ChatGPT popup menus throughout the interface: conver
 - If ChatGPT changes its DOM, update `src/menus.js` selectors and the visual candidate heuristic.
 
 Regression checks: open conversation menu, Move to project submenu, project overflow, ChatGPT/Codex picker, account profile, and model picker. Confirm normal navigation, red Delete, scrolling, and accessibility.
+
+## v0.6.0: Wood actually visible
+
+- Fixes the missing `clearSidebarUnderlays()` function that threw a JavaScript ReferenceError and prevented inner sidebar panels from being cleared.
+- Replaces the nearly-flat wood SVG with a high-contrast, repeating 256×256 pixel-wood texture: plank seams, grain stripes, and carved knots.
+- Adds a CSS-only repeating plank fallback if the SVG cannot load.
+- Detects deeply nested opaque menu content panels and clears them so the wood is visible inside the popup, not just around its border.
+- Preserves ChatGPT menu content, icons, colors (including destructive actions), layout and click handlers.
+
+After `git pull origin main`, reload the extension at `chrome://extensions`, then hard refresh ChatGPT.

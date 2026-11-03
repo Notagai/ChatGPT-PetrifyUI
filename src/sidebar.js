@@ -93,6 +93,34 @@
     document.head.appendChild(font);
   }
 
+
+  /**
+   * ChatGPT paints large opaque wrappers over the sidebar's background.
+   * Clear only those broad layout panels; leave links, project cards, avatars
+   * and selected rows to ChatGPT's own styling.
+   */
+  function clearSidebarUnderlays(sidebar) {
+    const outer = rectOf(sidebar);
+    const minW = outer.width * .78;
+    const minH = Math.min(110, outer.height * .2);
+    for (const el of sidebar.querySelectorAll("div, section, nav, aside")) {
+      if (!(el instanceof HTMLElement)) continue;
+      const box = rectOf(el);
+      const broad = box.width >= minW && box.height >= minH &&
+        box.left >= outer.left - 10 && box.right <= outer.right + 10 &&
+        box.top >= outer.top - 8 && box.bottom <= outer.bottom + 12;
+      if (!broad) {
+        if (el.hasAttribute("data-petrifyui-underlay")) el.removeAttribute("data-petrifyui-underlay");
+        continue;
+      }
+      const cs = getComputedStyle(el);
+      const hasBg = cs.backgroundImage !== "none" ||
+        (cs.backgroundColor !== "transparent" && !/rgba?\([^)]*,\s*0\)$/.test(cs.backgroundColor));
+      if (hasBg) el.setAttribute("data-petrifyui-underlay", "");
+      else if (el.hasAttribute("data-petrifyui-underlay")) el.removeAttribute("data-petrifyui-underlay");
+    }
+  }
+
   function decorateRows(sidebar) {
     const side = rectOf(sidebar);
     if (side.width <= 80) sidebar.setAttribute("data-petrifyui-collapsed", "");

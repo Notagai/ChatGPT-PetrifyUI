@@ -1,4 +1,4 @@
-/* PetrifyUI 0.5: existing ChatGPT sidebar and its adjacent header ONLY. */
+/* PetrifyUI 0.6: existing ChatGPT sidebar and its adjacent header ONLY. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
@@ -147,6 +147,7 @@
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-underlay] {
   background: transparent !important;
   background-image: none !important;
+  background-color: transparent !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled],
 [data-petrifyui-header][data-petrifyui-enabled] {
@@ -154,4 +155,31 @@
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
   background: #482a1b url("../assets/pixel-wood.svg") 0 0 / 256px 256px repeat !important;
+}
+
+/* Visible pixel wood: image plus an independent plank-pattern fallback.
+   If an extension image is blocked, the planks still render in CSS. */
+[data-petrifyui-sidebar][data-petrifyui-enabled],
+[data-petrifyui-header][data-petrifyui-enabled] {
+  background-color: #482c1c !important;
+  background-image:
+    url("../assets/pixel-wood.svg"),
+    repeating-linear-gradient(to bottom,
+      #966139 0px, #966139 3px,
+      #6c4128 3px, #6c4128 14px,
+      #402718 14px, #402718 17px,
+      #764a2c 17px, #764a2c 29px,
+      #291b13 29px, #291b13 32px) !important;
+  background-position: 0 0, 0 0 !important;
+  background-size: 256px 256px, 256px 256px !important;
+  background-repeat: repeat !important;
+  image-rendering: pixelated;
+}
+/* The direct scroll container and tall structural wrappers may otherwise
+   draw a flat surface on top of the wood. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(
+  [data-petrifyui-underlay], [data-petrifyui-scroll]
+) {
+  background-color: transparent !important;
+  background-image: none !important;
 }

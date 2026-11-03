@@ -89,12 +89,19 @@
 
   function decorateUnderlays(panel) {
     const outer = panel.getBoundingClientRect();
-    for (const child of panel.querySelectorAll(':scope > div, :scope > section, :scope > div > div')) {
-      if (!(child instanceof HTMLElement)) continue;
+    // A popup can have several nested opaque panels, not just direct children.
+    // Never strip backgrounds from the individual actions.
+    for (const child of panel.querySelectorAll('div,section,nav,ul')) {
+      if (!(child instanceof HTMLElement) || child.matches(ITEMS)) continue;
       const b = child.getBoundingClientRect();
-      if (b.width >= outer.width * .90 && b.height >= outer.height * .85 &&
-          child.querySelectorAll(ITEMS).length >= 1) {
+      const coversMenu = b.width >= outer.width * .78 &&
+        b.height >= outer.height * .67 &&
+        b.left >= outer.left - 8 && b.right <= outer.right + 8 &&
+        b.top >= outer.top - 8 && b.bottom <= outer.bottom + 8;
+      if (coversMenu && child.querySelectorAll(ITEMS).length >= 1) {
         child.setAttribute("data-petrifyui-menu-underlay", "");
+      } else {
+        child.removeAttribute("data-petrifyui-menu-underlay");
       }
     }
   }

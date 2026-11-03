@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel wood sidebar and native ChatGPT menu skins. Retains content, icons, colors and interactions.",
-  "version": "0.5.0",
+  "description": "Visible pixel wood on all sidebar and menu surfaces, with robust underlay detection.",
+  "version": "0.6.0",
   "permissions": [
     "storage"
   ],
