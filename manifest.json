@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Subtle pixel walnut with separate parchment row labels and wood-framed menus; content unchanged.",
-  "version": "0.8.0",
+  "description": "Quiet walnut sidebar with subtle carved rows and parchment highlights; native chat UI and menus intact.",
+  "version": "0.9.0",
   "permissions": [
     "storage"
   ],

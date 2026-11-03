@@ -1,141 +1,121 @@
-/* PetrifyUI v0.8: quiet walnut cabinet with separate parchment labels.
-   Native sidebar layout, project icons, chat data and handlers remain unchanged. */
+/* PetrifyUI v0.9.0: restrained walnut sidebar, paper on interaction.
+   Only appearance is altered. All native ChatGPT controls remain in place. */
 @import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
-
 [data-petrifyui-sidebar][data-petrifyui-enabled],
 [data-petrifyui-header][data-petrifyui-enabled] {
   --pui-wood: url("../assets/walnut-grain-v2.svg");
   --pui-paper: url("../assets/paper-fiber-v2.svg");
-  --pui-ink: #3d281c;
-  --pui-cream: #f0ddba;
-  --pui-font: "VT323", "Courier New", monospace;
+  --pui-parchment: #ceb08d;
+  --pui-ink: #442e20;
+  --pui-ivory: #f0ddbd;
+  --pui-font: "VT323","Courier New",monospace;
+  background: #503628 var(--pui-wood) 0 0 / 256px 256px repeat !important;
   font-family: var(--pui-font) !important;
-  background: #503527 var(--pui-wood) 0 0 / 256px 256px repeat !important;
   color-scheme: dark;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] {
-  box-shadow: inset -1px 0 #26180f,inset -3px 0 #8d6643 !important;
+  box-shadow: inset -1px 0 #241710,inset -3px 0 #946b49 !important;
 }
 [data-petrifyui-header][data-petrifyui-enabled] {
-  box-shadow: inset 0 -2px #26180f,inset 0 -4px #9c734c !important;
+  box-shadow: inset 0 -2px #241710,inset 0 -4px #a17a56 !important;
 }
-/* Broad native layout backgrounds may otherwise obscure the walnut. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(
-  [data-petrifyui-underlay],[data-petrifyui-scroll]
-) {
+ [data-petrifyui-underlay],[data-petrifyui-scroll]
+):not([data-petrifyui-row]) {
   background-color: transparent !important;
   background-image: none !important;
 }
-/* VT323 typography with consistent, restrained sizes. */
+/* VT323 is intentionally compact; no forced row height, margins, padding or layout. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,span,p,small,h2,h3,[role="heading"]),
 [data-petrifyui-header][data-petrifyui-enabled] :is(a,button,span,p,small,h1,h2) {
   font-family: var(--pui-font) !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) {
   font-size: 17px !important;
-  line-height: 1.1 !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button) :is(span,p) {
-  font-size: inherit !important;
-  line-height: inherit !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2,h3,[role="heading"]) {
-  font-size: 19px !important;
-  color: var(--pui-cream) !important;
+  line-height: 1.12 !important;
 }
 [data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]) {
-  color: #f7e5c9 !important;
+  color: #f3e2c5 !important;
   font-size: 19px !important;
 }
-/* One subtle paper slip per native full-width navigation/chat/project row.
-   Crucially: no long parchment sheet behind an entire section. */
-[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
- :is(a,button,[role="button"])[data-petrifyui-row] {
-  background-color: #d4b38c !important;
-  background-image: var(--pui-paper) !important;
-  background-position: 0 0 !important;
-  background-size: 256px 256px !important;
-  background-repeat: repeat !important;
-  color: var(--pui-ink) !important;
+/* Carved navigation and chat rows, no solid tan rectangles. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-row] {
+  background-color: rgba(218,178,130,.075) !important;
+  background-image: none !important;
   border-radius: 5px !important;
-  box-shadow: inset 0 0 0 1px #a7855a,inset 0 1px #f5e1bc,0 2px 0 #2f1e13ad !important;
+  box-shadow: inset 0 0 0 1px rgba(217,173,120,.09) !important;
+  color: #f1ddbe !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
- :is(a,button,[role="button"])[data-petrifyui-row] :is(span,p,small) {
-  color: inherit !important;
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-row-kind="nav"] {
+  background-color: rgba(210,166,112,.11) !important;
+  box-shadow: inset 0 0 0 1px rgba(225,188,139,.14) !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
- :is(a,button,[role="button"])[data-petrifyui-row]:hover {
-  background-image: linear-gradient(#f8e5c326,#f8e5c326),var(--pui-paper) !important;
-  box-shadow: inset 0 0 0 1px #6f492c,inset 3px 0 #95613a,0 2px 0 #291b13bf !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled]:not([data-petrifyui-collapsed])
- :is(a,button,[role="button"])[data-petrifyui-row]:is(
-   [aria-current="page"],[data-active="true"],[data-state="active"]
- ) {
-  background-image: linear-gradient(#6a3c2740,#6a3c2740),var(--pui-paper) !important;
-  box-shadow: inset 0 0 0 1px #6d492e,inset 3px 0 #70472e,0 2px 0 #2b1c13bf !important;
-}
-/* Project icon colors remain entirely under ChatGPT's own CSS. */
-/* Section labels stay on wood, not giant parchment blocks. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-section-title] {
-  color: var(--pui-cream) !important;
-  font: 20px/1.1 var(--pui-font) !important;
-  text-shadow: 1px 1px #27180e;
+/* Selected chat or menu hover is a parchment label. */
+[data-petrifyui-sidebar][data-petrifyui-enabled]
+ [data-petrifyui-row]:is(:hover,[data-petrifyui-selected]) {
+  background: var(--pui-parchment) var(--pui-paper) 0 0 / 256px 256px repeat !important;
+  color: var(--pui-ink) !important;
+  box-shadow: inset 0 0 0 1px #af875d, inset 3px 0 #825737 !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled]
- :is(small,[class*="text-token-text-tertiary"]) {
-  opacity: 1 !important;
+ [data-petrifyui-row][data-petrifyui-selected] {
+  background-image: linear-gradient(#71503821,#71503821),var(--pui-paper) !important;
+  background-size: auto,256px 256px !important;
+}
+/* ChatGPT may draw an opaque selected anchor inside the decorated parent.
+   Remove that inner patch, but only for the selected conversation link. */
+[data-petrifyui-sidebar][data-petrifyui-enabled]
+ [data-petrifyui-row-kind="chat"][data-petrifyui-selected] a[href^="/c/"]:not([data-petrifyui-row]) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* Labels inherit the row color. Native project icon colors are never changed. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-row-kind="chat"] :is(span,p),
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-row-kind="nav"] :is(span,p) {
+  color: inherit !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled]
+ [data-petrifyui-row-kind="project"] :is(span,p) {
+  color: inherit !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-section-title] {
+  background: none !important;
+  color: #f0dcbb !important;
+  text-shadow: 1px 1px #24170e;
+  font: 19px/1.13 var(--pui-font) !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2,h3,[role="heading"]) {
+  color: #f0dcbb !important;
+}
+/* The same natural carved wood for the collapsed icon-only rail. */
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
+  background: #503628 var(--pui-wood) 0 0 / 256px 256px repeat !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a,button):hover {
+  background-color: rgba(231,189,135,.13) !important;
+}
+[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
+  content:"";display:inline-block;vertical-align:middle;width:18px;height:18px;
+  margin-right:6px;background:url("../assets/brand-mark.svg") center / contain no-repeat;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,[role="button"]):focus-visible,
 [data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]):focus-visible {
-  outline: 2px solid #f6cf96 !important;
-  outline-offset: -2px;
+  outline:2px solid #f2c58a !important;outline-offset:-2px;
 }
-[data-petrifyui-header][data-petrifyui-enabled] :is(a,button,[role="button"]):hover {
-  background-color: #d6ae7730 !important;
-}
-/* Brand mark only: original ChatGPT/Codex selector still owns its click event. */
-[data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
-  content: "";
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
-  margin-right: 6px;
-  background: url("../assets/brand-mark.svg") center / contain no-repeat;
-}
-/* Collapsed rail is wood, with no wide parchment slips. */
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
-  background: #503527 var(--pui-wood) 0 0 / 256px 256px repeat !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a,button):hover {
-  background-color: #dcb98b38 !important;
-  box-shadow: inset 2px 0 #ce9c61 !important;
-}
-/* Keep the native scroll position and touch targets. */
+/* Native scrollbar stays at its native position. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll],
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll] {
-  scrollbar-width: thin;
-  scrollbar-color: #a57c54 transparent;
+  scrollbar-width:thin;scrollbar-color:#9f7654 transparent;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar,
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar {
-  width: 7px;
-}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar {width:7px;}
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-track,
-[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-track {
-  background: transparent;
-}
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-track {background:transparent;}
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-thumb,
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-thumb {
-  background: #986e4d;
-  border: 1px solid #483122;
-  border-radius: 4px;
+  background:#9a7553;border:1px solid #4c3021;border-radius:4px;
 }
 @media(prefers-reduced-motion:reduce){
   [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button),
-  [data-petrifyui-header][data-petrifyui-enabled] :is(a,button) {
-    transition: none !important;
-  }
+  [data-petrifyui-header][data-petrifyui-enabled] :is(a,button) {transition:none !important;}
 }

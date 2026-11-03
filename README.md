@@ -2,12 +2,12 @@
 
 An unofficial Chrome/Chromium Manifest V3 appearance-only extension for ChatGPT.
 
-## v0.8.0: Walnut cabinet and parchment labels
+## v0.9.0: Wood first, parchment as interaction
 
 The previous approach painted an oversized paper background behind Recents while leaving other sections unchanged. This version removes section-wide paper detection entirely.
 
 - Quiet, vertical-grain pixel walnut as the sidebar shell and header.
-- Individual, muted parchment backgrounds on existing navigation, project and chat rows, with wood visible between them.
+- Low-key carved-wood navigation, project and chat rows; parchment appears on hover and for the active chat, not every single entry.
 - Compact VT323 typography, native icons and preserved ChatGPT navigation.
 - Dark walnut trim and matching parchment for in-page menus and submenus.
 - Original collapsed sidebar, scrollbar positions, account controls and main chat structure are retained.
@@ -29,3 +29,7 @@ Already installed? Run `git pull origin main`, click Reload on the extension car
 Styling only. The extension retains the existing DOM content and controls. `chrome.storage.local` stores the local on/off toggle. VT323 is loaded through Google Fonts when available; this makes normal font network requests to Google. ChatGPT DOM changes can require selector updates. Native browser context menus are not styled.
 
 See `src/sidebar.js`, `src/sidebar.css`, `src/menus.js` and `src/menus.css` for implementation.
+
+## v0.9 corrective changes
+
+Screenshot feedback: the paper rectangles covered the navigation and Projects, while most Recents rows remained unstyled. Row detection now climbs to the full native clickable row and excludes section headings. Paper is used sparingly as a hover/current-row accent; all other rows blend into the walnut. No arbitrary section wrappers, added cards, layout edits, icon swaps or changed chat content.

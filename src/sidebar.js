@@ -120,33 +120,71 @@
   }
 
 
+  /**
+   * Find the native 30–56px clickable row around a chat/project link.
+   * In the live UI, the link may only be as wide as its title while an enclosing
+   * div owns the whole row. Never style entire Recents or Projects groups.
+   */
+  function nearestRow(item, sidebar) {
+    const bounds = rectOf(sidebar);
+    for (let el=item, depth=0; el && el!==sidebar && depth<7; el=el.parentElement,depth++) {
+      if (!(el instanceof HTMLElement)) continue;
+      const r=rectOf(el);
+      if (r.width < bounds.width * .67 || r.width > bounds.width + 6 ||
+          r.height < 25 || r.height > 58) continue;
+      if (r.left < bounds.left-8 || r.right > bounds.right+8) continue;
+      // A row can have an overflow button, but never a second conversation link.
+      const links=[...el.querySelectorAll('a[href^="/c/"],a[href^="/g/"],a[href^="/projects"]')];
+      if (links.length>1) continue;
+      return el;
+    }
+    return item;
+  }
+
   function decorateRows(sidebar) {
-    const frame = rectOf(sidebar);
-    const collapsed = frame.width <= 85;
-    sidebar.toggleAttribute("data-petrifyui-collapsed", collapsed);
-    // Use native rows as individual parchment slips, never whole section wrappers.
-    for (const item of sidebar.querySelectorAll('a[href],button,[role="button"]')) {
-      if (!(item instanceof HTMLElement)) continue;
-      const b = rectOf(item);
-      const isRow = !collapsed && b.width >= frame.width * .56 &&
-        b.height >= 24 && b.height <= 76;
-      item.toggleAttribute("data-petrifyui-row", isRow);
-      if (item.tagName === "A") {
-        let project = false;
-        try { project = /^\/(g|project|projects)(\/|$)/.test(new URL(item.getAttribute("href"),document.baseURI).pathname); }
-        catch { /* Keep native links intact. */ }
-        item.toggleAttribute("data-petrifyui-project",project);
-        item.toggleAttribute("data-petrifyui-link",!project);
+    const collapsed = rectOf(sidebar).width <= 85;
+    sidebar.toggleAttribute("data-petrifyui-collapsed",collapsed);
+
+    // Clean up old markers to avoid placing parchment behind old wrappers.
+    for(const el of sidebar.querySelectorAll('[data-petrifyui-row],[data-petrifyui-row-kind],[data-petrifyui-selected]')){
+      el.removeAttribute("data-petrifyui-row");
+      el.removeAttribute("data-petrifyui-row-kind");
+      el.removeAttribute("data-petrifyui-selected");
+    }
+    for (const el of sidebar.querySelectorAll('[data-petrifyui-paper]')) el.removeAttribute('data-petrifyui-paper');
+
+    if (!collapsed) {
+      for(const item of sidebar.querySelectorAll('a[href],button,[role="button"]')){
+        if (!(item instanceof HTMLElement)) continue;
+        const label=(item.textContent||"").trim();
+        // Section headings can be buttons. They must never become paper cards.
+        if (/^(Projects|Recents)(\s*[⌄▾∨])?$/.test(label)) continue;
+        let type=null, pathname=null;
+        if(item.tagName==="A"){
+          try {pathname=new URL(item.getAttribute("href"),document.baseURI).pathname;}catch{continue;}
+          if(/^\/c\//.test(pathname)) type="chat";
+          else if(/^\/(g|projects?)(\/|$)/.test(pathname)) type="project";
+          else if(label) type="nav";
+        } else if (/^(New chat|Scheduled|Library|Plugins|Explore)$/i.test(label) ||
+                  item.getAttribute("data-testid")==="create-new-chat-button") type="nav";
+        if(!type) continue;
+        const row=nearestRow(item,sidebar);
+        if(!(row instanceof HTMLElement)) continue;
+        row.setAttribute("data-petrifyui-row","");
+        row.setAttribute("data-petrifyui-row-kind",type);
+        if(item.getAttribute("aria-current")==="page" ||
+           item.getAttribute("data-active")==="true" ||
+           (pathname && pathname!=="/" && pathname===location.pathname)) {
+          row.setAttribute("data-petrifyui-selected","");
+        }
       }
     }
-    // Undo v0.7's oversized Recents paper background.
-    for (const panel of sidebar.querySelectorAll('[data-petrifyui-paper]')) panel.removeAttribute("data-petrifyui-paper");
-    for (const label of sidebar.querySelectorAll('h2,h3,span,[role="heading"]')) {
-      if (!(label instanceof HTMLElement)) continue;
-      const sectionTitle = label.childElementCount === 0 &&
-        /^(Projects|Recents)$/.test((label.textContent||"").trim()) &&
-        rectOf(label).height >= 10;
-      label.toggleAttribute("data-petrifyui-section-title",sectionTitle);
+    for(const el of sidebar.querySelectorAll('h2,h3,span,[role="heading"]')){
+      if (!(el instanceof HTMLElement)) continue;
+      const label=(el.textContent||"").trim();
+      const isHeading=el.childElementCount===0 && /^(Projects|Recents)$/.test(label) &&
+        rectOf(el).height>=10;
+      el.toggleAttribute("data-petrifyui-section-title",isHeading);
     }
   }
 
