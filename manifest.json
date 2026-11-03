@@ -2,12 +2,15 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Texture loading fix: resolved extension asset URLs, wood grain fallback, and soft selection.",
-  "version": "1.1.0",
+  "description": "Fix extension textures and VT323 blocked by ChatGPT CSP.",
+  "version": "1.2.0",
   "permissions": [
     "storage"
   ],
-  "host_permissions": [],
+  "host_permissions": [
+    "https://fonts.googleapis.com/*",
+    "https://fonts.gstatic.com/*"
+  ],
   "action": {
     "default_title": "PetrifyUI sidebar settings",
     "default_popup": "popup/index.html",
@@ -54,5 +57,8 @@
         "https://www.chatgpt.com/*"
       ]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  }
 }

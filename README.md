@@ -47,3 +47,13 @@ The brown-looking screenshot was sampled: empty regions were exactly RGB `(99,65
 The fix supplies a fully qualified `chrome.runtime.getURL("assets/walnut-wood-v3.svg")` from the isolated content script, and keeps a direct stylesheet-relative URL fallback. A secondary CSS grain layer is visible even when the image cannot be loaded. The script probes the image and sets `document.documentElement.dataset.petrifyuiTexture` to `loaded` or `failed` for troubleshooting in DevTools. Removed `background-attachment: fixed` from nested scrolling wrappers to avoid Chromium background compositing issues.
 
 This update only changes texture loading and related regression tests; icon colors, menus, chats and layout are unchanged.
+
+## v1.2: Fix image 404s and font CSP
+
+All image URLs in content stylesheets now come from the extension's own `chrome.runtime.getURL()`, not page-relative `../assets/` paths. The sidebar script checks each image and tries a data-URI fallback. CSS gradients remain when both loading methods fail.
+
+The VT323 stylesheet was blocked by ChatGPT's Content Security Policy. No Google Fonts stylesheet is inserted into the page now. A Manifest V3 background worker requests VT323 font bytes from Google Fonts (requiring Google Fonts host permissions) and transfers them into the page's FontFace API through the extension. ChatGPT messages and account data are never sent to Google Fonts.
+
+The browser page now exposes status fields on `document.documentElement.dataset`: `petrifyuiTexture`, `petrifyuiPaper`, `petrifyuiBrand`, and `petrifyuiFont`. No page-relative texture or brand-mark requests should remain.
+
+Disable any duplicate older installed copies before testing. Reload the extension at chrome://extensions and hard-refresh ChatGPT.

@@ -18,26 +18,70 @@
   let enabled = true;
   let queued = false;
 
-  let woodAssetChecked = false;
-  function configureWoodAsset() {
-    if (typeof chrome === "undefined" || typeof chrome.runtime?.getURL !== "function") return;
-    const url = chrome.runtime.getURL("assets/walnut-wood-v3.svg");
-    // CSS custom properties can resolve relative URLs against the page when
-    // substituted. Supply an absolute chrome-extension:// URL instead.
-    document.documentElement.style.setProperty("--pui-resolved-wood", 'url("' + url + '")');
-    if (woodAssetChecked) return;
-    woodAssetChecked = true;
-    const probe = new Image();
-    probe.onload = () => {
-      document.documentElement.dataset.petrifyuiTexture = "loaded";
-    };
-    probe.onerror = () => {
-      document.documentElement.dataset.petrifyuiTexture = "failed";
-      // The CSS gradient under the asset is a deliberate, always-visible fallback.
-      document.documentElement.style.setProperty("--pui-resolved-wood", "none");
-      console.warn("[PetrifyUI] Wood asset failed to load; using CSS grain fallback.", url);
-    };
-    probe.src = url;
+
+  // Resolve extension assets explicitly. Never use chatgpt.com/assets.
+  let assetsStarted=false, fontStarted=false;
+  function probeImage(url) {
+    return new Promise((resolve,reject)=>{
+      const image=new Image();
+      image.onload=resolve;
+      image.onerror=()=>reject(new Error("Image blocked or unavailable"));
+      image.src=url;
+    });
+  }
+  async function loadAsset(name, cssVariable, stateName) {
+    const uri=chrome.runtime.getURL("assets/"+name);
+    const root=document.documentElement;
+    root.style.setProperty(cssVariable,'url("'+uri+'")');
+    try {
+      await probeImage(uri);
+      root.dataset[stateName]="loaded";
+    } catch {
+      try {
+        // Fetch from our extension directly, then let the browser render a data URI.
+        const response=await fetch(uri);
+        if(!response.ok)throw new Error("HTTP "+response.status);
+        const svg=await response.text();
+        const data="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+        await probeImage(data);
+        root.style.setProperty(cssVariable,'url("'+data+'")');
+        root.dataset[stateName]="loaded-data";
+      } catch(err) {
+        root.style.setProperty(cssVariable,"none");
+        root.dataset[stateName]="fallback";
+        console.warn("[PetrifyUI] Local asset unavailable; CSS fallback active:",name,err);
+      }
+    }
+  }
+  function configureAssets() {
+    if(assetsStarted||!chrome?.runtime?.getURL)return;
+    assetsStarted=true;
+    void Promise.all([
+      loadAsset("walnut-wood-v3.svg","--pui-resolved-wood","petrifyuiTexture"),
+      loadAsset("paper-fiber-v2.svg","--pui-resolved-paper","petrifyuiPaper"),
+      loadAsset("brand-mark.svg","--pui-resolved-brand","petrifyuiBrand")
+    ]);
+  }
+  function loadVT323() {
+    if(fontStarted||!chrome?.runtime?.sendMessage)return;
+    fontStarted=true;
+    // The extension worker downloads font bytes; no stylesheet is injected
+    // into ChatGPT, so its style-src policy cannot block the font.
+    chrome.runtime.sendMessage({type:"petrifyui-font-vt323"},async result=>{
+      if(chrome.runtime.lastError||!result?.ok||!Array.isArray(result.bytes)){
+        document.documentElement.dataset.petrifyuiFont="fallback";
+        return;
+      }
+      try {
+        const face=new FontFace("Petrify VT323",new Uint8Array(result.bytes).buffer,{weight:"400",style:"normal"});
+        const loaded=await face.load();
+        document.fonts.add(loaded);
+        document.documentElement.dataset.petrifyuiFont="loaded";
+      } catch(err) {
+        document.documentElement.dataset.petrifyuiFont="fallback";
+        console.warn("[PetrifyUI] Could not register VT323 font:",err);
+      }
+    });
   }
 
   const rectOf = element => element.getBoundingClientRect();
@@ -106,14 +150,6 @@
 
   /* Popovers often have a transparent portal wrapper and an opaque nested panel.
      Choose the actual panel rather than putting a border around its wrapper. */
-  function loadVT323() {
-    if (document.getElementById("petrifyui-vt323-font")) return;
-    const font = document.createElement("link");
-    font.id = "petrifyui-vt323-font";
-    font.rel = "stylesheet";
-    font.href = "https://fonts.googleapis.com/css2?family=VT323&display=swap";
-    document.head.appendChild(font);
-  }
 
 
   /**
@@ -218,7 +254,7 @@
   function render() {
     queued = false;
     loadVT323();
-    configureWoodAsset();
+    configureAssets();
     const nextRoot = findSidebar();
     if (!nextRoot) {
       changeTracked(root, null, "data-petrifyui-sidebar");

@@ -1,17 +1,15 @@
 /* PetrifyUI v1.0: visible walnut grain; restrained translucent highlights.
    Style only the existing ChatGPT sidebar and its own header. */
-@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
-
 [data-petrifyui-sidebar][data-petrifyui-enabled],
 [data-petrifyui-header][data-petrifyui-enabled] {
   /* A fully resolved extension URL is supplied by sidebar.js. The direct URL
      is the fallback. Never keep a relative asset URL inside a custom property. */
   --pui-cream: #f2dfc2;
   --pui-gold: #deb27d;
-  --pui-font: "VT323", "Courier New", monospace;
+  --pui-font: "Petrify VT323", "Courier New", monospace;
   background-color: #63412e !important;
   background-image:
-    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    var(--pui-resolved-wood, none),
     repeating-linear-gradient(90deg,
       #674530 0px, #674530 27px,
       #5e3e2d 27px, #5e3e2d 54px,
@@ -40,7 +38,7 @@
 ):not([data-petrifyui-row]) {
   background-color: #63412e !important;
   background-image:
-    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    var(--pui-resolved-wood, none),
     repeating-linear-gradient(90deg,
       #674530 0px, #674530 27px,
       #5e3e2d 27px, #5e3e2d 54px,
@@ -119,13 +117,13 @@
 [data-petrifyui-brand-trigger][data-petrifyui-enabled]::before {
   content:"";display:inline-block;vertical-align:middle;
   width:18px;height:18px;margin-right:6px;
-  background:url("../assets/brand-mark.svg") center/contain no-repeat;
+  background-image:var(--pui-resolved-brand,none);background-position:center;background-size:contain;background-repeat:no-repeat;
 }
 /* Icon-only rail uses the same wood, not separate black paint. */
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
   background-color: #63412e !important;
   background-image:
-    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    var(--pui-resolved-wood, none),
     repeating-linear-gradient(90deg,
       #674530 0px, #674530 27px,
       #5e3e2d 27px, #5e3e2d 54px,

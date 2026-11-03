@@ -5,8 +5,12 @@
   --pui-menu-focus: #9a6a40;
   color: var(--pui-menu-ink) !important;
   color-scheme: light;
-  font-family: "VT323","Courier New",monospace !important;
-  background: #d4b38c url("../assets/paper-fiber-v2.svg") 0 0 / 256px 256px repeat !important;
+  font-family: "Petrify VT323","Courier New",monospace !important;
+  background-color: #d4b38c !important;
+  background-image: var(--pui-resolved-paper, none), linear-gradient(135deg,#efd3ab,#d4b38c) !important;
+  background-position: 0 0, 0 0 !important;
+  background-size: 256px 256px, auto !important;
+  background-repeat: repeat !important;
   border: 3px solid #62402a !important;
   border-radius: 8px !important;
   box-shadow: 0 4px 0 #281911,0 10px 21px #100b09a3,
@@ -21,7 +25,7 @@
   button,a,[role="menuitem"],[role="menuitemcheckbox"],
   [role="menuitemradio"],[role="option"],[cmdk-item]
 ) {
-  font-family: "VT323","Courier New",monospace !important;
+  font-family: "Petrify VT323","Courier New",monospace !important;
   font-size: 18px !important;
   line-height: 1.16 !important;
   border-radius: 4px !important;
