@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Fixed tattered pixel parchment composer: real approved-art slices, no stretched borders or dark tray.",
-  "version": "1.12.0",
+  "description": "Compact pixel-paper composer using Geekify grain, with no scroll motif and native ChatGPT controls.",
+  "version": "1.13.0",
   "permissions": [
     "storage"
   ],
@@ -65,14 +65,7 @@
         "assets/walnut-grain-v2.svg",
         "assets/paper-fiber-v2.svg",
         "assets/walnut-wood-v3.svg",
-        "assets/composer/scroll-left-cap-pixel.png",
-        "assets/composer/scroll-right-cap-pixel.png",
-        "assets/composer/scroll-center-tile-pixel.png",
-        "assets/composer/v2/roller-left.png",
-        "assets/composer/v2/roller-right.png",
-        "assets/composer/v2/top-edge.png",
-        "assets/composer/v2/bottom-edge.png",
-        "assets/composer/v2/paper-tile.png"
+        "assets/composer/paper-grain-geekify.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",

@@ -1,85 +1,55 @@
-/* PetrifyUI 1.12: approved tattered pixel-art edges, no whole-scroll stretching.
-   The editor and controls keep ChatGPT's native layout and hitboxes. */
+/* PetrifyUI 1.13: Foldered/Geekify-style pixel paper, no scroll decorations.
+   Real Geekify 256x256 crisp-edge grain is used as a seamless surface tile.
+   No layout, sizing or event handling overrides on the native composer. */
 html[data-petrifyui-active] [data-petrifyui-composer] {
-  --pui-ink:#402b1c;
-  --pui-muted:#70513b;
-  position:relative !important;
-  isolation:isolate;
+  --pui-ink:#503521;
+  --pui-muted:#785b42;
+  --pui-border:#9a7049;
+  --pui-paper:#f5d9b3;
   color-scheme:light;
   color:var(--pui-ink) !important;
-  background-color:#e9c399 !important;
-  background-image:
-    var(--pui-scroll-top,none),
-    var(--pui-scroll-bottom,none),
-    var(--pui-scroll-fill,none),
-    linear-gradient(180deg,#f2d9b7,#dab68c) !important;
-  background-position:left top,left bottom,left top,left top !important;
-  background-repeat:repeat-x,repeat-x,repeat,no-repeat !important;
-  background-size:auto 15px,auto 15px,32px 32px,100% 100% !important;
-  border:0 !important;
-  border-radius:3px !important;
-  box-shadow:none !important;
-}
-/* The vertical rollers use border-image slicing so top/bottom knobs retain
-   their proportions as the composer grows. Extending outside avoids covering
-   the attachment, plus, microphone and model picker click targets. */
-html[data-petrifyui-active] [data-petrifyui-composer]::before,
-html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  content:"";
-  position:absolute;
-  top:-6px;
-  bottom:-6px;
-  width:26px;
-  box-sizing:border-box;
-  border:18px solid transparent;
-  border-left-width:6px;
-  border-right-width:6px;
-  pointer-events:none;
-  z-index:3;
-  border-image-slice:18 5 18 5 fill;
-  border-image-width:18px 5px 18px 5px;
-  border-image-repeat:stretch;
+  background-color:var(--pui-paper) !important;
+  background-image:var(--pui-paper-composer,none) !important;
+  background-repeat:repeat !important;
+  background-position:0 0 !important;
+  background-size:256px 256px !important;
+  border:2px solid var(--pui-border) !important;
+  border-radius:8px !important;
+  box-shadow:inset 2px 2px 0 #ffe8c8,inset -2px -2px 0 #d5a579,3px 3px 0 #30201440 !important;
   image-rendering:pixelated;
 }
-html[data-petrifyui-active] [data-petrifyui-composer]::before {
-  left:-15px;
-  border-image-source:var(--pui-scroll-left,none);
-}
+/* Defensively cancel remnants of the old roller pseudo-elements. */
+html[data-petrifyui-active] [data-petrifyui-composer]::before,
 html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  right:-15px;
-  border-image-source:var(--pui-scroll-right,none);
+  content:none !important;
+  background:none !important;
+  border:none !important;
 }
-/* Avoid painting the native dark wrapper over parchment. Exclude attachment
-   cards, images, popovers and all interactive controls. */
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [data-petrifyui-toolbar],
-  [class*="bg-token-main-surface"],
-  [class*="bg-token-bg-primary"],
-  [class*="bg-token-bg-secondary"],
-  [class*="bg-token-bg-elevated"],
-  [class*="bg-black"],[class*="bg-neutral"],[class*="bg-zinc"]
-):not(button):not([role="button"]):not([role="menu"]):not([role="listbox"]):not(:has(img)):not(:has(video)) {
+/* Only native editor-shell layers that were identified on the editor ancestry;
+   never flatten images, attachments or popover cards. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-pui-paper-inner] {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],
-  .ProseMirror,[contenteditable="true"],textarea
+ #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+ [contenteditable="true"],textarea
 ) {
-  background:transparent !important;
   color:var(--pui-ink) !important;
+  caret-color:#805534 !important;
   -webkit-text-fill-color:var(--pui-ink) !important;
-  caret-color:#6f4d32 !important;
-  text-shadow:none !important;
+  background-color:transparent !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],
-  .ProseMirror,[contenteditable="true"],textarea
+ #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+ [contenteditable="true"],textarea
 ) :is(p,span) {
   color:inherit !important;
 }
-html[data-petrifyui-active] [data-petrifyui-composer] :is(textarea,input)::placeholder,
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+ textarea,input
+)::placeholder,
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
  [data-placeholder],.is-empty,.ProseMirror.is-editor-empty
 )::before {
@@ -87,51 +57,52 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
   opacity:1 !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
-  [class*="text-green"],[class*="text-emerald"]
-) {color:var(--pui-muted) !important;}
-/* VT323 stays live in the effort/model selector; no label baked in an image. */
+ [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+ [class*="text-green"],[class*="text-emerald"]
+) {
+  color:var(--pui-muted) !important;
+}
+/* Do not turn the model/effort selector into a bar or change its width.
+   The live VT323 label has a warm light fill and dark, readable ink. */
 html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
-  background:#ecd0a8 !important;
-  border:1px solid #865b39 !important;
-  border-radius:3px !important;
-  box-shadow:inset 1px 1px #f7e2c0 !important;
-  color:#382618 !important;
-  -webkit-text-fill-color:#382618 !important;
+  color:#503521 !important;
+  -webkit-text-fill-color:#503521 !important;
   font-family:"Petrify VT323","Courier New",monospace !important;
   font-size:18px !important;
-  line-height:1.15 !important;
+  line-height:1.2 !important;
   white-space:nowrap !important;
+  background-color:#f0cfa5 !important;
+  background-image:none !important;
+  border:1px solid #a57c54 !important;
+  border-radius:5px !important;
+  box-shadow:inset 1px 1px #ffe4bc !important;
   text-shadow:none !important;
 }
 html[data-petrifyui-active] [data-petrifyui-composer]
  [data-petrifyui-mode-button] :is(span,svg,svg *) {
-  color:#382618 !important;
-  -webkit-text-fill-color:#382618 !important;
+  color:#503521 !important;
+  -webkit-text-fill-color:#503521 !important;
 }
-/* Only actionable send/voice controls get dark walnut fills. */
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
-  button[data-testid="composer-speech-button"],
-  button[aria-label*="voice" i],button[aria-label*="send" i],
-  button[aria-label*="microphone" i]
-):not(:disabled) {
-  background-color:#795239 !important;
+/* Preserve native SVG shapes, alignments, keyboard and pointer handlers. */
+html[data-petrifyui-active] [data-petrifyui-composer]
+ :is(button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+     button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+     button[aria-label*="voice" i],button[aria-label*="microphone" i]):not(:disabled) {
+  background-color:#805639 !important;
   background-image:none !important;
-  color:#f4e3c6 !important;
+  color:#fbe7c8 !important;
 }
-html[data-petrifyui-active] [data-petrifyui-composer] :is(
-  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
-  button[data-testid="composer-speech-button"],
-  button[aria-label*="voice" i],button[aria-label*="send" i],
-  button[aria-label*="microphone" i]
-):not(:disabled) :is(svg,svg *) {
-  color:#f4e3c6 !important;
+html[data-petrifyui-active] [data-petrifyui-composer]
+ :is(button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+     button[data-testid="composer-speech-button"],button[aria-label*="send" i],
+     button[aria-label*="voice" i],button[aria-label*="microphone" i]):not(:disabled) :is(svg,svg *) {
+  color:#fbe7c8 !important;
 }
 html[data-petrifyui-low-power][data-petrifyui-active] [data-petrifyui-composer] {
-  box-shadow:none !important;
+  box-shadow:inset 1px 1px #dfb58c !important;
 }
-@media(max-width:560px) {
-  html[data-petrifyui-active] [data-petrifyui-composer]::before {left:-10px;}
-  html[data-petrifyui-active] [data-petrifyui-composer]::after {right:-10px;}
+@media(max-width:560px){
+  html[data-petrifyui-active] [data-petrifyui-composer]{
+    border-radius:6px !important;
+  }
 }

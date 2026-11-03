@@ -137,3 +137,11 @@ The prior implementation tiled a strip containing torn borders, stretched the en
 This revision uses five **small, genuine pixel-art PNG samples directly derived from the previously approved generated scroll**: left and right roller art, separate top/bottom torn-edge bands, and a seamless parchment fill. No stock-image watermarks or baked-in UI labels are used. The roller art uses CSS border-image slicing, keeping the cap details stable while the middle stretches with the native composer height. The parchment center repeats independently across the width, not its border.
 
 The implementation leaves attachment previews and layout native, does not add a full-page observer, and uses real VT323 text for the model/effort selector. The composer toggle remains controlled by `data-petrifyui-active`.
+
+## v1.13: Simple pixel paper composer (no scroll)
+
+The composer is now a single, responsive **pixel-paper** surface inspired by Foldered and Geekify, not a horizontal scroll illustration. It directly reuses the 256×256 seamless crisp-edge grain tile from `Notagai/geekify/assets/geekify/ui/paper/grain-tile.svg` (copied into this repository), with a compact pixel border, understated bevel and dark ink. There are **no rollers, torn-edge strips, pseudo-scroll sprites or height-stretching images** in the active composer theme.
+
+The script only identifies the native composer, live model selector and the editor's direct structural layers. The inner editor surface becomes transparent; **attachment cards, previews, voice/send actions and layout are not replaced**. Model/effort names like Medium remain live VT323 text with a contrasting paper selector. The paper texture repeats at its native 256px grid, so multiline expansion stays consistent without JavaScript height calculations, intrusive global MutationObservers or a custom DOM composer.
+
+Legacy scroll sprites are superseded and excluded from web-accessible resources. The native ChatGPT composer layout, accessibility roles and event handlers remain in charge.
