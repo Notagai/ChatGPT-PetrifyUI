@@ -64,22 +64,62 @@
     return best;
   }
   function findEffortPopup(){
-    let best=null,area=Infinity;
-    // This is deliberately distinct from normal menus. v1.15 rejected every
-    // popup containing a slider, leaving Thinking effort dark.
-    for(const slider of document.querySelectorAll('[role="slider"],input[type="range"]')){
-      if(!(slider instanceof HTMLElement)||!geometry(slider))continue;
-      for(let parent=slider.parentElement,depth=0;parent&&depth<7;parent=parent.parentElement,depth++){
-        if(!visiblePopup(parent,440,310))continue;
-        const r=geometry(parent);
-        if(r.width<150||r.height<68)continue;
-        const text=(parent.textContent||"").trim();
-        if(!/\b(instant|medium|high|extra high|thinking effort)\b/i.test(text))continue;
-        const a=r.width*r.height;
-        if(a<area){area=a;best=parent;}
+    // Identify the actual *painted popover shell*, not a small slider child.
+    // The previous smallest-area search often themed only a slider wrapper,
+    // leaving the dark outer popup and green track exposed.
+    const sliders=[
+      ...document.querySelectorAll(
+        '[role="slider"],input[type="range"],[data-slot*="slider-track"],[data-radix-slider-track]'
+      )
+    ].filter(x=>x instanceof HTMLElement && geometry(x));
+    const options=[];
+    function consider(candidate,slider,depth){
+      if(!visiblePopup(candidate,480,360)||
+         !candidate.contains(slider)||
+         candidate.closest('[data-petrifyui-composer]'))return;
+      const r=geometry(candidate);
+      if(r.width<170||r.height<70||r.width>480||r.height>360)return;
+      const text=(candidate.textContent||"").trim().replace(/\s+/g," ");
+      // Popover should describe a single effort selection, not a full
+      // settings modal containing an unrelated slider.
+      if(!/\b(instant|medium|high|extra high|thinking effort)\b/i.test(text))return;
+      const style=getComputedStyle(candidate);
+      const radius=parseFloat(style.borderTopLeftRadius)||0;
+      const color=style.backgroundColor;
+      const painted=color!=="transparent"&&color!=="rgba(0, 0, 0, 0)";
+      const isPopup=candidate.matches(
+        '[role="dialog"],[role="menu"],[data-radix-popper-content-wrapper],'+
+        '[data-side],[data-slot*="popover"]'
+      );
+      const hasControls=!!candidate.querySelector('button,[role="button"],[role="slider"]');
+      // Prefer a rounded, painted panel that encloses the slider and title.
+      // Bigger than the slider wrapper, but smaller than the portal/page.
+      const score=(isPopup?40:0)+(painted?35:0)+(radius>=8?25:0)+
+        (hasControls?8:0)+Math.min(r.height,160)*.04-depth*.9-
+        Math.max(0,r.width-340)*.2;
+      options.push({candidate,score,r});
+    }
+    for(const slider of sliders){
+      for(let node=slider.parentElement,depth=0;node&&depth<9;node=node.parentElement,depth++){
+        if(node===document.body)break;
+        consider(node,slider,depth);
       }
     }
-    return best;
+    // Some ChatGPT builds render a custom slider with no semantic role.
+    // Fall back to open popover shells with an effort label plus a slider-like track.
+    if(!options.length){
+      for(const popup of document.querySelectorAll(OPEN)){
+        if(!(popup instanceof HTMLElement)||!visiblePopup(popup,480,360))continue;
+        const text=(popup.textContent||"").trim().replace(/\s+/g," ");
+        if(!/\b(instant|medium|high|extra high|thinking effort)\b/i.test(text))continue;
+        const track=popup.querySelector(
+          '[class*="slider" i],[class*="range" i],[data-slot*="slider"],input[type="range"]'
+        );
+        if(track)consider(popup,track,0);
+      }
+    }
+    options.sort((x,y)=>y.score-x.score);
+    return options[0]?.candidate||null;
   }
   function findDeleteConfirmation(){
     // Only native delete-confirmation dialogs, not the preceding Delete menu

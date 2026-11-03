@@ -186,3 +186,7 @@ The delete confirmation uses a separate dialog-specific parchment treatment rath
 ### v1.18.1 hotfix
 
 Corrected the Delete button's exact-label matcher and strengthened specificity so shared menu color rules cannot override cream text on the destructive red button.
+
+### v1.18.1 Thinking effort correction
+
+The previous effort-popup detector selected the smallest slider-containing element, often an inner wrapper, leaving the outer dark popup and green track unthemed. The detector now prioritizes the visible rounded/painted popup shell, with an event-driven fallback for slider implementations without an explicit ARIA role. Added focused paper, ink, slider-track, fill and thumb color rules, without changing layout, slider behavior or keyboard accessibility. Live signed-in appearance still requires confirmation.

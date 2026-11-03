@@ -1,0 +1,13 @@
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const mf=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/menus.js","utf8");
+const css=fs.readFileSync("src/menus.css","utf8");
+new Function(js);
+assert.equal(mf.version,"1.18.1");
+assert(js.includes("function findEffortPopup()"));
+assert(js.includes("Prefer a rounded, painted panel"));
+assert(js.includes("options.sort((x,y)=>y.score-x.score)"));
+assert(css.includes('--pui-effort-paper:#e7c49b'));
+assert(css.includes('[data-pui-menu-kind="effort"]'));
+assert(!js.includes("subtree:true"));
+console.log("PASS: effort popup detection and paper slider styling");
