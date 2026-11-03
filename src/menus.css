@@ -333,3 +333,19 @@ html[data-petrifyui-active] [data-pui-menu-kind="confirm"] :is(
   outline:2px solid #865637 !important;
   outline-offset:2px;
 }
+
+
+/* Specificity guard: the shared menu rule also styles buttons with !important.
+   The dangerous action must remain cream-on-red, never brown-on-red. */
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"][data-petrifyui-menu][data-petrifyui-enabled]
+  button[data-pui-destructive] {
+  background-color:#8b4133 !important;
+  background-image:none !important;
+  color:#fff0d6 !important;
+  -webkit-text-fill-color:#fff0d6 !important;
+  border-color:#572a22 !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="confirm"][data-petrifyui-menu][data-petrifyui-enabled]
+  button[data-pui-destructive]:hover {
+  background-color:#a54d3b !important;
+}

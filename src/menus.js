@@ -117,7 +117,7 @@
   function markDestructive(dialog){
     const current=new Set();
     if(dialog)for(const button of dialog.querySelectorAll("button,[role='button']")){
-      if(/^\\s*delete chat\\s*$/i.test(button.textContent||"")){
+      if(/^\s*delete chat\s*$/i.test(button.textContent||"")){
         button.setAttribute("data-pui-destructive","");
         current.add(button);
       }

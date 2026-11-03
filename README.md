@@ -182,3 +182,7 @@ No full-page DOM observer or continuous polling was added. Signed-in visual test
 ## v1.18: Delete chat confirmation
 
 The delete confirmation uses a separate dialog-specific parchment treatment rather than borrowing a menu row style. Cancel is now a light paper button with dark readable text; Delete chat has a dark brick-red fill with cream text to preserve its destructive meaning. The title, description and X control have consistent dark-ink contrast. Native modal sizing, focus trapping, button handlers and confirmation behavior remain unchanged.
+
+### v1.18.1 hotfix
+
+Corrected the Delete button's exact-label matcher and strengthened specificity so shared menu color rules cannot override cream text on the destructive red button.
