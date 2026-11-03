@@ -72,3 +72,38 @@
  color:#755c45 !important;
  opacity:1 !important;
 }
+
+/* v1.8: secondary captions in parchment popovers must not inherit
+   ChatGPT's faint gray-on-dark colors. Text remains dark, disabled actions dim. */
+[data-petrifyui-menu][data-petrifyui-enabled] {
+  --pui-menu-ink: #332316;
+  --pui-menu-secondary: #5a3b24;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [class*="text-token-text-secondary"],
+  [class*="text-token-text-tertiary"],
+  [class*="text-gray-"],[class*="text-neutral-"],
+  [class*="text-zinc-"],[class*="text-slate-"],
+  [data-slot="description"],[class*="description"],
+  [class*="Description"],small
+):not([aria-disabled="true"]):not([data-disabled]) {
+  color: var(--pui-menu-secondary) !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--pui-menu-secondary) !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [role="menuitem"],[role="option"],[role="menuitemradio"],
+  [role="menuitemcheckbox"]
+) :is(span,p,small,div) {
+  font-family: "Petrify VT323","Courier New",monospace !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [role="menuitem"],[role="option"],[role="menuitemradio"],
+  [role="menuitemcheckbox"]
+) :is([class*="opacity-"],[class*="text-xs"],[class*="text-sm"])
+:not([aria-disabled="true"]):not([data-disabled]) {
+  opacity: 1 !important;
+}
+[data-petrifyui-menu][data-petrifyui-enabled] :is(
+  [aria-disabled="true"],[data-disabled],:disabled
+) { opacity: .56 !important; }

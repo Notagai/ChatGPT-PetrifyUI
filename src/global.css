@@ -1,0 +1,9 @@
+/* PetrifyUI 1.8: VT323 as the default font throughout ChatGPT.
+   Existing layout, SVG icons, dimensions and interactions stay native. */
+html[data-petrifyui-active] body,
+html[data-petrifyui-active] body *:not(svg):not(svg *) {
+  font-family: "Petrify VT323", "Courier New", monospace !important;
+}
+html[data-petrifyui-active] :is(input,textarea)::placeholder {
+  font-family: "Petrify VT323", "Courier New", monospace !important;
+}

@@ -99,3 +99,11 @@ For troubleshooting, inspect `document.documentElement.hasAttribute("data-petrif
 The top-left toolbar was intentionally left unstyled in v1.5/1.6 to protect its toggle button, but this caused a black strip above the walnut sidebar. v1.7 gives that existing header the same wood background. Detection checks only the ancestors of one point in the toolbar, on startup and after relevant sidebar toggles/window resizing. It never observes streamed messages, changes click handlers, inserts fake icons, resizes buttons, or styles tooltip overlays.
 
 The sidebar still uses stable CSS selectors. Use `git pull origin main`, reload the Chrome extension, then hard-refresh ChatGPT.
+
+## v1.8: VT323 everywhere and readable popover descriptions
+
+- Use the existing extension-loaded VT323 as the default for all ChatGPT text, inputs, buttons, message content and menus, without adjusting layout or SVG icon geometry.
+- Improve secondary and muted description contrast on parchment menus, including the ChatGPT/Codex selector. Preserve muted styling of genuinely disabled actions.
+- The existing on/off switch controls the global font, and the existing CSP-safe font loader remains unchanged.
+
+Reload the unpacked extension after updating, then hard refresh chatgpt.com.

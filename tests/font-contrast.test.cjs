@@ -1,0 +1,15 @@
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const font=fs.readFileSync("src/global.css","utf8");
+const menu=fs.readFileSync("src/menus.css","utf8");
+const js=fs.readFileSync("src/sidebar.js","utf8");
+assert.equal(m.version,"1.8.0");
+assert(m.content_scripts[0].css.includes("src/global.css"));
+assert(font.includes("body *:not(svg):not(svg *)"));
+assert(font.includes('"Petrify VT323"'));
+assert(menu.includes("--pui-menu-secondary: #5a3b24"));
+assert(menu.includes("[data-slot=\"description\"]"));
+assert(menu.includes("-webkit-text-fill-color: var(--pui-menu-secondary)"));
+assert(js.includes('new FontFace("Petrify VT323"'));
+console.log("PASS: global font and menu secondary text");
