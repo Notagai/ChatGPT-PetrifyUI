@@ -76,10 +76,7 @@
   background-image: linear-gradient(#6a3c2740,#6a3c2740),var(--pui-paper) !important;
   box-shadow: inset 0 0 0 1px #6d492e,inset 3px 0 #70472e,0 2px 0 #2b1c13bf !important;
 }
-/* Preserve native colored project folder/terminal icons. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-project] svg {
-  color: revert-layer;
-}
+/* Project icon colors remain entirely under ChatGPT's own CSS. */
 /* Section labels stay on wood, not giant parchment blocks. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-section-title] {
   color: var(--pui-cream) !important;
