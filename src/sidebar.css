@@ -1,108 +1,118 @@
-/*
- * PetrifyUI v0.1: sidebar ONLY.
- * No layout, positioning, widths, padding, text, markup or behavior is changed.
- * Every rule starts with an explicit sidebar identity selector.
- */
-[data-petrifyui-sidebar][data-petrifyui-enabled] {
-  --pui-ink: #f2dec0;
-  --pui-muted: #c1a789;
-  --pui-gold: #edc184;
-  --pui-hover: rgba(242, 198, 131, .115);
-  --pui-active: rgba(229, 176, 105, .255);
+/* PetrifyUI 0.2: existing ChatGPT sidebar and its adjacent header ONLY. */
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
+[data-petrifyui-sidebar][data-petrifyui-enabled],
+[data-petrifyui-header][data-petrifyui-enabled] {
+  --pui-text: #f2dec0;
+  --pui-gold: #e9bd83;
+  --pui-hover: rgba(229, 176, 105, .115);
+  --pui-font: "VT323", "Courier New", monospace;
   background-color: #3a251a !important;
   background-image: url("../assets/walnut-tile.png") !important;
   background-repeat: repeat !important;
   background-size: 256px 256px !important;
-  color: var(--pui-ink) !important;
-  box-shadow: inset -3px 0 #1f130e, inset -5px 0 #775039, inset -6px 0 #23150f !important;
   color-scheme: dark;
+  font-family: var(--pui-font) !important;
 }
 
-/* Remove opaque in-app sidebar surfaces so the wood texture shows through. */
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is([class*="bg-token-sidebar"], [class*="bg-token-main-surface"], [class*="bg-surface-secondary"]) {
-  background-color: transparent !important;
+/* The separate ChatGPT / search / collapse toolbar is themed as one surface. */
+[data-petrifyui-header][data-petrifyui-enabled] {
+  box-shadow: inset 0 -3px #21140e, inset 0 -5px #855937 !important;
+  color: var(--pui-text) !important;
 }
 
-/* Link content, SVG shapes, click targets and layout remain native. */
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]) {
-  color: var(--pui-ink) !important;
-  border-color: transparent;
-  border-radius: 5px !important;
-  transition: background-color 120ms steps(3, end), box-shadow 120ms steps(3, end), color 120ms ease !important;
+/* A narrow carved boundary, never a positioned overlay. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] {
+  color: var(--pui-text);
+  box-shadow: inset -2px 0 #24150e, inset -3px 0 #9b6b43 !important;
 }
 
+/* Pixel typeface only. Preserve original positions and click targets. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button, span, p, h2, h3, small, [role="heading"]),
+[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, span, p, h1, h2, [role="heading"]) {
+  font-family: var(--pui-font) !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) {
+  font-size: 20px !important;
+  line-height: 1.15 !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button) :is(span, p) {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2, h3, [role="heading"]) {
+  font-size: 21px !important;
+  line-height: 1.15 !important;
+  letter-spacing: .025em;
+  color: var(--pui-gold) !important;
+  text-shadow: 1px 1px 0 rgba(22, 12, 8, .7);
+}
+[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, [role="button"]) {
+  font-size: 23px !important;
+  font-family: var(--pui-font) !important;
+  line-height: 1.12 !important;
+  color: #f4e3ca !important;
+}
+[data-petrifyui-header][data-petrifyui-enabled] :is(a, button, [role="button"]) :is(span, p) {
+  font-size: inherit !important;
+  font-family: inherit !important;
+}
+
+/* Legible rows without overriding project-specific color states. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-link] {
+  color: var(--pui-text) !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-link] :is(span, p) {
+  color: inherit !important;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] > button,
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-testid="create-new-chat-button"] {
+  color: var(--pui-text) !important;
+}
+
+/* One hover surface per navigation row. Never blanket-style nested buttons. */
 [data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]):hover {
+  a[data-petrifyui-row]:not([aria-current="page"]):not([data-active="true"]):hover {
   background-color: var(--pui-hover) !important;
-  box-shadow: inset 2px 0 0 rgba(237, 193, 132, .72), inset 0 0 0 1px rgba(236, 183, 112, .19) !important;
-  color: #fff0d7 !important;
+  box-shadow: inset 2px 0 #b98954 !important;
 }
-
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]):focus-visible {
+[data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-row]:focus-visible,
+[data-petrifyui-header][data-petrifyui-enabled] :is(a, button):focus-visible {
   outline: 2px solid var(--pui-gold) !important;
-  outline-offset: 1px;
+  outline-offset: -2px;
 }
 
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]):active {
-  background-color: rgba(234, 185, 109, .21) !important;
-  box-shadow: inset 2px 2px 0 rgba(28, 16, 11, .7) !important;
+/* The native selected-row styles and all original icons remain untouched. */
+[data-petrifyui-header][data-petrifyui-enabled] :is(a, button):hover {
+  background-color: rgba(240, 195, 128, .12) !important;
 }
 
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a[aria-current="page"], a[data-petrifyui-current], [data-state="active"]:is(a, button)) {
-  background: var(--pui-active) !important;
-  box-shadow: inset 3px 0 0 var(--pui-gold), inset 0 1px 0 rgba(246, 207, 158, .13), inset 0 -1px 0 rgba(28, 16, 11, .48) !important;
-  color: #fff3dd !important;
-}
-
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(h2, h3, [role="heading"]) {
-  color: var(--pui-gold) !important;
-  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace !important;
-  font-weight: 700 !important;
-  letter-spacing: .035em;
-  text-shadow: 1px 1px 0 rgba(22, 12, 8, .9);
-}
-
-/* Keep all of ChatGPT's actual icon artwork. */
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]) svg { color: var(--pui-muted) !important; }
-
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a, button, [role="button"]):hover svg,
-[data-petrifyui-sidebar][data-petrifyui-enabled]
-  :is(a[aria-current="page"], a[data-petrifyui-current]) svg {
-  color: var(--pui-gold) !important;
-}
-
-[data-petrifyui-sidebar][data-petrifyui-enabled] hr {
-  border-color: #86583b !important;
-  box-shadow: 0 1px 0 #25160e !important;
-}
-
-[data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-sidebar][data-petrifyui-enabled] * {
-  scrollbar-color: #93623e #2d1c15;
+/* Only the real scroll container is styled, not every nested descendant. */
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll],
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll] {
   scrollbar-width: thin;
+  scrollbar-color: #a5744c transparent;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] ::-webkit-scrollbar { width: 8px; height: 8px; }
-[data-petrifyui-sidebar][data-petrifyui-enabled] ::-webkit-scrollbar-track { background: #2d1c15; }
-[data-petrifyui-sidebar][data-petrifyui-enabled] ::-webkit-scrollbar-thumb {
-  background: #966341;
-  border: 2px solid #2d1c15;
-  border-radius: 1px;
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar,
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar {
+  width: 9px;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] ::selection {
-  background-color: #a46b47;
-  color: #fff9ea;
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-track,
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-track {
+  background: transparent;
 }
-
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-thumb,
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-thumb {
+  background: #9b6946;
+  border: 2px solid #3a251a;
+  border-radius: 6px;
+}
+[data-petrifyui-sidebar][data-petrifyui-enabled] [data-petrifyui-scroll]::-webkit-scrollbar-button,
+[data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-scroll]::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
 @media (prefers-reduced-motion: reduce) {
-  [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a, button, [role="button"]) {
-    transition: none !important;
-  }
+  [data-petrifyui-sidebar][data-petrifyui-enabled] a[data-petrifyui-row] { transition: none !important; }
 }

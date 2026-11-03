@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><base href="https://chatgpt.com/">
+<style>
+*{box-sizing:border-box}body{margin:0;display:flex;font:14px/1.4 system-ui;background:#fafafa}
+.shell{width:340px;height:100vh;display:flex;flex-direction:column}
+.sidebar-header{height:52px;background:#080808;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.sidebar-header button{background:none;border:0;color:inherit;cursor:pointer}
+#stage-slideover-sidebar{height:calc(100vh - 52px);display:flex;flex-direction:column;overflow:hidden;background:#eee;padding:0 10px}
+#stage-slideover-sidebar nav{display:grid}
+#stage-slideover-sidebar a{color:#444;text-decoration:none;display:block;padding:10px}
+#stage-slideover-sidebar .project-link{color:rgb(123,180,250)}
+#stage-slideover-sidebar .project-link.selected{color:rgb(250,142,110);background:rgb(48,71,72)}
+#scroll-list{flex:1;min-height:0;overflow-y:auto}
+#main{flex:1;padding:30px}
+</style>
+<script>window.chrome={storage:{local:{get(_defaults,cb){cb({enabled:true})}},onChanged:{addListener(fn){window.applySetting=fn}}}};</script>
+</head><body><div class="shell">
+<header class="sidebar-header"><button id="chatgpt-logo" onclick="window.logoClicks=(window.logoClicks||0)+1">ChatGPT</button><nav>Search ▣</nav></header>
+<aside id="stage-slideover-sidebar"><nav><a data-testid="create-new-chat-button" href="/">New chat</a><a href="/library">Library</a></nav><div id="scroll-list">
+<h2>Projects</h2><a class="project-link" href="/g/a">Unselected project</a><a class="project-link selected" href="/g/b">Selected project</a>
+<h2>Recents</h2><a href="/c/hello" aria-current="page">Selected chat</a><a href="/c/other">Another chat</a>
+<div style="height:1800px">Older chat list placeholder</div></div><button>Profile</button></aside></div>
+<main id="main"><h1>Unchanged chat content</h1></main></body></html>

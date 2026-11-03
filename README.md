@@ -1,45 +1,44 @@
 # ChatGPT PetrifyUI
 
-An unofficial Chrome/Chromium Manifest V3 extension that restyles **only ChatGPT's existing sidebar** with dark carved walnut and amber pixel-art accents.
+An unofficial Chrome/Chromium Manifest V3 extension that styles **only ChatGPT's existing sidebar and sidebar header**, using carved walnut and VT323 from Google Fonts.
 
-Version 0.1.0 is deliberately **sidebar only**. It leaves ChatGPT's conversation area, content, composer, text, navigation destinations, click targets, markup, layout, and native controls alone.
+## Version 0.2.0
 
-## How to install and test
+- VT323 for sidebar text, chat rows, section labels and sidebar header.
+- Wooden ChatGPT/search/collapse header instead of a separate black strip.
+- Keeps native selected and deselected project colors, plus all existing icons.
+- Removes the extra URL-derived chat selection state and broad nested hover styling that caused double highlights.
+- Targets scrollbar styling to the real sidebar scroll container, not every descendant.
+- Does not replace DOM content or modify ChatGPT's main chat, composer, or navigation handlers.
 
-1. Clone or download this repository. For git: git clone https://github.com/Notagai/ChatGPT-PetrifyUI.git
-2. Open chrome://extensions (or edge://extensions / brave://extensions).
-3. Enable **Developer mode**, then click **Load unpacked**.
-4. Select the cloned **ChatGPT-PetrifyUI** folder containing manifest.json.
-5. Open or refresh https://chatgpt.com/. The existing sidebar should take on a wooden background.
-6. Click the PetrifyUI toolbar icon to toggle the effect on/off instantly.
+## How to test
 
-### What to test
+1. Clone: `git clone https://github.com/Notagai/ChatGPT-PetrifyUI.git`
+2. Open `chrome://extensions` and switch on **Developer mode**.
+3. Click **Load unpacked** and choose this folder (with `manifest.json`).
+4. Refresh `https://chatgpt.com/` and inspect the sidebar and ChatGPT logo row.
+5. Click the PetrifyUI toolbar icon to switch styling off and on.
 
-- Hover sidebar links and open recent chats. They must retain their text and normal navigation.
-- Open/close the sidebar. It should retain the original width and layout.
-- Check Library, Projects, New chat, profile, and conversation options. Native behavior should be unchanged.
-- The central chat area, messages, composer and top controls should remain styled as before.
-- Toggle the extension off and back on to compare.
-- Try narrow windows and collapsed/overlay sidebars.
+If already installed, run `git pull`, click **Reload** on the extension card and refresh ChatGPT.
 
-## Privacy and implementation
+### Regression checks
 
-- No tracking, network requests, ChatGPT API calls, cookies, browser-history permission, or third-party libraries.
-- The sole permission is storage, used to remember the local on/off switch.
-- The content script looks for known sidebar containers (#stage-slideover-sidebar or #sidebar, with fallbacks), adds only data-petrifyui-* attributes, and observes sidebar replacements.
-- CSS selectors are scoped to the detected sidebar. No global page restyling.
-- Theme assets are bundled locally, including a repeating 256px wood texture.
-- ChatGPT may change its internal DOM at any time; selectors may need maintenance.
-- Menus rendered outside the sidebar in a portal are intentionally not restyled.
+- Native ChatGPT logo, search, sidebar toggle, New chat, Library, Plugins, Projects, recent chats and profile remain clickable.
+- Project colors are unchanged for selected and deselected projects.
+- Selected chat rows no longer receive a separate overlay or doubled hover border.
+- Scrollbars remain on the actual scrolling area without odd extra tracks.
+- The chat itself, message composer, and main UI stay unchanged.
+- Check both expanded/collapsed sidebar and a narrower browser window.
 
-## Structure
+## Notes
 
-- manifest.json: Chrome MV3 extension manifest
-- src/sidebar.js: identifies the native sidebar, handles SPA updates and on/off state
-- src/sidebar.css: scoped styles for sidebar wood, rows, labels and scrollbar
-- assets/: repeating wooden texture and small extension icons
-- popup/: toggle interface
-
-**Development:** No build step. Update files, press Reload at chrome://extensions, and refresh ChatGPT.
+- No build step. The local Chrome/Edge extension uses Manifest V3.
+- No tracking, analytics, ChatGPT API usage, or chat-content access.
+- `storage` permission remembers the on/off toggle.
+- VT323 is loaded from Google Fonts (`fonts.googleapis.com` and `fonts.gstatic.com`). It needs a network connection; Google may receive normal font-request metadata. A monospace fallback is used when blocked.
+- Script adds only `data-petrifyui-*` styling markers to existing elements. It does not move nodes, add overlays or intercept clicks.
+- Header detection is deliberately conservative. ChatGPT DOM updates may require updating selectors.
+- Menus rendered in separate portals outside the sidebar are deliberately not restyled.
+- A synthetic browser test is included at `tests/smoke.py`; it does not validate a live signed-in ChatGPT page.
 
 Not affiliated with or endorsed by OpenAI. ChatGPT is an OpenAI trademark.
