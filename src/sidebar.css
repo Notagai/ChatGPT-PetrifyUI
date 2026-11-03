@@ -23,7 +23,6 @@
 
 /* A narrow carved boundary, never a positioned overlay. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] {
-  color: var(--pui-text);
   box-shadow: inset -2px 0 #24150e, inset -3px 0 #9b6b43 !important;
 }
 
