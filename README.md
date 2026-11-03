@@ -2,7 +2,7 @@
 
 An unofficial Chrome/Chromium Manifest V3 appearance-only extension for ChatGPT.
 
-## v0.9.0: Wood first, parchment as interaction
+## v1.0.0: Visible walnut and subtle selection
 
 The previous approach painted an oversized paper background behind Recents while leaving other sections unchanged. This version removes section-wide paper detection entirely.
 
@@ -33,3 +33,9 @@ See `src/sidebar.js`, `src/sidebar.css`, `src/menus.js` and `src/menus.css` for 
 ## v0.9 corrective changes
 
 Screenshot feedback: the paper rectangles covered the navigation and Projects, while most Recents rows remained unstyled. Row detection now climbs to the full native clickable row and excludes section headings. Paper is used sparingly as a hover/current-row accent; all other rows blend into the walnut. No arbitrary section wrappers, added cards, layout edits, icon swaps or changed chat content.
+
+## v1.0 fix
+
+The wood SVG is now stronger, with natural vertical grain and small knots rather than horizontal stripe bands. It is repeated at native 512px resolution and applied to the main sidebar plus broad internal scrolling wrappers using viewport-aligned backgrounds. Selected rows use 19% transparent warm tint with a narrow gold accent instead of the previous solid beige parchment block. Resting rows no longer get border strokes or fill; hover is 9.5% warm tint. Layout, icons, project colors, ChatGPT content, and all existing menu logic stay unchanged.
+
+Regression test: `python tests/wood_smoke.py` with Playwright and Chromium installed. This verifies visual CSS in a synthetic browser fixture, not a signed-in ChatGPT page.

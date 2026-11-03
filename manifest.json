@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Quiet walnut sidebar with subtle carved rows and parchment highlights; native chat UI and menus intact.",
-  "version": "0.9.0",
+  "description": "Visible pixel walnut grain with soft hover/selected highlights; native ChatGPT sidebar and menu controls.",
+  "version": "1.0.0",
   "permissions": [
     "storage"
   ],
@@ -46,7 +46,8 @@
         "assets/walnut-grain.svg",
         "assets/paper-fiber.svg",
         "assets/walnut-grain-v2.svg",
-        "assets/paper-fiber-v2.svg"
+        "assets/paper-fiber-v2.svg",
+        "assets/walnut-wood-v3.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",
