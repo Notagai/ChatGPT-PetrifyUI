@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Performance: event-driven sidebar and popup skin; native toggle and header left intact.",
-  "version": "1.5.0",
+  "description": "Stable, persistent sidebar styling: no React-dependent DOM marker observer, zero full-page scans.",
+  "version": "1.6.0",
   "permissions": [
     "storage"
   ],
@@ -30,11 +30,22 @@
         "https://www.chatgpt.com/*"
       ],
       "js": [
-        "src/sidebar.js",
+        "src/sidebar.js"
+      ],
+      "css": [
+        "src/sidebar.css"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://www.chatgpt.com/*"
+      ],
+      "js": [
         "src/menus.js"
       ],
       "css": [
-        "src/sidebar.css",
         "src/menus.css"
       ],
       "run_at": "document_idle"

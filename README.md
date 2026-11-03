@@ -85,3 +85,11 @@ Test after updating: expand/collapse repeatedly with the toolbar button and Ctrl
 PetrifyUI now runs minimal, event-driven sidebar discovery instead of continuously traversing every ChatGPT DOM mutation. It no longer scans and adds markers to every conversation row on every update. Popup menus refresh on relevant pointer/keyboard interactions and direct body portal changes rather than every streamed message. The top bar, sidebar toggle and tooltip are intentionally left completely native to prevent misalignment and stuck UI; the wood texture still applies to the expanded sidebar and independently rendered collapsed rail. The VT323/asset loading from v1.2 remains.
 
 For an A/B performance comparison, use the extension toggle, hard-refresh the page, and repeat the same ChatGPT action. If ChatGPT is laggy with the extension disabled too, that baseline isn't from PetrifyUI.
+
+## v1.6: Permanent sidebar targeting (fix for default UI after brief flash)
+
+Previous versions marked a specific DOM element at runtime. ChatGPT can replace that element after mounting, making the wood flash briefly and disappear. v1.6 removes sidebar DOM scanning, mutation/resize observers, and node markers. CSS directly targets ChatGPT's known sidebar containers at `document_start`, and the content script sets only a persistent `html[data-petrifyui-active]` preference flag. React's sidebar remounts cannot remove the CSS rule.
+
+The menu logic stays a separate idle-time script, so it can safely inspect native popovers after the DOM exists. Existing wood/font asset loading, low-power profile, and original ChatGPT layout and controls remain unchanged.
+
+For troubleshooting, inspect `document.documentElement.hasAttribute("data-petrifyui-active")`. If true but the sidebar is unstyled, ChatGPT introduced a new sidebar container selector and this version will need a selector update, not more mutation scanning.

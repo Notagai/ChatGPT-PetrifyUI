@@ -1,61 +1,114 @@
-/* PetrifyUI 1.5.0: sidebar and compact rail only. Native header and
-   native sidebar toggle/tooltips are intentionally untouched for reliability. */
-[data-petrifyui-sidebar][data-petrifyui-enabled],
-[data-petrifyui-rail][data-petrifyui-enabled] {
+/* PetrifyUI 1.6: Stable selectors survive React sidebar remounts.
+   Sidebar only, no geometry/toggle/tooltip overrides, no element observation. */
+
+/* Native expanded and collapsed sidebar containers. These CSS selectors match
+   newly mounted elements without waiting for JavaScript to reattach markers. */
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,
+  #sidebar,
+  [data-testid="sidebar"],
+  [data-testid="sidebar-container"],
+  [data-testid="sidebar-mini"],
+  [data-testid="sidebar-collapsed"],
+  [data-testid="collapsed-sidebar"],
+  nav[aria-label="Chat history"],
+  nav[aria-label="Sidebar"]
+) {
   --pui-font:"Petrify VT323","Courier New",monospace;
+  --pui-ink:#f2dfc4;
   background-color:#63412e !important;
-  background-image:var(--pui-resolved-wood, none),
-    repeating-linear-gradient(90deg,#674530 0 27px,#5e3e2d 27px 54px,
-      #745139 54px 63px,#4f3426 63px 65px,#684733 65px 96px,
-      #543827 96px 126px,#33231b 126px 128px) !important;
+  background-image:var(--pui-resolved-wood,none),
+    repeating-linear-gradient(90deg,
+      #674530 0 27px,#5e3e2d 27px 54px,
+      #745139 54px 63px,#4f3426 63px 65px,
+      #684733 65px 96px,#543827 96px 126px,
+      #33231b 126px 128px) !important;
   background-size:512px 512px,128px 128px !important;
-  background-repeat:repeat !important;
   background-position:0 0 !important;
-  color-scheme:dark;
+  background-repeat:repeat !important;
   font-family:var(--pui-font) !important;
+  color-scheme:dark;
 }
-/* Paint only the outer background. Avoid multi-layer grain seams. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(
+
+/* Large background panels can obscure the actual sidebar root. Exclude
+   interactive rows and overlays; do not replace positions or click targets. */
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"],
+  [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
+  [data-testid="collapsed-sidebar"]
+) :is(
   [class*="bg-token-sidebar"],[class*="bg-token-main-surface"]
-) {background-color:transparent !important;}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(
-  a[href^="/c/"],a[href^="/g/"],a[href^="/projects"],[data-testid="create-new-chat-button"]
-) {font-family:var(--pui-font) !important;}
-[data-petrifyui-sidebar][data-petrifyui-enabled] :is(h2,h3,[role="heading"]) {
+):not(a):not(button):not([role="button"]):not([role="menu"]):not([role="tooltip"]) {
+  background-color:transparent !important;
+}
+
+/* Existing text and rows; native folder icon colors remain unchanged. */
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"]
+) :is(a[href^="/c/"],a[href^="/g/"],a[href^="/projects"],
+      [data-testid="create-new-chat-button"]) {
+  font-family:"Petrify VT323","Courier New",monospace !important;
+}
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"]
+) :is(h2,h3,[role="heading"]) {
   color:#f4dcbb !important;
-  font:19px/1.12 var(--pui-font) !important;
+  font:19px/1.12 "Petrify VT323","Courier New",monospace !important;
 }
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[href^="/c/"] {
-  color:#f2dfc4 !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[href^="/c/"]:hover,
-[data-petrifyui-sidebar][data-petrifyui-enabled] a[href^="/c/"][aria-current="page"] {
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"]
+) a[href^="/c/"] { color:#f2dfc4 !important; }
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"]
+) a[href^="/c/"]:is(:hover,[aria-current="page"]) {
   background-color:rgba(214,166,111,.13) !important;
   border-radius:4px !important;
 }
-/* Native icon colors, spacing, toggle geometry and tooltips are never overridden. */
-[data-petrifyui-sidebar][data-petrifyui-enabled] :focus-visible,
-[data-petrifyui-rail][data-petrifyui-enabled] :focus-visible {
-  outline-color:#dbb27d !important;
-}
-[data-petrifyui-sidebar][data-petrifyui-enabled] {
+/* Safe native focus outline. The top header/sidebar toggle and any tooltip
+   stay entirely under ChatGPT's own styling and event handlers. */
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"],
+  [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
+  [data-testid="collapsed-sidebar"]
+) :focus-visible { outline-color:#dbb27d !important; }
+
+html[data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"]
+) {
   scrollbar-color:#ac8057 transparent;
   scrollbar-width:thin;
 }
-[data-petrifyui-rail][data-petrifyui-enabled] :is(
-  [class*="bg-token-sidebar"],[class*="bg-black"],[class*="bg-neutral"]
-) {background-color:transparent !important;}
-[data-petrifyui-rail][data-petrifyui-enabled] :is(button,a):hover {
+
+/* Keep icon-only rail colors while leaving native icon alignment untouched. */
+html[data-petrifyui-active] :is(
+  [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
+  [data-testid="collapsed-sidebar"]
+) :is(button,a):hover {
   background-color:rgba(241,194,140,.10) !important;
 }
-html[data-petrifyui-low-power] :is(
-  [data-petrifyui-sidebar][data-petrifyui-enabled],
-  [data-petrifyui-rail][data-petrifyui-enabled]
+
+html[data-petrifyui-low-power][data-petrifyui-active] :is(
+  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+  [data-testid="sidebar-container"],
+  [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
+  [data-testid="collapsed-sidebar"],
+  nav[aria-label="Chat history"],nav[aria-label="Sidebar"]
 ) {
   background-size:256px 256px,128px 128px !important;
   box-shadow:none !important;
 }
 @media(prefers-reduced-motion:reduce){
-  [data-petrifyui-sidebar][data-petrifyui-enabled] *,
-  [data-petrifyui-rail][data-petrifyui-enabled] * {transition:none !important;}
+  html[data-petrifyui-active] :is(
+    #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
+    [data-testid="sidebar-container"],
+    [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
+    [data-testid="collapsed-sidebar"]
+  ) :is(a,button) {transition:none !important;}
 }
