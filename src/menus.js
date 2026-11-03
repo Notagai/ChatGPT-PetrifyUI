@@ -46,13 +46,19 @@
     return style.boxShadow !== "none";
   }
 
+  // A settings card with sliders/toggles is not a menu.
+  // This prevents styling the Thinking effort control as parchment.
+  function isSettingsPopover(el) {
+    return !!el.querySelector('input[type="range"],[role="slider"],[role="switch"]');
+  }
+
   function choosePanel(seed) {
     const alternatives = [seed, ...seed.querySelectorAll(PANELS)].slice(0, 70);
     let winner = null;
     let score = -Infinity;
 
     for (const el of alternatives) {
-      if (el.matches(ITEMS)) continue;
+      if (el.matches(ITEMS) || isSettingsPopover(el)) continue;
       const bounds = visibleBox(el);
       if (!bounds) continue;
       const actionCount = el.querySelectorAll(ITEMS).length;
@@ -80,7 +86,7 @@
   function findMenus() {
     const found = new Set();
     for (const seed of document.querySelectorAll(SELECTORS)) {
-      if (!visibleBox(seed)) continue;
+      if (!visibleBox(seed) || isSettingsPopover(seed)) continue;
       const panel = choosePanel(seed);
       if (panel) found.add(panel);
     }
