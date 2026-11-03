@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Visible pixel walnut grain with soft hover/selected highlights; native ChatGPT sidebar and menu controls.",
-  "version": "1.0.0",
+  "description": "Texture loading fix: resolved extension asset URLs, wood grain fallback, and soft selection.",
+  "version": "1.1.0",
   "permissions": [
     "storage"
   ],

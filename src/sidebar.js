@@ -18,6 +18,28 @@
   let enabled = true;
   let queued = false;
 
+  let woodAssetChecked = false;
+  function configureWoodAsset() {
+    if (typeof chrome === "undefined" || typeof chrome.runtime?.getURL !== "function") return;
+    const url = chrome.runtime.getURL("assets/walnut-wood-v3.svg");
+    // CSS custom properties can resolve relative URLs against the page when
+    // substituted. Supply an absolute chrome-extension:// URL instead.
+    document.documentElement.style.setProperty("--pui-resolved-wood", 'url("' + url + '")');
+    if (woodAssetChecked) return;
+    woodAssetChecked = true;
+    const probe = new Image();
+    probe.onload = () => {
+      document.documentElement.dataset.petrifyuiTexture = "loaded";
+    };
+    probe.onerror = () => {
+      document.documentElement.dataset.petrifyuiTexture = "failed";
+      // The CSS gradient under the asset is a deliberate, always-visible fallback.
+      document.documentElement.style.setProperty("--pui-resolved-wood", "none");
+      console.warn("[PetrifyUI] Wood asset failed to load; using CSS grain fallback.", url);
+    };
+    probe.src = url;
+  }
+
   const rectOf = element => element.getBoundingClientRect();
 
   function findSidebar() {
@@ -196,6 +218,7 @@
   function render() {
     queued = false;
     loadVT323();
+    configureWoodAsset();
     const nextRoot = findSidebar();
     if (!nextRoot) {
       changeTracked(root, null, "data-petrifyui-sidebar");

@@ -4,16 +4,26 @@
 
 [data-petrifyui-sidebar][data-petrifyui-enabled],
 [data-petrifyui-header][data-petrifyui-enabled] {
-  --pui-wood: url("../assets/walnut-wood-v3.svg");
+  /* A fully resolved extension URL is supplied by sidebar.js. The direct URL
+     is the fallback. Never keep a relative asset URL inside a custom property. */
   --pui-cream: #f2dfc2;
   --pui-gold: #deb27d;
   --pui-font: "VT323", "Courier New", monospace;
   background-color: #63412e !important;
-  background-image: var(--pui-wood) !important;
-  background-size: 512px 512px !important;
+  background-image:
+    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    repeating-linear-gradient(90deg,
+      #674530 0px, #674530 27px,
+      #5e3e2d 27px, #5e3e2d 54px,
+      #745139 54px, #745139 63px,
+      #4f3426 63px, #4f3426 65px,
+      #684733 65px, #684733 96px,
+      #543827 96px, #543827 126px,
+      #33231b 126px, #33231b 128px) !important;
+  background-size: 512px 512px, 128px 128px !important;
   background-position: 0 0 !important;
   background-repeat: repeat !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
   font-family: var(--pui-font) !important;
   color-scheme: dark;
 }
@@ -29,11 +39,20 @@
   [data-petrifyui-underlay], [data-petrifyui-scroll]
 ):not([data-petrifyui-row]) {
   background-color: #63412e !important;
-  background-image: var(--pui-wood) !important;
-  background-size: 512px 512px !important;
+  background-image:
+    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    repeating-linear-gradient(90deg,
+      #674530 0px, #674530 27px,
+      #5e3e2d 27px, #5e3e2d 54px,
+      #745139 54px, #745139 63px,
+      #4f3426 63px, #4f3426 65px,
+      #684733 65px, #684733 96px,
+      #543827 96px, #543827 126px,
+      #33231b 126px, #33231b 128px) !important;
+  background-size: 512px 512px, 128px 128px !important;
   background-repeat: repeat !important;
   background-position: 0 0 !important;
-  background-attachment: fixed !important;
+  background-attachment: scroll !important;
 }
 /* Compact VT323 text without repositioning controls or changing their size. */
 [data-petrifyui-sidebar][data-petrifyui-enabled] :is(a,button,span,p,small,h2,h3,[role="heading"]),
@@ -105,8 +124,17 @@
 /* Icon-only rail uses the same wood, not separate black paint. */
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] {
   background-color: #63412e !important;
-  background-image: var(--pui-wood) !important;
-  background-size: 512px 512px !important;
+  background-image:
+    var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg")),
+    repeating-linear-gradient(90deg,
+      #674530 0px, #674530 27px,
+      #5e3e2d 27px, #5e3e2d 54px,
+      #745139 54px, #745139 63px,
+      #4f3426 63px, #4f3426 65px,
+      #684733 65px, #684733 96px,
+      #543827 96px, #543827 126px,
+      #33231b 126px, #33231b 128px) !important;
+  background-size: 512px 512px, 128px 128px !important;
 }
 [data-petrifyui-sidebar][data-petrifyui-enabled][data-petrifyui-collapsed] :is(a,button):hover {
   background-color: rgba(240,193,139,.10) !important;

@@ -39,3 +39,11 @@ Screenshot feedback: the paper rectangles covered the navigation and Projects, w
 The wood SVG is now stronger, with natural vertical grain and small knots rather than horizontal stripe bands. It is repeated at native 512px resolution and applied to the main sidebar plus broad internal scrolling wrappers using viewport-aligned backgrounds. Selected rows use 19% transparent warm tint with a narrow gold accent instead of the previous solid beige parchment block. Resting rows no longer get border strokes or fill; hover is 9.5% warm tint. Layout, icons, project colors, ChatGPT content, and all existing menu logic stay unchanged.
 
 Regression test: `python tests/wood_smoke.py` with Playwright and Chromium installed. This verifies visual CSS in a synthetic browser fixture, not a signed-in ChatGPT page.
+
+## v1.1: Texture loading root-cause fix
+
+The brown-looking screenshot was sampled: empty regions were exactly RGB `(99,65,46)` with **zero pixel variation**, proving the `#63412e` fallback color was visible while the SVG background image was not. Earlier versions mistakenly placed relative `url("../assets/...")` inside a CSS custom property, then used `var(--pui-wood)`, which can resolve against the wrong base URL.
+
+The fix supplies a fully qualified `chrome.runtime.getURL("assets/walnut-wood-v3.svg")` from the isolated content script, and keeps a direct stylesheet-relative URL fallback. A secondary CSS grain layer is visible even when the image cannot be loaded. The script probes the image and sets `document.documentElement.dataset.petrifyuiTexture` to `loaded` or `failed` for troubleshooting in DevTools. Removed `background-attachment: fixed` from nested scrolling wrappers to avoid Chromium background compositing issues.
+
+This update only changes texture loading and related regression tests; icon colors, menus, chats and layout are unchanged.

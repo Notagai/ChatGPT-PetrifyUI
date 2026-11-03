@@ -10,7 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 css = (ROOT / "src/sidebar.css").read_text()
 css = css.replace('@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");', "")
 wood = base64.b64encode((ROOT / "assets/walnut-wood-v3.svg").read_bytes()).decode("ascii")
-css = css.replace('../assets/walnut-wood-v3.svg', f'data:image/svg+xml;base64,{wood}')
+# Reproduce the content script's resolved extension URL, not a relative
+# stylesheet path. The regression in 1.0 was a relative URL stored in a var().
+assert 'var(--pui-wood)' not in css
+assert 'var(--pui-resolved-wood, url("../assets/walnut-wood-v3.svg"))' in css
+css = css.replace('url("../assets/walnut-wood-v3.svg")', f'url("data:image/svg+xml;base64,{wood}")')
+
 
 html = """<!doctype html><html><head><meta charset="utf-8"><style>
 body{margin:0;background:#14100e;font:16px Arial}.shell{width:340px;height:850px;display:flex;flex-direction:column}
