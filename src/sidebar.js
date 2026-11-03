@@ -113,11 +113,9 @@
         if (el.hasAttribute("data-petrifyui-underlay")) el.removeAttribute("data-petrifyui-underlay");
         continue;
       }
-      const cs = getComputedStyle(el);
-      const hasBg = cs.backgroundImage !== "none" ||
-        (cs.backgroundColor !== "transparent" && !/rgba?\([^)]*,\s*0\)$/.test(cs.backgroundColor));
-      if (hasBg) el.setAttribute("data-petrifyui-underlay", "");
-      else if (el.hasAttribute("data-petrifyui-underlay")) el.removeAttribute("data-petrifyui-underlay");
+      // Mark structural wrappers consistently. Checking computed background after
+      // adding the class would make the marker toggle on every rerender.
+      el.setAttribute("data-petrifyui-underlay", "");
     }
   }
 
