@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Horizontal parchment-scroll composer with scalable rolled edges, responsive height and neutral controls.",
-  "version": "1.10.0",
+  "description": "Genuine pixel-art tattered scroll composer and readable VT323 model selector",
+  "version": "1.11.0",
   "permissions": [
     "storage"
   ],
@@ -64,7 +64,10 @@
         "assets/paper-fiber.svg",
         "assets/walnut-grain-v2.svg",
         "assets/paper-fiber-v2.svg",
-        "assets/walnut-wood-v3.svg"
+        "assets/walnut-wood-v3.svg",
+        "assets/composer/scroll-left-cap-pixel.png",
+        "assets/composer/scroll-right-cap-pixel.png",
+        "assets/composer/scroll-center-tile-pixel.png"
       ],
       "matches": [
         "https://chatgpt.com/*",

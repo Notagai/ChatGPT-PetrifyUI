@@ -1,54 +1,29 @@
 /* PetrifyUI 1.10 - original horizontal parchment scroll, responsive to
    the native composer height. No stock image, dimensions or behavior changes. */
 html[data-petrifyui-active] [data-petrifyui-composer] {
-  --pui-scroll-text: #392819;
-  --pui-scroll-muted: #785a40;
-  --pui-scroll-wood: #765034;
-  --pui-scroll-cream: #f3e3c9;
-  --pui-scroll-roller-width: clamp(12px, 1.7vw, 19px);
-  position: relative;
-  isolation: isolate;
-  background-color: #e4c9a2 !important;
-  background-image:
-    linear-gradient(90deg,rgba(118,73,36,.16),transparent 6%,transparent 94%,rgba(108,62,29,.17)),
-    var(--pui-resolved-paper,none),
-    linear-gradient(165deg,#f0dbb9,#d8b68d) !important;
-  background-position: 0 0,0 0,0 0 !important;
-  background-size: auto,256px 256px,auto !important;
-  background-repeat: no-repeat,repeat,no-repeat !important;
-  color: var(--pui-scroll-text) !important;
-  color-scheme: light;
-  border: 1px solid #ad855b !important;
-  border-radius: clamp(13px,2.3vw,26px) !important;
-  box-shadow: inset 0 1px #ffe9c8,0 3px 9px #25150b35 !important;
+  --pui-scroll-text:#392819;
+  --pui-scroll-muted:#785a40;
+  --pui-scroll-wood:#765034;
+  --pui-scroll-cream:#f3e3c9;
+  position:relative;
+  isolation:isolate;
+  background-color:#e4c9a2 !important;
+  background-image:var(--pui-scroll-left,none),var(--pui-scroll-right,none),
+    var(--pui-scroll-center,none),linear-gradient(#efd8b4,#d7b184) !important;
+  background-position:left center,right center,center center,center center !important;
+  background-repeat:no-repeat,no-repeat,repeat-x,no-repeat !important;
+  background-size:auto 100%,auto 100%,auto 100%,100% 100% !important;
+  image-rendering:pixelated;
+  color:var(--pui-scroll-text) !important;
+  color-scheme:light;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
 }
-/* Two scroll dowels, with beveled wood, small caps at each end, and their
-   lengths linked to the container height (including growing multiline inputs). */
 html[data-petrifyui-active] [data-petrifyui-composer]::before,
 html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: var(--pui-scroll-roller-width);
-  height: auto;
-  pointer-events: none;
-  z-index: 0;
-  box-sizing: border-box;
-  background:
-    radial-gradient(ellipse 66% 7px at 50% 5px,#c59c66 0 42%,#5c3722 57%,transparent 76%),
-    radial-gradient(ellipse 66% 7px at 50% calc(100% - 5px),#c59c66 0 42%,#5c3722 57%,transparent 76%),
-    linear-gradient(90deg,#51301f 0%,#8b5a35 24%,#c79a61 43%,#a47747 64%,#573521 100%);
-  border: 1px solid #66432b;
-  border-radius: 5px;
-  box-shadow: inset 1px 0 #f0c58d80,inset -1px 0 #42281870;
-}
-html[data-petrifyui-active] [data-petrifyui-composer]::before {
-  left: 0;
-}
-html[data-petrifyui-active] [data-petrifyui-composer]::after {
-  right: 0;
-  transform: scaleX(-1);
+  content:none !important;
 }
 /* Preserve the original text/attachment layout; no forced composer height.
    Rich text remains on the parchment when typing or when it is empty. */
@@ -140,4 +115,35 @@ html[data-petrifyui-active][data-petrifyui-low-power] [data-petrifyui-composer] 
     --pui-scroll-roller-width: 11px;
     border-radius: 14px !important;
   }
+}
+
+/* Real live text on a pixel-framed model/effort selector. */
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] {
+  background:#e6c397 !important;
+  border:2px solid #79502f !important;
+  border-radius:2px !important;
+  box-shadow:inset 2px 2px #f6dcb3,inset -2px -2px #b78b5f !important;
+  color:#432c1d !important;
+  -webkit-text-fill-color:#432c1d !important;
+  font:18px/1.1 "Petrify VT323","Courier New",monospace !important;
+  text-shadow:none !important;
+  min-width:max-content;
+  white-space:nowrap;
+  padding-inline:10px !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-button] :is(span,svg,svg *) {
+  color:#432c1d !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  [data-petrifyui-composer-darkbar],[class*="bg-black"],
+  [class*="bg-neutral"],[class*="bg-zinc"]
+):not(button):not([role="button"]):not([role="menu"]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+/* Keep native controls in place; provide a little space for both roller caps. */
+html[data-petrifyui-active] [data-petrifyui-composer]
+  :is(#prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,[contenteditable="true"],textarea) {
+  padding-inline:clamp(12px,2vw,26px) !important;
 }

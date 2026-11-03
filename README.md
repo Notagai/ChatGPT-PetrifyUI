@@ -125,3 +125,7 @@ v1.9 used only a handful of assumed composer IDs and forms. ChatGPT's input ofte
 - Removes the dark toolbar surface that could appear with both empty and nonempty prompts, while converting the model/add controls to brown-on-paper and keeping send/voice action circles walnut/cream.
 - Uses the existing extension-owned paper-fiber tile and VT323. No external image or stock-photo usage, and no added full-page mutation observer.
 - Scopes styling to the composer marker; sidebar and menu styling remain unchanged.
+
+## v1.11: Real pixel-art scroll and live model text
+
+Added genuine transparent pixel-art PNGs from the approved tattered scroll: left wooden end, repeatable parchment center and right wooden end. They're registered as extension assets and referenced with absolute chrome.runtime.getURL paths. The scroll scales with ChatGPT's native composer height. The Medium / other model-effort label remains live VT323 text on a pixel-edged pill, not baked into the image. Existing controls and actions stay native.

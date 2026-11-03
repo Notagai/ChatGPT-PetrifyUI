@@ -13,6 +13,14 @@
   ].join(",");
   const UI = 'button,[role="button"]';
   const html=document.documentElement;
+  // Absolute extension URLs prevent chatgpt.com/assets 404 errors.
+  for(const [property,file] of [
+    ["--pui-scroll-left","scroll-left-cap-pixel.png"],
+    ["--pui-scroll-right","scroll-right-cap-pixel.png"],
+    ["--pui-scroll-center","scroll-center-tile-pixel.png"]
+  ]) html.style.setProperty(property,
+    'url("' + chrome.runtime.getURL("assets/composer/"+file) + '")');
+
   let surface=null,scheduled=false,hasLayout=false,knownElements=new Set();
 
   function bounds(el) {
@@ -57,6 +65,7 @@
     for(const node of knownElements) {
       node.removeAttribute("data-petrifyui-composer-darkbar");
       node.removeAttribute("data-petrifyui-composer-tool");
+      node.removeAttribute("data-petrifyui-mode-button");
       node.removeAttribute("data-petrifyui-composer-action");
     }
     knownElements.clear();
@@ -96,7 +105,10 @@
       const r=button.getBoundingClientRect();
       if(r.bottom<bottom-94 || r.top>bottom)continue;
       if(button.matches(ACTION))mark(button,"data-petrifyui-composer-action");
-      else mark(button,"data-petrifyui-composer-tool");
+      else if (/^(instant|medium|high|extra high|thinking|auto)$/i.test((button.textContent||"").trim()) ||
+        /thinking effort|select model/i.test(button.getAttribute("aria-label")||"")) {
+        mark(button,"data-petrifyui-mode-button");
+      } else mark(button,"data-petrifyui-composer-tool");
     }
   }
   function decorate(){
