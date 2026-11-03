@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Fix extension textures and VT323 blocked by ChatGPT CSP.",
-  "version": "1.2.0",
+  "description": "Aligned walnut sidebar and consistent parchment menu accents, preserving native UI and settings.",
+  "version": "1.3.0",
   "permissions": [
     "storage"
   ],

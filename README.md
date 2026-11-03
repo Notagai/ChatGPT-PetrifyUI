@@ -57,3 +57,14 @@ The VT323 stylesheet was blocked by ChatGPT's Content Security Policy. No Google
 The browser page now exposes status fields on `document.documentElement.dataset`: `petrifyuiTexture`, `petrifyuiPaper`, `petrifyuiBrand`, and `petrifyuiFont`. No page-relative texture or brand-mark requests should remain.
 
 Disable any duplicate older installed copies before testing. Reload the extension at chrome://extensions and hard-refresh ChatGPT.
+
+## v1.3: Sidebar alignment and accent corrections
+
+- The walnut image is painted once on the sidebar root, rather than again on nested scroll and layout panels at different origins. This removes mismatched seams and duplicated grain.
+- The ChatGPT trigger no longer receives an extra pseudo-logo that displaced its text and chevron.
+- The selected chat highlight is softened; the native original icons and project accent colors remain unchanged.
+- Menu parchment, text, muted labels and amber accents use a consistent palette and less aggressive borders.
+- Slider and settings popovers (including Thinking effort) are excluded from menu decoration. Native functional accent colors are left alone.
+- Texture asset loading and VT323 font fixes from v1.2 remain intact.
+
+Update with `git pull origin main`, reload the extension in `chrome://extensions`, and hard refresh ChatGPT. Live signed-in appearance still needs verification.
