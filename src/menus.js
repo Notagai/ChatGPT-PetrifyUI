@@ -7,6 +7,8 @@
   const ITEMS='[role="menuitem"],[role="option"],[role="menuitemcheckbox"],[role="menuitemradio"],button,a';
   const ADD_LABELS=["Add photos & files","Add from library","Create image"];
   const ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"];
+  document.documentElement.style.setProperty("--pui-coronation-vine",
+    'url("'+chrome.runtime.getURL("assets/menus/coronation-vine.svg")+'")');
   const styled=new Map();
   const menuShells=new Set();
   const destructiveMarked=new Set();
@@ -80,7 +82,7 @@
     let checked=0;
     for(const el of document.querySelectorAll('button,[role="option"],[role="menuitem"],[cmdk-item]')){
       if(checked++>700)break;
-      if(!/^\\s*(Dictate|Feedback|Model|Read aloud|Study)\\b/i.test(el.textContent||""))continue;
+      if(!/^\s*(Dictate|Feedback|Model|Read aloud|Study)\b/i.test(el.textContent||""))continue;
       for(let n=el.parentElement,d=0;n&&d<10;n=n.parentElement,d++)consider(n);
     }
     return result;
