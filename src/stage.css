@@ -78,8 +78,7 @@ html[data-petrifyui-active][data-pui-stage-ready]
 /* Dark native scroll and composer wrappers caused the black footer bars.
    Clear only wrappers identified from the active editor/message ancestry. */
 html[data-petrifyui-active] [data-pui-main-stage]
- [data-pui-flow-shell]:not([data-petrifyui-composer]):not(#composer-background)
- :not([data-testid="composer-root"]):not([data-testid="composer-background"]) {
+ [data-pui-flow-shell]:not([data-petrifyui-composer]):not(#composer-background):not([data-testid="composer-root"]):not([data-testid="composer-background"]) {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
@@ -562,4 +561,112 @@ html[data-petrifyui-active] [data-pui-main-stage]
   :is(ul,ol) > li::before {
   color:#79502f !important;
   -webkit-text-fill-color:#79502f !important;
+}
+
+
+/* v1.29.5: an inset writing desk, not an opaque full-width footer.
+   The dock has its own marker because it is frequently OUTSIDE the chat
+   stage. Do not repaint descendants or make the dock the paper panel. */
+html[data-petrifyui-active] [data-pui-composer-dock] {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-composer-dock]::before,
+html[data-petrifyui-active] [data-pui-composer-dock]::after {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+/* A low-contrast, compact parchment tray with actual readable controls.
+   Keep the native input/editing, attachments, and send-button behavior. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) {
+  --pui-ink:#34251a;
+  --pui-muted:#705139;
+  --text-primary:#34251a;
+  --text-secondary:#705139;
+  --token-text-primary:#34251a;
+  --token-text-secondary:#705139;
+  color:#34251a !important;
+  color-scheme:light;
+  background-color:#e8c69b !important;
+  background-image:linear-gradient(180deg,#ffebc936,#986e4014),var(--pui-stage-paper,none) !important;
+  background-size:100% 100%,256px 256px !important;
+  background-repeat:no-repeat,repeat !important;
+  border:2px solid #a5774c !important;
+  border-radius:12px !important;
+  box-shadow:0 4px 14px #291b133b,inset 0 0 0 1px #ffe5bd !important;
+}
+/* Text input and the prompt placeholder use the same ink family. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is(#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"],textarea) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+  caret-color:#79502f !important;
+  background-color:transparent !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is(textarea,input)::placeholder,
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is([data-placeholder],.ProseMirror.is-editor-empty)::before {
+  color:#705139 !important;
+  -webkit-text-fill-color:#705139 !important;
+  opacity:1 !important;
+}
+/* Clear native opaque sublayers WITHOUT touching attachments or popovers. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is([data-pui-paper-inner],[data-pui-paper-toolbar],[data-composer-trailing-controls="true"]) {
+  background:transparent !important;
+  box-shadow:none !important;
+}
+/* Icon and model labels are dark on parchment. Exclude the submit and stop
+   controls, which have a separate walnut button style below. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) button:not(:is(
+  [data-testid="send-button"],[data-testid="composer-submit-button"],
+  [data-testid="composer-speech-button"],[aria-label="Stop" i],
+  [aria-label*="send" i],[aria-label*="voice" i],[aria-label*="microphone" i]
+)) {
+  color:#4e3421 !important;
+  -webkit-text-fill-color:#4e3421 !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) button:not(:is(
+  [data-testid="send-button"],[data-testid="composer-submit-button"],
+  [data-testid="composer-speech-button"],[aria-label="Stop" i],
+  [aria-label*="send" i],[aria-label*="voice" i],[aria-label*="microphone" i]
+)) svg {
+  color:#4e3421 !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label="Stop" i],
+  button[aria-label*="send" i],button[aria-label*="voice" i],
+  button[aria-label*="microphone" i]
+):not(:disabled) {
+  background-color:#735034 !important;
+  background-image:none !important;
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+  border-color:#5c3d28 !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-composer],[data-petrifyui-composer]
+) :is(
+  button[data-testid="send-button"],button[data-testid="composer-submit-button"],
+  button[data-testid="composer-speech-button"],button[aria-label="Stop" i],
+  button[aria-label*="send" i],button[aria-label*="voice" i],
+  button[aria-label*="microphone" i]
+):not(:disabled) svg {
+  color:#fff0d4 !important;
 }
