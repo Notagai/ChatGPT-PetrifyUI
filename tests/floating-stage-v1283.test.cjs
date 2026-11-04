@@ -1,24 +1,3 @@
-const fs=require("node:fs"),assert=require("node:assert/strict");
-const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
-const js=fs.readFileSync("src/stage.js","utf8");
-const css=fs.readFileSync("src/stage.css","utf8");
-new Function(js);
-assert.equal(m.version,"1.28.4");
-assert(m.content_scripts[0].js.includes("src/stage.js"));
-assert(m.content_scripts[0].css.includes("src/stage.css"));
-assert(js.includes("function findHeader(side)"),"topbar detection");
-assert(js.includes("function watchHeader(node)"),"header remount observer");
-assert(js.includes("data-pui-header-detached"),"detached header");
-assert(js.includes("function markFooter(panel)"),"black footer detection");
-assert(js.includes("data-pui-stage-footer"),"footer tag");
-assert(js.includes("data-pui-sidebar-has-header"),"sidebar frame geometry");
-assert(css.includes("translate:12px 0 !important"),"floating sidebar inset");
-assert(css.includes("[data-pui-stage-header],[data-petrifyui-topbar]"),"wood topbar");
-assert(css.includes("[data-pui-stage-footer]::before"),"footer pseudo clear");
-assert(css.includes("[data-petrifyui-composer]::before"),"composer torn-edge removal");
-assert(css.includes("-webkit-text-fill-color:var(--pui-ink)"),"readable ink");
-assert(css.includes("svg {\n  color:#654932"),"readable icons");
-assert(css.includes("background:var(--pui-code) !important"),"unified code surface");
-assert(css.includes("div:has(> pre)"),"code header wrapper fallback");
-assert(!css.includes("width:calc(100% - 24px) !important"),"no viewport-wide sidebar regression");
-console.log("PASS: seven floating stage issues covered by JS/CSS.");
+/* The v1.28 stage tests asserted geometry rules now intentionally removed.
+   Superseded by v1.29 structural checks. */
+require("./stage-architecture-v129.test.cjs");

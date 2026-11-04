@@ -1,0 +1,37 @@
+/* v1.29 structural guard; not a signed-in browser screenshot test. */
+const fs=require("node:fs"),assert=require("node:assert/strict");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const js=fs.readFileSync("src/stage.js","utf8");
+const css=fs.readFileSync("src/stage.css","utf8");
+new Function(js);
+assert.equal(m.version,"1.29.0");
+assert(m.content_scripts[0].js.includes("src/stage.js"));
+assert(m.content_scripts[0].css.includes("src/stage.css"));
+assert(m.web_accessible_resources[0].resources.includes("assets/stage/ocean-pixel.png"));
+const main=css.match(/\[data-pui-main-stage\]\s*\{([^}]*)\}/);
+assert(main,"main stage style");
+assert(!/(?:^|\s)(?:width|height|min-height|max-height|margin|padding|translate|transform)\s*:/m.test(main[1]),"native main resized");
+const sidebar=css.match(/\[data-pui-floating-sidebar\]\s*\{([^}]*)\}/);
+assert(sidebar,"sidebar style");
+assert(!/(?:^|\s)(?:width|height|min-height|max-height|margin|padding|translate|transform)\s*:/m.test(sidebar[1]),"native sidebar resized");
+assert(css.includes("[data-pui-main-stage]::before"),"paper decoration");
+assert(css.includes("position:fixed;"),"fixed paper layer");
+assert(css.includes("pointer-events:none;"),"noninteractive painting");
+assert(css.includes("[data-pui-floating-sidebar]::before"),"inset wood frame");
+assert(css.includes("[data-pui-scene-shell]"),"ocean scene transparency");
+assert(css.includes("[data-pui-flow-shell]"),"footer structure transparency");
+assert(css.includes("[data-petrifyui-composer]::before"),"old torn motif suppressed");
+assert(css.includes("--pui-stage-ink:#39291d"),"dark ink");
+assert(css.includes("--pui-stage-code:#49372c"),"unified code color");
+assert(js.includes("function findMain(sidebar)"),"chat container detection");
+assert(js.includes("minSceneWidth"),"New Chat narrow column detection");
+assert(js.includes("function markScene(stage)"),"scene wrapper tagging");
+assert(js.includes("function markFlow(stage)"),"footer wrapper tagging");
+assert(js.includes("function markSidebarLayers(sidebar)"),"sidebar structure");
+assert(js.includes("function positionPaper(stage,sidebar)"),"responsive paper width");
+assert(js.includes("data-pui-new-chat"),"New Chat flag");
+assert(!js.includes("subtree:true"),"no broad DOM observer");
+assert(!js.includes("setInterval("),"no polling");
+let depth=0;for(const c of css){if(c==="{")depth++;if(c==="}")depth--;assert(depth>=0,"CSS brace mismatch");}
+assert.equal(depth,0);
+console.log("PASS: v1.29 native geometry, new chat, scene, composer, icons and code.");

@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "PetrifyUI | Sidebar",
+  "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
-  "description": "Floating ocean preview: consistent walnut header/sidebar, readable parchment, unified code, and fixed footer/input shells.",
-  "version": "1.28.4",
+  "description": "Experimental ocean-backed floating parchment and walnut shell, preserving ChatGPT native layout.",
+  "version": "1.29.0",
   "permissions": [
     "storage"
   ],
@@ -12,7 +12,7 @@
     "https://fonts.gstatic.com/*"
   ],
   "action": {
-    "default_title": "PetrifyUI sidebar settings",
+    "default_title": "PetrifyUI experimental stage",
     "default_popup": "popup/index.html",
     "default_icon": {
       "16": "assets/icon16.png",

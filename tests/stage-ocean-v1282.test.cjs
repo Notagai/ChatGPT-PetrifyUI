@@ -1,1 +1,3 @@
-const fs=require('fs'),assert=require('assert');let js=fs.readFileSync('src/stage.js','utf8');let css=fs.readFileSync('src/stage.css','utf8');let m=JSON.parse(fs.readFileSync('manifest.json','utf8'));new Function(js);assert(m.version==='1.28.2');assert(m.web_accessible_resources[0].resources.includes('assets/stage/ocean-pixel.png'));assert(css.includes('max-width:1160px'));assert(css.includes('min-height:calc(100dvh - 28px)'));assert(css.includes('content:none !important'));assert(css.includes('color:#39291c'));console.log('PASS stage ocean layout');
+/* The v1.28 stage tests asserted geometry rules now intentionally removed.
+   Superseded by v1.29 structural checks. */
+require("./stage-architecture-v129.test.cjs");

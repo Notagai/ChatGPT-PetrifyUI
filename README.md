@@ -1,5 +1,29 @@
 # ChatGPT PetrifyUI
 
+## Floating parchment experiment v1.29.0 (NOT merged to main)
+
+Version 1.29 replaces the structural width, height and translation overrides that disrupted ChatGPT's New Chat screen and split the sidebar/header.
+
+- Ocean background: the supplied image's bundled pixel rendition is painted behind the app; only chat layout ancestors are made transparent.
+- Parchment stage: a pointer-transparent, viewport-anchored painted layer, centered to the right of the sidebar. ChatGPT keeps native message and composer positions and scroll.
+- Sidebar: one inset walnut background/frame behind existing controls. No native sidebar width, position, scroll or collapse overrides.
+- New Chat: the detector avoids the narrow centered welcome column when selecting the full scene. No forced chat height or margins.
+- Composer: simple matching paper writing tray; earlier torn-edge decorations are removed only within the stage.
+- Ink and code: brown prose and action icons, with one dark walnut background/cream text scheme for code surfaces.
+
+### Check this experiment
+
+1. git fetch origin
+2. git switch experiment/floating-parchment-stage
+3. git pull origin experiment/floating-parchment-stage
+4. Reload the unpacked extension in chrome://extensions and hard-refresh ChatGPT.
+5. Compare a new chat with a long conversation, expanded/collapsed sidebar, code, attachments and narrow window widths.
+6. Run node tests/stage-architecture-v129.test.cjs to verify native geometry guards.
+
+Live signed-in browser appearance still requires review before merging. The stable main branch has not been modified.
+
+---
+
 An unofficial Chrome/Chromium Manifest V3 appearance-only extension for ChatGPT.
 
 ## v1.0.0: Visible walnut and subtle selection

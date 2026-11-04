@@ -1,17 +1,3 @@
-const fs=require("node:fs"),assert=require("node:assert/strict");
-const manifest=JSON.parse(fs.readFileSync("manifest.json","utf8"));
-const js=fs.readFileSync("src/stage.js","utf8");
-const css=fs.readFileSync("src/stage.css","utf8");
-const art=fs.readFileSync("assets/stage/study-ambient.svg","utf8");
-new Function(js);
-assert.equal(manifest.version,"1.28.0");
-assert(manifest.content_scripts[0].js.includes("src/stage.js"));
-assert(manifest.content_scripts[0].css.includes("src/stage.css"));
-assert(manifest.web_accessible_resources[0].resources.includes("assets/stage/study-ambient.svg"));
-assert(art.includes('shape-rendering="crispEdges"'));
-assert(js.includes('data-pui-main-stage'));
-assert(js.includes('data-pui-floating-sidebar'));
-assert(css.includes("pointer-events:none"));
-assert(css.includes("@media(max-width:899px)"));
-assert(!js.includes("MutationObserver"));
-console.log("PASS: isolated experimental stage assets and passive layout");
+/* The v1.28 stage tests asserted geometry rules now intentionally removed.
+   Superseded by v1.29 structural checks. */
+require("./stage-architecture-v129.test.cjs");
