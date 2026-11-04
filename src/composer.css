@@ -273,3 +273,38 @@ html[data-petrifyui-active] [data-petrifyui-composer] [data-petrifyui-mode-butto
   color:#3c281b !important;
   -webkit-text-fill-color:#3c281b !important;
 }
+
+/* v1.24: Stop Response must not inherit ChatGPT's green accent.
+   Apply only to the native stop-generation action, not unrelated controls.
+   Preserve the button's size, accessible name and click handler. */
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="stop-button"],
+  button[data-testid="composer-stop-button"],
+  button[data-testid="stop-generating-button"],
+  button[aria-label*="stop generating" i],
+  button[aria-label*="stop response" i],
+  button[title*="stop generating" i],
+  button[title*="stop response" i]
+) {
+  background:#805639 !important;
+  background-color:#805639 !important;
+  background-image:none !important;
+  border-color:#624028 !important;
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+  box-shadow:inset 0 0 0 1px #b88a5e !important;
+}
+html[data-petrifyui-active] [data-petrifyui-composer] :is(
+  button[data-testid="stop-button"],
+  button[data-testid="composer-stop-button"],
+  button[data-testid="stop-generating-button"],
+  button[aria-label*="stop generating" i],
+  button[aria-label*="stop response" i],
+  button[title*="stop generating" i],
+  button[title*="stop response" i]
+) :is(svg,svg *,span) {
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+}
+/* ChatGPT's square stop symbol can be a filled SVG path. Retain its
+   native fill/geometry and recolor currentColor-based shapes only. */
