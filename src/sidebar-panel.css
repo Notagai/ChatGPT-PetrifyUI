@@ -197,10 +197,10 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
 }
 
 
-/* v1.32.5: Actual saved DOM selectors:
+/* v1.32.5: Validated against the saved DOM:
    .app-shell-left-panel contains .absolute.inset-0.flex.bg-surface;
-   .sidebar-navigation owns .absolute.inset-x-0.bottom-0.z-20.
-   Unlike nav ~ div, these match the real backdrop and account footer. */
+   .sidebar-navigation > .contents contains both nav and the absolutely
+   positioned account footer. Clear only the backing outside the panels. */
 
 /* Transparentize ONLY the full-screen backing, not wooden panel surfaces. */
 html[data-petrifyui-active] aside.app-shell-left-panel
@@ -213,10 +213,10 @@ html[data-petrifyui-active] aside.app-shell-left-panel {
   background:transparent !important;
   background-image:none !important;
 }
-/* The account is its own bottom overlay within .sidebar-navigation. Give it
+/* The account is the native bottom overlay below the nav in .contents. Give it
    the same inset as header + nav; its button remains React-controlled. */
 html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
-  > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
+  > div.contents > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
   left:10px !important;
   right:10px !important;
   bottom:10px !important;
@@ -231,13 +231,13 @@ html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sideba
 }
 /* Don't let the account footer's native dark underlay fill the cabinet gap. */
 html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
-  > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"])
+  > div.contents > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"])
   > div:not(:has(button[aria-label="Open profile menu"])) {
   background-color:transparent !important;
 }
 @media(max-width:899px) {
   html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
-    > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
+    > div.contents > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
     left:5px !important;
     right:5px !important;
     bottom:5px !important;
