@@ -1,36 +1,89 @@
-/* Settings-only adapter. Reuses PetrifyCore scheduler; no extra observer,
- * no polling and no mutations of native Settings controls. */
+/* PetrifyUI Settings adapter v1.33.2.
+ * Screens can mount as overlays without /settings pathname. Detect only
+ * established settings navigation landmarks. Reuse shared scheduler. */
 (() => {
   "use strict";
   const root=document.documentElement;
-  let markedMain=null,markedSidebar=null;
-  function set(prev,next,name){
-    if(prev!==next){prev?.removeAttribute(name);next?.setAttribute(name,"");}
+  let currentMain=null,currentSidebar=null,currentPlan=null;
+  const rect=el=>el instanceof HTMLElement?el.getBoundingClientRect():null;
+  function mark(previous,next,name){
+    if(previous!==next){previous?.removeAttribute(name);next?.setAttribute(name,"");}
     return next;
   }
-  function refresh(){
-    const path=location.pathname;
-    // The settings pane has its own route and should never be styled as chat.
-    const route=/^\/settings(?:\/|$)/i.test(path);
-    const settingsRoot=document.querySelector(
-      '[data-testid="settings-page"],[data-testid="settings-screen"],[data-settings-root]');
-    const isSettings=route || !!settingsRoot;
-    // Avoid scanning buttons in long chats. Inspect settings controls only.
-    const link=isSettings?[...document.querySelectorAll('a[href],button')].slice(0,100)
-      .find(el=>el.textContent?.trim()==="Back to app"):null;
-    root.toggleAttribute("data-pui-settings",isSettings);
-    let nextMain=null,nextSidebar=null;
-    if(isSettings){
-      nextMain=document.querySelector("main,[role=main]");
-      // Settings navigation has "Back to app" above its links.
-      nextSidebar=link?.closest("aside,nav,[class*='sidebar'],[class*='Sidebar']")||
-        document.querySelector("aside");
-      // Do not style the regular chat sidebar if the link has disappeared.
-      if(nextSidebar?.contains(document.querySelector("[data-pui-floating-sidebar]")))
-        nextSidebar=null;
-    }
-    markedMain=set(markedMain,nextMain,"data-pui-settings-main");
-    markedSidebar=set(markedSidebar,nextSidebar,"data-pui-settings-sidebar");
+  function visible(el){
+    const r=rect(el);
+    return !!r&&r.width>2&&r.height>2&&r.right>0&&r.bottom>0&&r.left<innerWidth;
   }
-  globalThis.PetrifyCore?.register("settings",refresh);
+  function findNavigation(){
+    // An ordinary chat may say "Back to app", so require the settings list
+    // landmarks too. Limit the scan to the leftmost quarter of the screen.
+    const controls=document.querySelectorAll("a,button,[role='button']");
+    let back=null;
+    for(const el of controls){
+      const r=rect(el);
+      if(!r||r.left>Math.min(innerWidth*.28,420)||!visible(el))continue;
+      if((el.textContent||"").trim()==="Back to app"){back=el;break;}
+    }
+    if(!back)return null;
+    for(let parent=back.parentElement,depth=0;parent&&depth<10;parent=parent.parentElement,depth++){
+      const r=rect(parent);
+      if(!r||r.width>Math.min(innerWidth*.5,550))break;
+      const labels=(parent.textContent||"");
+      if(labels.includes("Appearance")&&labels.includes("General")&&labels.includes("Notifications"))
+        return parent;
+    }
+    // On some releases the back button and settings navigation are siblings.
+    const aside=back.closest("aside")||document.querySelector("aside");
+    if(aside&&visible(aside)){
+      const labels=aside.textContent||"";
+      if(labels.includes("Appearance")&&labels.includes("General"))return aside;
+    }
+    return null;
+  }
+  function findSettingsMain(sidebar){
+    const sr=rect(sidebar);
+    const left=sr?.right||Math.min(innerWidth*.28,420);
+    const candidates=document.querySelectorAll("main,[role='main'],[class*='settings-content'],[class*='SettingsContent']");
+    for(const el of candidates){
+      const r=rect(el);
+      if(r&&r.left>=left-12&&r.width>=Math.min(500,innerWidth*.35)&&r.height>=innerHeight*.55)
+        return el;
+    }
+    // Find the main pane through the visible settings heading, avoiding
+    // the small individual cards and the document-wide app shell.
+    for(const el of document.querySelectorAll("h1,h2")){
+      if((el.textContent||"").trim()!=="General")continue;
+      const hr=rect(el);
+      if(!hr||hr.left<left)continue;
+      for(let n=el.parentElement,d=0;n&&d<12;n=n.parentElement,d++){
+        const r=rect(n);
+        if(!r||r.left<left-24||r.width>innerWidth-left+24)break;
+        if(r.height>=innerHeight*.7&&r.width>=Math.min(500,innerWidth*.35))
+          return n;
+      }
+    }
+    return null;
+  }
+  function updatePlan(){
+    let match=null;
+    const button=document.querySelector('button[aria-label="Open profile menu"]');
+    if(button){
+      for(const el of button.querySelectorAll("span,small")){
+        if(el.children.length===0&&(el.textContent||"").trim()==="Plus"){
+          match=el;break;
+        }
+      }
+    }
+    currentPlan=mark(currentPlan,match,"data-pui-plan-label");
+  }
+  function update(){
+    updatePlan();
+    const sidebar=findNavigation();
+    const detected=!!sidebar||/^\/settings(?:\/|$)/i.test(location.pathname);
+    root.toggleAttribute("data-pui-settings",detected);
+    currentSidebar=mark(currentSidebar,sidebar,"data-pui-settings-sidebar");
+    const main=detected?findSettingsMain(sidebar):null;
+    currentMain=mark(currentMain,main,"data-pui-settings-main");
+  }
+  globalThis.PetrifyCore?.register("settings",update);
 })();
