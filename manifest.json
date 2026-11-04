@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel parchment theme with DOM-confirmed walnut Stop button styling.",
-  "version": "1.26.0",
+  "description": "VT323 text scaled approximately 10% larger across the ChatGPT paper-and-wood theme.",
+  "version": "1.27.0",
   "permissions": [
     "storage"
   ],

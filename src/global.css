@@ -9,9 +9,28 @@ html[data-petrifyui-active] :is(input,textarea)::placeholder {
 }
 
 
-/* v1.19: A small, proportional font increase, without incrementing font
-   size on every nested child (which would compound and break layouts).
-   106.25% respects the browser's default font-size preference. */
+/* v1.27: VT323 is deliberately a little larger (10% above the existing
+   106.25% scaling: 116.875% of the browser default).
+   Scope overrides to elements defining their OWN text size, never every
+   nested span. Nested scaling caused font geometry and animations to break. */
 html[data-petrifyui-active] {
-  font-size: 106.25% !important;
+  font-size: 116.875% !important;
+}
+/* ChatGPT uses explicit text-size utilities on many visible labels; root
+   rem scaling alone would miss fixed-size text. Match those sizes once,
+   with no layout/transform/opacity overrides. */
+html[data-petrifyui-active] body :is(.text-xs, [class~="text-xs"]) {
+  font-size: 13.2px !important;
+}
+html[data-petrifyui-active] body :is(.text-sm, [class~="text-sm"]) {
+  font-size: 15.4px !important;
+}
+html[data-petrifyui-active] body :is(.text-base, [class~="text-base"]) {
+  font-size: 17.6px !important;
+}
+html[data-petrifyui-active] body :is(.text-lg, [class~="text-lg"]) {
+  font-size: 19.8px !important;
+}
+html[data-petrifyui-active] body :is(.text-xl, [class~="text-xl"]) {
+  font-size: 22px !important;
 }
