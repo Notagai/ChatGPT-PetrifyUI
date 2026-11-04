@@ -76,7 +76,7 @@ html[data-petrifyui-low-power][data-petrifyui-active]
    account footer. Inset the NAV itself instead of drawing full-bleed wood.
    Keep its native scroll content and event handlers. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-  margin:10px 10px 10px !important;
+  margin:10px 10px 90px !important;
   min-height:0 !important;
   width:auto !important;
   flex-shrink:1 !important;
@@ -143,7 +143,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 /* Compact layouts keep native mobile/mini navigation geometry. */
 @media(max-width:899px) {
   html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-    margin:7px 5px 7px !important;
+    margin:7px 5px 72px !important;
     border-radius:6px !important;
   }
   html[data-petrifyui-active] nav[data-pui-floating-sidebar]
@@ -245,18 +245,16 @@ html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sideba
 }
 
 
-/* v1.33.1: The native navigation wrapper above the Recents scrollport
-   already has mb-[var(--sidebar-footer-height)] (about 75px on the
-   captured layout). Do NOT add another 92px to the nav margin. One 10px
-   gap leaves the list scrollport room to extend toward the account panel.
-   This changes no item height, account overlay or chat selection state. */
-html[data-petrifyui-active] .sidebar-navigation
-  > .contents > nav[data-pui-floating-sidebar] {
-  margin-bottom:10px !important;
+/* v1.33.2: The account is an absolutely positioned sibling and overlaps
+   the scrollable nav when the nav bottom clearance is only 10px. Restore
+   reserved space for the footer. Keep ChatGPT selection visuals native. */
+html[data-petrifyui-active] .sidebar-navigation > .contents >
+  nav[data-pui-floating-sidebar] {
+  margin-bottom:90px !important;
 }
 @media(max-width:899px){
-  html[data-petrifyui-active] .sidebar-navigation
-    > .contents > nav[data-pui-floating-sidebar] {
-    margin-bottom:7px !important;
+  html[data-petrifyui-active] .sidebar-navigation > .contents >
+    nav[data-pui-floating-sidebar] {
+    margin-bottom:72px !important;
   }
 }
