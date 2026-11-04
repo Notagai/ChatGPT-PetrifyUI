@@ -94,8 +94,9 @@
       if(scanned++>2600)break;
       const text=(el.textContent||"").trim();
       if(text!=="Dictate"&&text!=="Read aloud"&&text!=="Feedback")continue;
-      const r=geometry(el);
-      if(!r||r.bottom<0||r.top>innerHeight)continue;
+      // A text label may be narrower than geometry()'s 100px popup limit.
+      const r=el.getBoundingClientRect();
+      if(r.width<2||r.height<2||r.bottom<0||r.top>innerHeight)continue;
       for(let p=el.parentElement,depth=0;p&&depth<12;p=p.parentElement,depth++){
         if(p===document.body)break;
         consider(p);
