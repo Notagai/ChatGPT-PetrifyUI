@@ -343,238 +343,45 @@ html[data-petrifyui-low-power][data-petrifyui-active]
 }
 
 
-/* v1.29.1 | TEXT COLOR ONLY.
-   ChatGPT styles prose descendants independently of the message wrapper.
-   Paint text at the leaf level, preserving native opacity/animations and
-   deliberately excluding code blocks, widgets, links-as-buttons and menus. */
-html[data-petrifyui-active] [data-pui-main-stage] {
+/* v1.29.2 | Verified selector semantics.
+   Preserve the original v1.29 stage layout. Color only text on paper,
+   and paint the positively identified composer rather than its black rail. */
+html[data-petrifyui-active] {
+  --pui-stage-ink:#34251a;
+  --pui-stage-muted:#654a35;
+}
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) {
   --text-primary:#34251a;
   --text-secondary:#654a35;
-  --text-tertiary:#795e45;
   --token-text-primary:#34251a;
   --token-text-secondary:#654a35;
-  --token-text-tertiary:#795e45;
   --tw-prose-body:#34251a;
   --tw-prose-headings:#2d2118;
-  --tw-prose-links:#714526;
 }
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-message-author-role="assistant"],
-  [data-message-author-role="user"],
-  .markdown,.prose,[class*="markdown"]
-) :is(
-  p,div,span,li,dt,dd,h1,h2,h3,h4,h5,h6,
-  strong,em,b,small,blockquote,figcaption,
-  [class*="text-token-text-primary"],[class*="text-white"]
-):not(:is(pre,pre *,code,code *,
-  [data-testid="code-block"],[data-testid="code-block"] *,
-  [class*="code-block"],[class*="code-block"] *,
-  button,button *,[role="button"],[role="button"] *,
-  [role="menu"],[role="menu"] *,
-  [role="dialog"],[role="dialog"] *,
-  [role="tooltip"],[role="tooltip"] *,
-  svg,svg *)) {
+/* Apply :not directly to the TEXT ELEMENT. Whitespace before :not would
+   mistakenly select a descendant and was the v1.29.1 regression. */
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is(p,h1,h2,h3,h4,h5,h6,li,dt,dd,blockquote,figcaption,strong,b,em,small,span,div,[class*="text-white"],[class*="text-token-text-primary"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"],[data-testid="code-block"] *,[class*="code-block"],[class*="code-block"] *,button,button *,[role="button"],[role="button"] *,[role="menu"],[role="menu"] *,[role="dialog"],[role="dialog"] *,[role="tooltip"],[role="tooltip"] *,svg,svg *,[contenteditable],[contenteditable] *)) {
   color:#34251a !important;
   -webkit-text-fill-color:#34251a !important;
 }
-/* A New Chat welcome page has no message wrapper or markdown container. */
-html[data-petrifyui-active][data-pui-new-chat]
-  [data-pui-main-stage] :is(h1,h2,h3,h4,p,
-  [class*="text-token-text-primary"],[class*="text-white"])
-:not(:is(pre,pre *,code,code *,
-  button,button *,[role="button"],[role="button"] *,
-  [role="menu"],[role="menu"] *,
-  [role="dialog"],[role="dialog"] *)) {
-  color:#34251a !important;
-  -webkit-text-fill-color:#34251a !important;
-}
-/* Status messages, source captions, timestamps and assistant-action labels
-   use a darker secondary ink. Keep true disabled opacity under native control. */
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [class*="text-token-text-secondary"],
-  [class*="text-token-text-tertiary"],
-  [class*="text-gray-"],[class*="text-neutral-"]
-):not(:is(pre,pre *,code,code *,
-  [data-testid="code-block"],[data-testid="code-block"] *,
-  [class*="code-block"],[class*="code-block"] *,
-  button,button *,[role="button"],[role="button"] *,
-  [role="menu"],[role="menu"] *,
-  [role="dialog"],[role="dialog"] *)) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is([class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],[class*="text-gray-"],[class*="text-neutral-"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"] *,[class*="code-block"] *,button,button *,[role="button"] *,[role="menu"] *,[role="dialog"] *,[role="tooltip"] *)) {
   color:#654a35 !important;
   -webkit-text-fill-color:#654a35 !important;
 }
-/* Text links use a recognizable deeper ink, but not bright blue/white. */
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  .markdown,.prose,[class*="markdown"]
-) a:not(:is(pre,pre *,code,code *,button,button *)) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is(.markdown,.prose,[class*="markdown"]) a:not(:is(pre a,code a,[data-testid="code-block"] a,button a)) {
   color:#714526 !important;
   -webkit-text-fill-color:#714526 !important;
 }
-/* User-bubble writing is dark as well, independently of the bubble wrapper. */
-html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="user"] :is(p,span,div)
-:not(:is(button,button *,[role="button"],[role="button"] *,
-  pre,pre *,code,code *)) {
+/* New-chat welcome text may not live in any conversation-turn wrapper. */
+html[data-petrifyui-active][data-pui-new-chat] :is(main,[role="main"],#main) :is(h1,h2,h3,p):not(:is(pre *,code *,button *,[role="button"] *)) {
   color:#34251a !important;
   -webkit-text-fill-color:#34251a !important;
 }
+/* Do NOT force user-bubble ink onto the native dark user-bubble surface;
+   its contrast can be themed alongside the bubble in a separate revision. */
 
-
-/* v1.29.2 | Deterministic ink and composer skin.
-   The ChatGPT content can be outside the selected main container on some
-   routes. These rules target the ACTUAL message and composer elements,
-   independent of the geometry-based stage detector. */
-
-/* Text colors: target author-role nodes whether or not they were mounted
-   inside the stage candidate. Keep the existing user bubble dark ink. */
-html[data-petrifyui-active] :is(
-  [data-message-author-role="assistant"],
-  [data-message-author-role="user"],
-  [data-testid^="conversation-turn"]
-) {
-  --text-primary:#34251a;
-  --token-text-primary:#34251a;
-  --text-secondary:#654a35;
-  --token-text-secondary:#654a35;
-  --text-tertiary:#795e45;
-  --token-text-tertiary:#795e45;
-  --tw-prose-body:#34251a;
-  --tw-prose-headings:#2d2118;
-  color:#34251a !important;
-}
-/* Outer conversation-turn wrappers carry ChatGPT's white/gray token colors.
-   Recolor text-bearing nodes and SVG-free leaves, but never code, widget
-   previews, user buttons, menus or the animated ModelPicker label. */
-html[data-petrifyui-active] :is(
-  [data-message-author-role="assistant"],
-  [data-message-author-role="user"],
-  [data-testid^="conversation-turn"]
-) :is(
-  p,h1,h2,h3,h4,h5,h6,li,dt,dd,blockquote,figcaption,
-  strong,b,em,small,span,[class*="text-white"],
-  [class*="text-token-text-"],[class*="text-gray-"],
-  [class*="text-neutral-"]
-):not(:is(
-  pre,pre *,code,code *,
-  [data-testid="code-block"],[data-testid="code-block"] *,
-  [class*="code-block"],[class*="code-block"] *,
-  button,button *,[role="button"],[role="button"] *,
-  [role="menu"],[role="menu"] *,
-  [role="dialog"],[role="dialog"] *,
-  [role="tooltip"],[role="tooltip"] *,
-  [contenteditable],[contenteditable] *,svg,svg *
-)) {
-  color:#34251a !important;
-  -webkit-text-fill-color:#34251a !important;
-}
-html[data-petrifyui-active] :is(
-  [data-message-author-role="assistant"],[data-testid^="conversation-turn"]
-) :is(
-  [class*="text-token-text-secondary"],
-  [class*="text-token-text-tertiary"],
-  [class*="text-gray-"],[class*="text-neutral-"]
-):not(:is(
-  pre *,code *,[data-testid="code-block"] *,
-  [class*="code-block"] *,button *,[role="button"] *,
-  [role="menu"] *,[role="dialog"] *
-)) {
-  color:#654a35 !important;
-  -webkit-text-fill-color:#654a35 !important;
-}
-/* New Chat header: handle standalone greeting outside a conversation turn
-   without changing the layout or recoloring the sidebar. */
-html[data-petrifyui-active][data-pui-new-chat] :is(
-  main,[role="main"],#main
-) :is(h1,h2,h3,p):not(:is(pre *,code *,button *,[role="button"] *)) {
-  color:#34251a !important;
-  -webkit-text-fill-color:#34251a !important;
-}
-
-/* Composer: select the real input surface on ALL supported DOM variants.
-   It may be outside [data-pui-main-stage] or lose its older JS attribute
-   during a React remount. Do not touch sizing or control geometry. */
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-petrifyui-composer],
-  #composer-background,
-  [data-testid="composer-background"],
-  [data-testid="composer-root"],
-  form[data-type="unified-composer"]
-) {
-  --pui-ink:#3e2c20;
-  --pui-muted:#725239;
-  --pui-paper:#e1bd90;
-  --text-primary:#3e2c20;
-  --token-text-primary:#3e2c20;
-  color:#3e2c20 !important;
-  color-scheme:light;
-  background-color:#e1bd90 !important;
-  background-image:linear-gradient(#fff3d01a,#93643b1b),
-    var(--pui-stage-paper,none) !important;
-  background-position:center,0 0 !important;
-  background-size:100% 100%,256px 256px !important;
-  background-repeat:no-repeat,repeat !important;
-  border-color:#a67b51 !important;
-  box-shadow:inset 0 0 0 2px #f8dfb34d,0 2px 0 #51391e35 !important;
-}
-/* A styled outer composer must never be cleared by the generic transparent
-   shell rules, even when the old JS script has not tagged it yet. */
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-petrifyui-composer],
-  #composer-background,
-  [data-testid="composer-background"],
-  [data-testid="composer-root"],
-  form[data-type="unified-composer"]
-) :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],
-  [contenteditable="true"],textarea
-) {
-  color:#3e2c20 !important;
-  -webkit-text-fill-color:#3e2c20 !important;
-  caret-color:#805534 !important;
-}
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-petrifyui-composer],
-  #composer-background,
-  [data-testid="composer-background"],
-  [data-testid="composer-root"],
-  form[data-type="unified-composer"]
-) :is(
-  [data-pui-paper-inner],[data-pui-paper-toolbar],
-  [data-composer-trailing-controls="true"]
-) {
-  background-color:transparent !important;
-  background-image:none !important;
-}
-/* The former torn-edge graphic is a mismatched remnant on the experimental
-   parchment layout. Prevent its stripes from returning after remount. */
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-petrifyui-composer],#composer-background,
-  [data-testid="composer-background"],[data-testid="composer-root"],
-  form[data-type="unified-composer"]
-)::before,
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-petrifyui-composer],#composer-background,
-  [data-testid="composer-background"],[data-testid="composer-root"],
-  form[data-type="unified-composer"]
-)::after {
-  content:none !important;
-  display:none !important;
-}
-/* Ancestor shell for the bottom bar: it may exist outside the chosen main
-   node. Make its background transparent without touching child controls. */
-html[data-petrifyui-active][data-pui-stage-ready] :is(
-  [data-pui-flow-shell],
-  [class*="bg-black"]:has(> #composer-background),
-  [class*="bg-token-main-surface"]:has(> #composer-background)
-):not([data-petrifyui-composer]):not(#composer-background)
-:not([data-testid="composer-root"]):not(form) {
-  background-color:transparent !important;
-  background-image:none !important;
-}
-
-
-/* v1.29.2 composer recovery. This paint target is tagged directly from the
-   real editor/trailing controls, independently of the older composer script. */
+/* The composer detector and stage detector run separately. Style the
+   positively identified editor tray, anywhere in the ChatGPT document. */
 html[data-petrifyui-active] [data-pui-stage-composer] {
   --pui-ink:#3e2c20;
   --pui-muted:#725239;
@@ -584,26 +391,19 @@ html[data-petrifyui-active] [data-pui-stage-composer] {
   color:#3e2c20 !important;
   color-scheme:light;
   background-color:#e1bd90 !important;
-  background-image:linear-gradient(#fff3d01a,#93643b1b),
-    var(--pui-stage-paper,none) !important;
+  background-image:linear-gradient(#fff3d01a,#93643b1b),var(--pui-stage-paper,none) !important;
   background-size:100% 100%,256px 256px !important;
   background-repeat:no-repeat,repeat !important;
   background-position:center,0 0 !important;
   border-color:#a67b51 !important;
   box-shadow:inset 0 0 0 2px #f8dfb34d,0 2px 0 #51391e35 !important;
 }
-html[data-petrifyui-active] [data-pui-stage-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],
-  [contenteditable="true"],textarea
-) {
+html[data-petrifyui-active] [data-pui-stage-composer] :is(#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"],textarea) {
   color:#3e2c20 !important;
   -webkit-text-fill-color:#3e2c20 !important;
   caret-color:#805534 !important;
 }
-html[data-petrifyui-active] [data-pui-stage-composer] :is(
-  [data-pui-paper-inner],[data-pui-paper-toolbar],
-  [data-composer-trailing-controls="true"]
-) {
+html[data-petrifyui-active] [data-pui-stage-composer] :is([data-pui-paper-inner],[data-pui-paper-toolbar],[data-composer-trailing-controls="true"]) {
   background-color:transparent !important;
   background-image:none !important;
 }
@@ -612,15 +412,18 @@ html[data-petrifyui-active] [data-pui-stage-composer]::after {
   content:none !important;
   display:none !important;
 }
-/* Native full-width lower rails are not the composer itself. Turn off only
-   their dark paint where they directly wrap our positively identified tray. */
-html[data-petrifyui-active] :is(
-  [data-pui-flow-shell],
-  [class*="bg-black"],
-  [class*="bg-token-main-surface"]
-):has(> [data-pui-stage-composer])
-:not([data-pui-stage-composer]):not([data-pui-main-stage]) {
+/* When the input is nested one layer below a black footer shell, clear only
+   the matching DIRECT parent. The :not filters are part of this selector. */
+html[data-petrifyui-active] :is([data-pui-flow-shell],[class*="bg-black"],[class*="bg-token-main-surface"]):has(> [data-pui-stage-composer]):not([data-pui-stage-composer]):not([data-pui-main-stage]) {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
+}
+/* Handle known native composer IDs even when React remounts the panel
+   before our JS callback runs. Never style the whole footer as paper. */
+html[data-petrifyui-active] :is(#composer-background,[data-testid="composer-background"],[data-testid="composer-root"],form[data-type="unified-composer"]) {
+  background-color:#e1bd90 !important;
+  background-image:var(--pui-stage-paper,none) !important;
+  background-size:256px 256px !important;
+  background-repeat:repeat !important;
 }
