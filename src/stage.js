@@ -153,6 +153,7 @@
     stage=nextStage;sidebar=nextSidebar;header=nextHeader;
     stage?.setAttribute('data-pui-main-stage','');
     sidebar?.setAttribute('data-pui-floating-sidebar','');
+    if(sidebar)sidebar.toggleAttribute('data-pui-sidebar-has-header',!!(header&&sidebar.contains(header)));
     header?.setAttribute('data-pui-stage-header','');
     if(header){
       header.toggleAttribute('data-pui-header-detached',!(sidebar?.contains(header)));
