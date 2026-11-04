@@ -481,3 +481,53 @@ html[data-petrifyui-active] button[aria-label="Scroll to bottom"]
 }
 /* On compact layouts the scroll control may be outside a footer wrapper.
    Avoid changing its translate, z-index, opacity or native click target. */
+
+
+/* v1.31.2: New/streaming responses are not always inside the older
+   message-role wrappers. Set native *text* tokens at the stage root so
+   freshly mounted Thinking, Skip and timestamps inherit parchment ink.
+   Code blocks retain their separate cream-on-walnut palette. */
+html[data-petrifyui-active] [data-pui-main-stage] {
+  --color-text-secondary:#745238;
+  --color-text-tertiary:#806044;
+  --app-color-text-foreground-secondary:#745238;
+  --app-color-text-foreground-tertiary:#806044;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is(button.text-tertiary.text-size-chat,
+      button.text-secondary.text-size-chat,
+      .text-size-chat.text-secondary > button[aria-expanded]) {
+  color:#694a31 !important;
+  -webkit-text-fill-color:#694a31 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is(button.text-tertiary.text-size-chat,
+      button.text-secondary.text-size-chat,
+      .text-size-chat.text-secondary > button[aria-expanded])
+  :is(span,svg) {
+  color:#694a31 !important;
+  -webkit-text-fill-color:#694a31 !important;
+}
+/* Live Thinking/Skip utilities may mount outside the finished DilRenderer,
+   but remain in the main stage and often use a tertiary color class. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is(a.text-tertiary,button.text-tertiary,
+      a[class*="text-tertiary"],button[class*="text-tertiary"]):not([data-code-block] *) {
+  color:#694a31 !important;
+  -webkit-text-fill-color:#694a31 !important;
+}
+/* Rich tool/activity icons, including one-color GitHub marks, should use
+   walnut when placed directly on paper. Do not invert bitmaps or rewrite
+   multi-color logo artwork. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([data-d-component="list-item"],[data-d-component="row"],
+      [class*="Activity"],[class*="ToolCall"],[class*="ToolIcon"])
+  svg[fill="currentColor"]:not([data-code-block] svg) {
+  color:#694a31 !important;
+  fill:currentColor !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([class*="Activity"],[class*="ToolCall"],[class*="ToolIcon"])
+  svg:not([data-code-block] svg) {
+  color:#694a31 !important;
+}
