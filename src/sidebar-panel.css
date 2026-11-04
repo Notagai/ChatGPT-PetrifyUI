@@ -76,7 +76,7 @@ html[data-petrifyui-low-power][data-petrifyui-active]
    account footer. Inset the NAV itself instead of drawing full-bleed wood.
    Keep its native scroll content and event handlers. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-  margin:10px 10px 98px !important;
+  margin:10px 10px 92px !important;
   min-height:0 !important;
   width:auto !important;
   flex-shrink:1 !important;
@@ -143,7 +143,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 /* Compact layouts keep native mobile/mini navigation geometry. */
 @media(max-width:899px) {
   html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-    margin:7px 5px 76px !important;
+    margin:7px 5px 70px !important;
     border-radius:6px !important;
   }
   html[data-petrifyui-active] nav[data-pui-floating-sidebar]
