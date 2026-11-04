@@ -29,7 +29,7 @@
   const tracked={
     scene:new Set(),flow:new Set(),sidebar:new Set()
   };
-  let activeStage=null,activeSidebar=null,activeHeader=null;
+  let activeStage=null,activeSidebar=null,activeHeader=null,activeComposer=null;
   let queued=false,appObserver=null,sidebarObserver=null,headerObserver=null;
   const waiters=new Set();
 
@@ -114,6 +114,32 @@
       if(score>bestScore){best=node;bestScore=score;}
     }
     return best;
+  }
+  function findComposerTray(){
+    // Independently identify the composer across native ChatGPT variants.
+    // This is only a PAINT tag and never adjusts dimensions or position.
+    const input=firstVisible(EDITOR);
+    if(!input)return null;
+    const known=input.closest(
+      '#composer-background,[data-testid="composer-background"],'+
+      '[data-testid="composer-root"],form[data-type="unified-composer"]'
+    );
+    if(known instanceof HTMLElement&&box(known))return known;
+    let candidate=null;
+    for(let n=input.parentElement,depth=0;
+        n&&n!==document.body&&depth<12;n=n.parentElement,depth++){
+      const r=box(n);
+      if(!r||r.height>innerHeight*.64||r.width>innerWidth*.90)break;
+      const controls=n.querySelector(
+        '[data-composer-trailing-controls="true"],'+
+        'button[aria-label="Stop"],button[aria-label*="send" i],'+
+        'button[aria-label*="voice" i],button[data-testid="composer-submit-button"]'
+      );
+      if(!controls)continue;
+      candidate=n;
+      if(n.matches('form,[class*="composer"],[class*="rounded"]'))break;
+    }
+    return candidate;
   }
   function findHeader(sidebar){
     const nodes=[];
@@ -224,6 +250,7 @@
     const side=findSidebar();
     const stage=findMain(side);
     const header=findHeader(side);
+    const composer=findComposerTray();
 
     if(activeStage!==stage)activeStage?.removeAttribute("data-pui-main-stage");
     if(activeSidebar!==side){
@@ -235,7 +262,11 @@
       activeHeader?.removeAttribute("data-pui-header-detached");
       headerObserver=observeParent(headerObserver,header,schedule);
     }
+    if(activeComposer!==composer)
+      activeComposer?.removeAttribute("data-pui-stage-composer");
     activeStage=stage;activeSidebar=side;activeHeader=header;
+    activeComposer=composer;
+    composer?.setAttribute("data-pui-stage-composer","");
     stage?.setAttribute("data-pui-main-stage","");
     side?.setAttribute("data-pui-floating-sidebar","");
     if(header){
