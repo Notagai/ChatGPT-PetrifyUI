@@ -77,3 +77,78 @@ html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"]
   button:hover {
   background-color:#f2dfc21c !important;
 }
+
+
+/* 1.30.3 targeted color repairs from 5 screenshot crops.
+   Avoid changing element sizing/opacity or replacing brand artwork. */
+
+/* Native round scroll controls: dark icon was unreadable on walnut. */
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] {
+  background-color:#735034 !important;
+  border-color:#a57a53 !important;
+  color:#fce8c8 !important;
+  -webkit-text-fill-color:#fce8c8 !important;
+}
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] :is(svg,svg *,use) {
+  color:#fce8c8 !important;
+  fill:currentColor !important;
+}
+/* Native round stop/send actions use the same dark-on-light contrast rule
+   in reverse: walnut background, cream pictogram. */
+html[data-petrifyui-active] form[data-chatgpt-composer] :is(
+  button[aria-label="Stop" i],
+  button[aria-label*="send" i],
+  button[data-testid="send-button"],
+  button[data-testid="composer-submit-button"],
+  button[data-testid="stop-button"]
+) {
+  background-color:#735034 !important;
+  color:#fce8c8 !important;
+  -webkit-text-fill-color:#fce8c8 !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer] :is(
+  button[aria-label="Stop" i],
+  button[aria-label*="send" i],
+  button[data-testid="send-button"],
+  button[data-testid="composer-submit-button"],
+  button[data-testid="stop-button"]
+) :is(svg,svg *,use) {
+  color:#fce8c8 !important;
+  fill:currentColor !important;
+}
+/* The code icon is an SVG sprite inside ActionBar, not a text glyph.
+   Force the entire code header to a walnut surface, then paint sprite
+   and copy/wrap icons cream; no white art on bare parchment. */
+html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"] {
+  background:#49372c !important;
+  color:#f7e7cd !important;
+  -webkit-text-fill-color:#f7e7cd !important;
+}
+html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"] :is(svg,svg *,use) {
+  color:#f7e7cd !important;
+  fill:currentColor !important;
+}
+/* Thinking duration chip: stable class and expanded-state attributes in
+   the saved DOM, separate from message body text. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  .text-size-chat.text-secondary > button[aria-expanded] {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  .text-size-chat.text-secondary > button[aria-expanded] :is(span,svg,svg *,use) {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+/* Tool/activity icons in rich assistant content: foreground follows ink
+   rather than native white on dark theme. Do not replace GitHub/logos. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-d-component="list-item"]
+  :is(svg[data-d-component="icon"],svg.InlineIcon-KLrnew) {
+  color:#65442f !important;
+  fill:currentColor !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([data-d-component="box"],[data-d-component="row"]) > svg[data-d-component="icon"] {
+  color:#65442f !important;
+  fill:currentColor !important;
+}
