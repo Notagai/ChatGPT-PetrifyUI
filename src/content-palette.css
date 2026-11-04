@@ -550,3 +550,42 @@ html[data-petrifyui-active][data-pui-stage-ready]
    absolute/sticky composer controls inside the viewport retain their
    native relative placement; only artwork crossing the outer frame edge
    is discarded. */
+
+
+/* v1.31.4: New activity-header "Worked for..." is an unlabeled
+   button before its inline-flex label, unlike the old
+   button.text-tertiary[aria-expanded]. This targeting is based on the
+   new vs old DevTools captures, not substring-matching message text. */
+html[data-petrifyui-active] [class~="group/activity-header"] {
+  --color-text-secondary:#65442f;
+  --color-text-tertiary:#65442f;
+  --text-secondary:#65442f;
+  --text-tertiary:#65442f;
+  --token-text-secondary:#65442f;
+  --token-text-tertiary:#65442f;
+  color:#65442f !important;
+}
+html[data-petrifyui-active] [class~="group/activity-header"]
+  > button.cursor-interaction {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+/* The label and chevron are siblings of the toggle button, and may
+   otherwise retain white SVG/text utility colors from the dark theme. */
+html[data-petrifyui-active] [class~="group/activity-header"]
+  > :is(span,div) {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+html[data-petrifyui-active] [class~="group/activity-header"]
+  > :is(span,div) :is(span,svg) {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+/* Keep old expanded-state control readable as well; both structures
+   can appear during one conversation. */
+html[data-petrifyui-active] button.text-tertiary[aria-expanded]
+  > :is(span,svg) {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
