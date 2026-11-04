@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Fix duplicate Medium text by preserving native label opacity and transitions.",
-  "version": "1.20.0",
+  "description": "Parchment Add and slash menus with transparent outer frames and pixel-vine coronation border.",
+  "version": "1.21.0",
   "permissions": [
     "storage"
   ],
@@ -67,7 +67,8 @@
         "assets/walnut-wood-v3.svg",
         "assets/composer/paper-grain-geekify.svg",
         "assets/composer/paper-torn-top.svg",
-        "assets/composer/paper-torn-bottom.svg"
+        "assets/composer/paper-torn-bottom.svg",
+        "assets/menus/coronation-vine.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",
