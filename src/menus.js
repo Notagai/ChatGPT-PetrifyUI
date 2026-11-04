@@ -8,6 +8,7 @@
   const ADD_LABELS=["Add photos & files","Add from library","Create image"];
   const ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"];
   const styled=new Map();
+  const menuShells=new Set();
   const destructiveMarked=new Set();
   let enabled=true,pending=false,delayed=null;
 
@@ -62,6 +63,43 @@
       }
     }
     return best;
+  }
+  function findSlashMenu(){
+    const words=["Dictate","Feedback","Model","Read aloud","Study"];
+    const matches=el=>words.filter(w=>(el.textContent||"").includes(w)).length>=4;
+    let result=null,bestArea=Infinity;
+    const consider=el=>{
+      if(!(el instanceof HTMLElement)||!visiblePopup(el,1080,760)||!matches(el))return;
+      const r=geometry(el);
+      if(!r||r.width<220||r.height<120||el.closest('[data-petrifyui-composer]'))return;
+      const area=r.width*r.height;
+      if(area<bestArea){result=el;bestArea=area;}
+    };
+    for(const el of document.querySelectorAll(OPEN))consider(el);
+    if(result)return result;
+    let checked=0;
+    for(const el of document.querySelectorAll('button,[role="option"],[role="menuitem"],[cmdk-item]')){
+      if(checked++>700)break;
+      if(!/^\\s*(Dictate|Feedback|Model|Read aloud|Study)\\b/i.test(el.textContent||""))continue;
+      for(let n=el.parentElement,d=0;n&&d<10;n=n.parentElement,d++)consider(n);
+    }
+    return result;
+  }
+  function markMenuShells(menus){
+    const next=new Set();
+    for(const menu of menus){
+      const rect=geometry(menu);
+      if(!rect)continue;
+      for(let p=menu.parentElement,d=0;p&&d<4;p=p.parentElement,d++){
+        if(!(p instanceof HTMLElement)||p===document.body)break;
+        const r=geometry(p);
+        if(!r||Math.abs(r.width-rect.width)>40||Math.abs(r.height-rect.height)>40)break;
+        next.add(p);
+      }
+    }
+    for(const el of menuShells)if(!next.has(el))el.removeAttribute("data-pui-menu-shell");
+    menuShells.clear();
+    for(const el of next){el.setAttribute("data-pui-menu-shell","");menuShells.add(el);}
   }
   function findEffortPopup(){
     // Identify the actual *painted popover shell*, not a small slider child.
@@ -187,19 +225,23 @@
     if(enabled && document.documentElement.hasAttribute("data-petrifyui-active")) {
       const add=findWideAddMenu();
       const effort=findEffortPopup();
+      const slash=findSlashMenu();
       const confirmation=findDeleteConfirmation();
       for(const el of findNormalMenus()) {
-        if(el===add||el===effort||el===confirmation||
+        if(el===add||el===effort||el===slash||el===confirmation||
            (add&&(el.contains(add)||add.contains(el)))||
            (effort&&(el.contains(effort)||effort.contains(el)))||
+           (slash&&(el.contains(slash)||slash.contains(el)))||
            (confirmation&&(el.contains(confirmation)||confirmation.contains(el))))continue;
         next.set(el,"normal");
       }
       if(add)next.set(add,"add");
+      if(slash)next.set(slash,"slash");
       if(effort)next.set(effort,"effort");
       if(confirmation)next.set(confirmation,"confirm");
     }
     markDestructive(next.size ? [...next.entries()].find(([node,kind])=>kind==="confirm")?.[0] : null);
+    markMenuShells([...next].filter(([,kind])=>kind==="add"||kind==="slash").map(([el])=>el));
     reconcile(next);
   }
   function schedule(){
@@ -213,8 +255,11 @@
     delayed=setTimeout(()=>{delayed=null;schedule();},110);
   }
   document.addEventListener("pointerup",afterInteraction,{passive:true});
+  document.addEventListener("input",e=>{
+    if(e.target instanceof Element&&e.target.closest('[contenteditable="true"],textarea,input'))afterInteraction();
+  },{passive:true});
   document.addEventListener("keydown",event=>{
-    if(["Enter"," ","Escape","ArrowDown","ArrowUp","ArrowLeft","ArrowRight"].includes(event.key))
+    if(["Enter"," ","Escape","ArrowDown","ArrowUp","ArrowLeft","ArrowRight","/"].includes(event.key))
       afterInteraction();
   },{passive:true});
   document.addEventListener("pointerover",event=>{
