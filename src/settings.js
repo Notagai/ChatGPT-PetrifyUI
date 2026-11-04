@@ -84,8 +84,7 @@
     const candidates=document.querySelectorAll(
       'button[aria-label="Open profile menu"] span,'+
       '[role="menu"] span,[role="dialog"] span,'+
-      '[data-radix-popper-content-wrapper] span,'+
-      '.sidebar-navigation span.text-xs.text-secondary'
+      '[data-radix-popper-content-wrapper] span'
     );
     for(const el of candidates){
       if(el.children.length===0&&(el.textContent||"").trim()==="Plus"&&visible(el)){
