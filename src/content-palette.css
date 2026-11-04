@@ -260,3 +260,62 @@ html[data-petrifyui-active] [class*="DilResponseRoot-"] >
   [data-d-component="badge"]:first-child {
   margin-block-start:14px !important;
 }
+
+
+/* 1.30.6 | The saved browser DOM places form[data-chatgpt-composer]
+   inside .footer-A8ZvKV, an absolutely positioned native thread footer
+   with an ::after spacing/decorative layer. The composer is already paper;
+   paint the surrounding footer transparent instead of touching main. */
+html[data-petrifyui-active] [class*="footer-"]:has(form[data-chatgpt-composer]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  --color-background-surface:transparent;
+  --main-surface-primary:transparent;
+}
+html[data-petrifyui-active] [class*="footer-"]:has(form[data-chatgpt-composer])::before,
+html[data-petrifyui-active] [class*="footer-"]:has(form[data-chatgpt-composer])::after {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+/* Native footer has 'has-[[data-thread-focus-mode]]:bg-surface'. In focus
+   mode the utility can reintroduce black despite the normal footer rule. */
+html[data-petrifyui-active] [class*="footer-"]:has(form[data-chatgpt-composer])
+  :is([class*="bg-surface"],[class*="bg-black"]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* Fixed thumbnail/attachment previews must retain their own visual content.
+   Keep this exception explicit to avoid masking real uploads. */
+
+/* The round send/submit control has a walnut background but native dark
+   arrow paths. Set the currentColor-bearing icon geometry explicitly,
+   leaving the button's native disabled, focus and click behaviors intact. */
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is(button[aria-label*="send" i],button[aria-label*="submit" i],
+      button[data-testid="send-button"],button[data-testid="composer-submit-button"]) {
+  color:#fff4de !important;
+  -webkit-text-fill-color:#fff4de !important;
+  background-color:#68442d !important;
+  border:1px solid #a57c55 !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is(button[aria-label*="send" i],button[aria-label*="submit" i],
+      button[data-testid="send-button"],button[data-testid="composer-submit-button"])
+  :is(svg,svg path,svg line,svg polyline,svg polygon,svg use) {
+  color:#fff4de !important;
+  stroke:#fff4de !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is(button[aria-label*="send" i],button[aria-label*="submit" i],
+      button[data-testid="send-button"],button[data-testid="composer-submit-button"])
+  svg :is(path,polygon)[fill]:not([fill="none"]) {
+  fill:#fff4de !important;
+}
+/* Button may be disabled when input is empty: still readable. */
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is(button[aria-label*="send" i],button[aria-label*="submit" i],
+      button[data-testid="send-button"],button[data-testid="composer-submit-button"]):disabled {
+  color:#e2cbaa !important;
+}
