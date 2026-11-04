@@ -386,3 +386,25 @@ html[data-petrifyui-active] button[aria-label="Scroll to bottom"] svg :is(path,l
   color:#5b3922 !important;
   stroke:currentColor !important;
 }
+
+
+/* v1.30.8: Voice action, confirmed from saved composer DOM:
+   button[aria-label="Start Voice"] > svg.Icon-X4VkKC > use[fill=currentColor].
+   Native .text-composer-primary resolves too dark on the walnut circle.
+   Keep Dictate microphone separate; preserve all control sizing/states. */
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  button[aria-label="Start Voice" i] {
+  background-color:#68442d !important;
+  color:#fff4de !important;
+  -webkit-text-fill-color:#fff4de !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  button[aria-label="Start Voice" i] > svg {
+  color:#fff4de !important;
+  fill:#fff4de !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  button[aria-label="Start Voice" i] > svg > use {
+  color:#fff4de !important;
+  fill:currentColor !important;
+}
