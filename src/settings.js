@@ -32,12 +32,15 @@
       if(labels.includes("Appearance")&&labels.includes("General")&&labels.includes("Notifications"))
         return parent;
     }
-    // On some releases the back button and settings navigation are siblings.
-    const aside=back.closest("aside")||document.querySelector("aside");
-    if(aside&&visible(aside)){
-      const labels=aside.textContent||"";
-      if(labels.includes("Appearance")&&labels.includes("General"))return aside;
+    // The Back button can be a sibling of the navigation. Resolve
+    // the left-side panel from their shared container and native bounds.
+    for(let parent=back.parentElement,depth=0;parent&&depth<14;parent=parent.parentElement,depth++){
+      const r=rect(parent);
+      if(!r||r.left>30||r.width>Math.min(480,innerWidth*.38))continue;
+      if(r.height>innerHeight*.65)return parent;
     }
+    const aside=back.closest("aside")||document.querySelector("aside");
+    if(aside&&visible(aside))return aside;
     return null;
   }
   function findSettingsMain(sidebar){
@@ -66,12 +69,14 @@
   }
   function updatePlan(){
     let match=null;
-    const button=document.querySelector('button[aria-label="Open profile menu"]');
-    if(button){
-      for(const el of button.querySelectorAll("span,small")){
-        if(el.children.length===0&&(el.textContent||"").trim()==="Plus"){
-          match=el;break;
-        }
+    const candidates=document.querySelectorAll(
+      'button[aria-label="Open profile menu"] span,'+
+      '[role="menu"] span,[role="dialog"] span,'+
+      '[data-radix-popper-content-wrapper] span'
+    );
+    for(const el of candidates){
+      if(el.children.length===0&&(el.textContent||"").trim()==="Plus"&&visible(el)){
+        match=el;break;
       }
     }
     currentPlan=mark(currentPlan,match,"data-pui-plan-label");
