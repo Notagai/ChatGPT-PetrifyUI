@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PetrifyUI</title>
     <link rel="stylesheet" href="popup.css" />
+    <script src="diagnostics.js" defer></script>
     <script src="popup.js" defer></script>
   </head>
   <body>
     <main>
-      <div class="brand"><span class="mark" aria-hidden="true">▥</span><div><h1>PetrifyUI</h1><p>FLOATING STAGE · 1.29.2</p></div></div>
+      <div class="brand"><span class="mark" aria-hidden="true">▥</span><div><h1>PetrifyUI</h1><p>FLOATING STAGE · 1.29.7</p></div></div>
       <label class="switch-row" for="enabled">
         <span><strong>PetrifyUI theme</strong><small>Style only. No content changes.</small></span>
         <input id="enabled" type="checkbox" checked />
       </label>
       <p class="hint">Toggle off to compare with the original. Refresh ChatGPT after updating extension files.</p>
+      <div class="diagnostics"><button id="diagnose" type="button">Inspect active ChatGPT tab</button><p id="diagnose-status" role="status" aria-live="polite">On-demand only. No message content collected.</p></div>
       <p class="footer">Local-only • chatgpt.com</p>
     </main>
   </body>
