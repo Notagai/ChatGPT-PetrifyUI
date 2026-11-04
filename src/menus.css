@@ -476,3 +476,54 @@ html[data-petrifyui-active] [data-pui-menu-kind="slash"] :is(
   -webkit-text-fill-color:#624630 !important;
   opacity:1 !important;
 }
+
+
+/* v1.25: Disabled actions remain disabled but must be readable on light paper.
+   Native ChatGPT reduces some options to faint gray while generating.
+   Scope the contrast correction to Add and slash menus only. */
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+) :is(
+  button:disabled,button[aria-disabled="true"],[role="menuitem"][aria-disabled="true"],
+  [role="option"][aria-disabled="true"],[data-disabled],
+  [aria-disabled="true"],[inert]
+) {
+  color:#654832 !important;
+  -webkit-text-fill-color:#654832 !important;
+  opacity:.86 !important;
+  cursor:default;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+) :is(
+  button:disabled,button[aria-disabled="true"],[role="menuitem"][aria-disabled="true"],
+  [role="option"][aria-disabled="true"],[data-disabled],
+  [aria-disabled="true"],[inert]
+) :is(
+  span,p,small,div,[class*="text-gray"],[class*="text-token-text"],
+  [class*="opacity-"]
+) {
+  color:#654832 !important;
+  -webkit-text-fill-color:#654832 !important;
+  opacity:1 !important;
+}
+/* Preserve colorful provider artwork, but monochrome disabled action
+   glyphs should not disappear against the paper surface. */
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+) :is(button:disabled,[aria-disabled="true"],[data-disabled])
+  :is(svg:not([fill]),svg:not([fill]) *) {
+  color:#75523a !important;
+}
+/* ChatGPT also marks an unavailable menu action via pointer-events-none
+   and opacity classes, without disabled/aria-disabled. Restrict this rule
+   to menu rows: it never touches the model's animated label spans. */
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+) :is(
+  [role="menuitem"],[role="option"],button,[cmdk-item]
+)[class*="opacity-"]:not(:focus-visible) {
+  opacity:.86 !important;
+  color:#654832 !important;
+  -webkit-text-fill-color:#654832 !important;
+}
