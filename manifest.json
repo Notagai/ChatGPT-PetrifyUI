@@ -3,7 +3,7 @@
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
   "description": "Experimental shared DOM adapter and local diagnostics",
-  "version": "1.30.6",
+  "version": "1.30.7",
   "permissions": [
     "storage",
     "activeTab",
