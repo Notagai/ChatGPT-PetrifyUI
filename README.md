@@ -230,3 +230,7 @@ These changes remain on `experiment/floating-parchment-stage`; stable `main` is 
 - **Code blocks:** code heading, body, inner surfaces, and code lettering use a single dark walnut / cream palette, including wrappers with a direct `<pre>` child
 
 New CSS is consolidated in `src/stage.css`, overriding rather than duplicating the previous experimental rules. Existing chat layout, links, keyboard navigation, and sidebar interactions remain native. The fixes are structurally checked, but a signed-in browser visual pass is still necessary before merging.
+
+### v1.28.4 header remount guard
+
+Some ChatGPT builds independently remount the header while the sidebar is unchanged. A child-list observer watches only the current header's immediate parent and reacquires its wood-textured root. It does not observe chat messages or run periodic scans. The experiment is still not verified in the signed-in ChatGPT browser.

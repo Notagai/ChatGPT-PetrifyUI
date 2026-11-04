@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Experimental floating ocean, walnut sidebar/header, unified code panels and high-contrast parchment UI.",
-  "version": "1.28.3",
+  "description": "Floating ocean preview: consistent walnut header/sidebar, readable parchment, unified code, and fixed footer/input shells.",
+  "version": "1.28.4",
   "permissions": [
     "storage"
   ],
