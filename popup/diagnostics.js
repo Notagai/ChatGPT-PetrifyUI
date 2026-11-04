@@ -24,6 +24,12 @@ window.petrifyInspect = async function () {
         editor:'#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"][role="textbox"]',
         composer:'[data-petrifyui-composer],[data-pui-stage-composer]',
         footer:'[data-pui-composer-dock],[data-composer-trailing-controls="true"]',
+        voiceAction:'button[aria-label*="voice" i],[data-testid="composer-speech-button"]',
+        stopAction:'button[aria-label="Stop" i],button[data-testid*="stop" i]',
+        sendAction:'button[aria-label="Send" i],[data-testid="send-button"]',
+        moreActions:'button[aria-label="More actions"]',
+        scrollAction:'button[aria-label="Scroll to bottom"][aria-hidden="false"]',
+        attachmentPreview:'form[data-chatgpt-composer] [data-testid*="attachment"],form[data-chatgpt-composer] [data-testid*="file"]',
         main:'[data-pui-main-stage]',
         sidebar:'[data-pui-floating-sidebar]'
       };
@@ -38,6 +44,14 @@ window.petrifyInspect = async function () {
           classes:[...el.classList].slice(0,12),
           testid:el.getAttribute("data-testid"),
           role:el.getAttribute("role"),
+          ariaLabel:el.getAttribute("aria-label"),
+          buttonDisabled:el.matches("button")?el.disabled:undefined,
+          childGraphics:[...el.querySelectorAll("svg")].slice(0,2).map(icon=>{
+            const t=getComputedStyle(icon),use=icon.querySelector("use");
+            return {color:t.color,fill:t.fill,stroke:t.stroke,
+              useFill:use?getComputedStyle(use).fill:null,
+              spriteKind:use?.getAttribute("href")?.split("#").pop()||null};
+          }),
           dataMarkers:[...el.attributes].filter(a=>a.name.startsWith("data-pui")||a.name.startsWith("data-petrifyui")).map(a=>a.name),
           styles:{color:s.color,textFill:s.webkitTextFillColor,background:s.backgroundColor,
             backgroundImage:s.backgroundImage==="none"?"none":"image/gradient",
@@ -60,7 +74,7 @@ window.petrifyInspect = async function () {
         ancestors.push(clean(el));
       }
       return {
-        schema:2,kind:"petrifyui-structural-diagnostic",
+        schema:3,kind:"petrifyui-structural-diagnostic",
         note:"No chat text, input values, or URLs captured.",
         routeKind:location.pathname==="/"?"new-chat":"conversation-or-other",
         viewport:{width:innerWidth,height:innerHeight},
