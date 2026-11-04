@@ -11,7 +11,7 @@
     'url("'+chrome.runtime.getURL('assets/stage/ocean-pixel.png')+'")');
   html.style.setProperty('--pui-stage-paper',
     'url("'+chrome.runtime.getURL('assets/composer/paper-grain-geekify.svg')+'")');
-  let stage=null,sidebar=null,header=null,queued=false,observer=null,sideObserver=null;
+  let stage=null,sidebar=null,header=null,queued=false,observer=null,sideObserver=null,headerObserver=null;
   const footerMarks=new Set();
   const shellMarks=new Set();
 
@@ -135,6 +135,16 @@
     sideObserver=new MutationObserver(schedule);
     sideObserver.observe(node,{childList:true,subtree:true});
   }
+  function watchHeader(node){
+    headerObserver?.disconnect();
+    headerObserver=null;
+    const parent=node?.parentElement;
+    if(!parent)return;
+    // React replaces the topbar without necessarily touching the sidebar.
+    // Only watch this small header parent, not the conversation or all DOM.
+    headerObserver=new MutationObserver(schedule);
+    headerObserver.observe(parent,{childList:true});
+  }
   function update(){
     queued=false;
     if(document.hidden)return;
@@ -149,6 +159,7 @@
     if(header!==nextHeader){
       header?.removeAttribute('data-pui-stage-header');
       header?.removeAttribute('data-pui-header-detached');
+      watchHeader(nextHeader);
     }
     stage=nextStage;sidebar=nextSidebar;header=nextHeader;
     stage?.setAttribute('data-pui-main-stage','');
