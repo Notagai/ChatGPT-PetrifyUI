@@ -115,51 +115,6 @@
     }
     return best;
   }
-  function findComposerTray(){
-    // Independently identify the composer across native ChatGPT variants.
-    // This is only a PAINT tag and never adjusts dimensions or position.
-    const input=firstVisible(EDITOR);
-    if(!input)return null;
-    const known=input.closest(
-      '#composer-background,[data-testid="composer-background"],'+
-      '[data-testid="composer-root"],form[data-type="unified-composer"]'
-    );
-    if(known instanceof HTMLElement&&box(known))return known;
-    let candidate=null;
-    for(let n=input.parentElement,depth=0;
-        n&&n!==document.body&&depth<12;n=n.parentElement,depth++){
-      const r=box(n);
-      if(!r||r.height>innerHeight*.64||r.width>innerWidth*.90)break;
-      const controls=n.querySelector(
-        '[data-composer-trailing-controls="true"],'+
-        'button[aria-label="Stop"],button[aria-label*="send" i],'+
-        'button[aria-label*="voice" i],button[data-testid="composer-submit-button"]'
-      );
-      if(!controls)continue;
-      candidate=n;
-      if(n.matches('form,[class*="composer"],[class*="rounded"]'))break;
-    }
-    return candidate;
-  }
-  function markComposerDock(composer){
-    // The dark bottom band is usually an outer footer/scroll dock, not the
-    // input itself. Mark only wide ancestors of the editor and never body/main.
-    const next=new Set();
-    if(composer){
-      const r=box(composer);
-      for(let n=composer.parentElement,d=0;n&&n!==document.body&&d<8;n=n.parentElement,d++){
-        const b=box(n);
-        if(!b||!r||n.matches('main,[role="main"],#main,#sidebar')||
-           n.hasAttribute("data-pui-main-stage")||
-           n.querySelector('[data-message-author-role="assistant"]'))break;
-        if(b.width>=r.width*1.12 && b.width>=Math.min(750,innerWidth*.7) &&
-           b.top>=innerHeight*.42 && b.height<=innerHeight*.46){
-          next.add(n);
-        }
-      }
-    }
-    replaceMarks(composerDocks,next,"data-pui-composer-dock");
-  }
   function findHeader(sidebar){
     const nodes=[];
     const tagged=document.querySelector('[data-petrifyui-topbar]');
@@ -254,14 +209,6 @@
     ));
     html.style.setProperty("--pui-panel-left",Math.round(left)+"px");
     html.style.setProperty("--pui-panel-width",Math.round(width)+"px");
-  }
-  function observeParent(previous,node,callback){
-    previous?.disconnect();
-    const parent=node?.parentElement;
-    if(!parent)return null;
-    const observer=new MutationObserver(callback);
-    observer.observe(parent,{childList:true});
-    return observer;
   }
   function update(){
     if(document.hidden)return;
