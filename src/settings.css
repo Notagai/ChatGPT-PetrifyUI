@@ -1,0 +1,84 @@
+/* PetrifyUI 1.33.0 | Settings workspace.
+ * Isolated by the settings adapter. No effect on conversations or menus.
+ * Settings retains its native layout, scrolling, controls and interactions. */
+html[data-petrifyui-active][data-pui-settings] {
+  --pui-settings-ink:#39291d;
+  --pui-settings-muted:#75573d;
+  --pui-settings-paper:#e8c69b;
+}
+html[data-petrifyui-active][data-pui-settings] body {
+  background-color:#105e84 !important;
+  background-image:linear-gradient(#0520311c,#071f3430),var(--pui-ambient-art,none) !important;
+  background-attachment:fixed,fixed !important;
+  background-position:center,center !important;
+  background-size:cover,cover !important;
+}
+/* A paper surface on the existing right-hand main, not a new modal.
+   Preserve dimensions and scroll position, unlike fixed viewport tricks. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main] {
+  --text-primary:var(--pui-settings-ink);
+  --text-secondary:var(--pui-settings-muted);
+  --token-text-primary:var(--pui-settings-ink);
+  --color-text-primary:var(--pui-settings-ink);
+  --app-color-text-foreground:var(--pui-settings-ink);
+  --app-color-text-foreground-secondary:var(--pui-settings-muted);
+  color:var(--pui-settings-ink) !important;
+  background-color:var(--pui-settings-paper) !important;
+  background-image:linear-gradient(#fff6df21,#aa794c17),var(--pui-stage-paper,none) !important;
+  background-repeat:no-repeat,repeat !important;
+  background-size:100% 100%,256px 256px !important;
+  border:2px solid #916a48 !important;
+  border-radius:9px !important;
+  box-shadow:0 6px 14px #061d3150,inset 0 0 0 2px #fff3d58c !important;
+}
+/* Style settings section labels and secondary help text without touching
+   svg icons, code, button internals, or editable text fields. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is(h1,h2,h3,h4,label) {
+  color:#39291d !important;
+  -webkit-text-fill-color:#39291d !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is(p,[class*="text-secondary"],[class*="text-tertiary"]):not(:is(button *,a *,input,textarea,code *,pre *)) {
+  color:#75573d !important;
+  -webkit-text-fill-color:#75573d !important;
+}
+/* Native dark settings cards otherwise become black rectangles on paper.
+   Scope only to actual surface cards (bordered or rounded containers),
+   not every div or toolbar. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is([class*="rounded-xl"][class*="border"],[class*="rounded-2xl"][class*="border"],
+      [role="group"][class*="border"]) {
+  background-color:#e4bd91 !important;
+  background-image:none !important;
+  border-color:#a47750 !important;
+  color:#39291d !important;
+}
+/* Dropdowns and actionable controls must remain visibly interactive. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is(button,[role="combobox"]):not([aria-label*="close" i]) {
+  border-color:#9e7652;
+}
+/* Wood settings navigation. The native nav controls continue to handle
+   highlight, keyboard focus, scrolling and click events. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar] {
+  background-color:#61402d !important;
+  background-image:var(--pui-resolved-wood,none) !important;
+  background-size:512px 512px !important;
+  background-repeat:repeat !important;
+  color:#f3dfbf !important;
+  border:2px solid #b78b5f !important;
+  border-radius:10px !important;
+  box-shadow:3px 5px 8px #08243b80,inset 0 0 0 1px #f1c89045 !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar]
+  :is(a,button,span) {
+  color:#f3dfbf !important;
+}
+/* Keep focus rings and native selected-state backgrounds; do not invent
+   a replacement hover/selection experience. */
+@media(max-width:899px) {
+  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main] {
+    border-radius:6px !important;
+  }
+}
