@@ -3,11 +3,12 @@
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
   "description": "Experimental shared DOM adapter and local diagnostics",
-  "version": "1.32.5",
+  "version": "1.33.0",
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://fonts.googleapis.com/*",
@@ -34,7 +35,9 @@
       "js": [
         "src/sidebar.js",
         "src/core.js",
-        "src/stage.js"
+        "src/stage.js",
+        "src/settings.js",
+        "src/custom-backgrounds.js"
       ],
       "css": [
         "src/sidebar.css",
@@ -42,7 +45,8 @@
         "src/composer.css",
         "src/stage.css",
         "src/content-palette.css",
-        "src/sidebar-panel.css"
+        "src/sidebar-panel.css",
+        "src/settings.css"
       ],
       "run_at": "document_start"
     },
