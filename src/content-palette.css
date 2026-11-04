@@ -388,90 +388,75 @@ html[data-petrifyui-active] button[aria-label="Scroll to bottom"] svg :is(path,l
 }
 
 
-/* v1.30.8: Voice action, confirmed from saved composer DOM:
-   button[aria-label="Start Voice"] > svg.Icon-X4VkKC > use[fill=currentColor].
-   Native .text-composer-primary resolves too dark on the walnut circle.
-   Keep Dictate microphone separate; preserve all control sizing/states. */
-html[data-petrifyui-active] form[data-chatgpt-composer]
-  button[aria-label="Start Voice" i] {
-  background-color:#68442d !important;
+/* v1.31.0: one authoritative rule for interactive composer action glyphs.
+   The saved snapshot contains Send but no Voice/Stop; use semantic labels
+   and data-testid fallbacks for the transient control states. */
+html[data-petrifyui-active] :is(
+  form[data-chatgpt-composer],
+  [data-composer-trailing-controls="true"]
+) :is(
+  button[aria-label*="voice" i],
+  button[aria-label="Stop" i],
+  button[data-testid="composer-speech-button"],
+  button[data-testid="composer-stop-button"],
+  button[data-testid="stop-button"]
+) {
+  --color-text-composer-primary:#fff4de !important;
+  --color-text-primary:#fff4de !important;
+  --app-color-icon-primary:#fff4de !important;
   color:#fff4de !important;
-  -webkit-text-fill-color:#fff4de !important;
-}
-html[data-petrifyui-active] form[data-chatgpt-composer]
-  button[aria-label="Start Voice" i] > svg {
-  color:#fff4de !important;
-  fill:#fff4de !important;
-}
-html[data-petrifyui-active] form[data-chatgpt-composer]
-  button[aria-label="Start Voice" i] > svg > use {
-  color:#fff4de !important;
-  fill:currentColor !important;
-}
-
-
-/* v1.30.9 | Paint-only stop control: ChatGPT uses an SVG sprite for the
-   Stop square, unlike the ordinary send arrow. Match the exact aria label
-   so no other brown buttons get a forced icon fill. */
-html[data-petrifyui-active] form[data-chatgpt-composer] button[aria-label="Stop" i] {
   background-color:#68442d !important;
   background-image:none !important;
-  border:1px solid #a57c55 !important;
-  color:#fff4de !important;
-  -webkit-text-fill-color:#fff4de !important;
 }
-html[data-petrifyui-active] form[data-chatgpt-composer] button[aria-label="Stop" i] svg {
-  color:#fff4de !important;
-}
-html[data-petrifyui-active] form[data-chatgpt-composer] button[aria-label="Stop" i] svg use {
+html[data-petrifyui-active] :is(
+  form[data-chatgpt-composer],
+  [data-composer-trailing-controls="true"]
+) :is(
+  button[aria-label*="voice" i],
+  button[aria-label="Stop" i],
+  button[data-testid="composer-speech-button"],
+  button[data-testid="composer-stop-button"],
+  button[data-testid="stop-button"]
+) :is(svg,svg use) {
   color:#fff4de !important;
   fill:#fff4de !important;
 }
-/* Only the filled stop-square glyph gets a solid cream fill. */
-html[data-petrifyui-active] form[data-chatgpt-composer] button[aria-label="Stop" i]
-  svg :is(rect,path)[fill]:not([fill="none"]) {
+html[data-petrifyui-active] :is(
+  form[data-chatgpt-composer],
+  [data-composer-trailing-controls="true"]
+) :is(
+  button[aria-label*="voice" i],
+  button[aria-label="Stop" i],
+  button[data-testid="composer-speech-button"],
+  button[data-testid="composer-stop-button"],
+  button[data-testid="stop-button"]
+) svg :is(path,rect,polygon)[fill]:not([fill="none"]) {
   fill:#fff4de !important;
 }
-
-/* The two floating controls aren't part of the transcript's flow.
-   Keep them away from the bottom edge without changing their native
-   absolute positioning or overriding ChatGPT's state/opacity behavior.
-   CSS individual translate composes with native translateX(50%). */
-html[data-petrifyui-active] [class*="footer-"]
-  button[aria-label="Scroll to bottom"] {
-  translate:0 -16px;
-  background:#e8c69b !important;
-  border-color:#986a43 !important;
-  color:#5b3922 !important;
-}
-html[data-petrifyui-active] [class*="footer-"]
-  button[aria-label="Scroll to bottom"] svg {
-  color:#5b3922 !important;
-}
-/* Code blocks own separate scroll buttons. Don't let the global footer
-   styling move them or add an opaque background outside the code panel. */
-html[data-petrifyui-active] [data-code-block="true"]
-  button[aria-label="Scroll to bottom"] {
-  translate:none;
-  color:#f6e3c6 !important;
-  background:#49372c !important;
-  border-color:#7f5c41 !important;
+/* Voice controls can be CSS bar animations rather than a single SVG.
+   Recolor the bars only; never set backgrounds on every child span. */
+html[data-petrifyui-active] :is(
+  form[data-chatgpt-composer],
+  [data-composer-trailing-controls="true"]
+) button[aria-label*="voice" i]
+  :is([class*="WaveformBar"],[class*="waveform-bar"],[data-waveform-bar]) {
+  background-color:#fff4de !important;
 }
 
-/* The transcript action row's More actions control must have a solid
-   surface: a transparent circle allowed text below it to show through.
-   A small bottom inset keeps the action row clear of the next message. */
+/* Revert the earlier arbitrary floating-control movement and action-row
+   bottom padding. Those do not fix overlay ownership and caused further
+   intersections in the screenshots. Keep their native positions. */
+html[data-petrifyui-active] [class*="footer-"]
+  button[aria-label="Scroll to bottom"] {
+  translate:none !important;
+}
 html[data-petrifyui-active] .turn-action-controls {
-  padding-bottom:10px !important;
+  padding-bottom:0 !important;
 }
+/* When present, ensure the more-actions circle is not translucent over
+   nearby prose. Button geometry and z-index stay native. */
 html[data-petrifyui-active] .turn-action-controls
   button[aria-label="More actions"] {
   background-color:#e8c69b !important;
-  border:1px solid #986a43 !important;
-  color:#65442f !important;
-  -webkit-text-fill-color:#65442f !important;
-}
-html[data-petrifyui-active] .turn-action-controls
-  button[aria-label="More actions"] :is(svg,svg use) {
   color:#65442f !important;
 }
