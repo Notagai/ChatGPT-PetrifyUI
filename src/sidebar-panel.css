@@ -65,20 +65,6 @@ html[data-petrifyui-active] [data-pui-floating-sidebar]
   color:var(--pui-cabinet-highlight) !important;
   text-shadow:0 1px 2px #1a100ab0 !important;
 }
-/* Native active chat rows get a carved inset treatment instead of a flat
-   translucent gray rectangle; preserve their link focus/click behavior. */
-html[data-petrifyui-active] [data-pui-floating-sidebar]
-  a[aria-current="page"],
-html[data-petrifyui-active] [data-pui-floating-sidebar]
-  a[data-active="true"] {
-  background-color:#d7aa7550 !important;
-  box-shadow:inset 2px 2px 4px #27160d70,inset 0 0 0 1px #e7ba8659 !important;
-  border-radius:6px !important;
-}
-html[data-petrifyui-active] [data-pui-floating-sidebar]
-  a[href]:hover:not([aria-current="page"]) {
-  background-color:#e4bc8620 !important;
-}
 /* Constrained viewports: avoid bulky outer shadows on the compact rail. */
 @media (max-width:899px) {
   html[data-petrifyui-active] [data-pui-floating-sidebar] {
@@ -99,7 +85,7 @@ html[data-petrifyui-low-power][data-petrifyui-active]
    account footer. Inset the NAV itself instead of drawing full-bleed wood.
    Keep its native scroll content and event handlers. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-  margin:8px 10px 74px !important;
+  margin:8px 10px 88px !important;
   min-height:0 !important;
   width:auto !important;
   flex-shrink:1 !important;
@@ -168,7 +154,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 /* Compact layouts keep native mobile/mini navigation geometry. */
 @media(max-width:899px) {
   html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-    margin:5px 5px 60px !important;
+    margin:5px 5px 68px !important;
     border-radius:6px !important;
   }
   html[data-petrifyui-active] nav[data-pui-floating-sidebar]
@@ -178,3 +164,23 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
     bottom:5px !important;
   }
 }
+
+
+/* v1.32.3: ChatGPT paints an opaque backdrop behind the cabinet:
+   .app-shell-sidebar > div.absolute.inset-0.bg-surface.
+   Removing this paint reveals the ocean BETWEEN three wood panels.
+   Never touch panel geometry or button hover/selected states. */
+html[data-petrifyui-active] .app-shell-left-panel:has(nav[data-pui-floating-sidebar]),
+html[data-petrifyui-active] .app-shell-sidebar:has(nav[data-pui-floating-sidebar]),
+html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] .app-shell-sidebar:has(nav[data-pui-floating-sidebar])
+  > div.absolute.inset-0.bg-surface {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* Header/nav gap is 8px, nav/account gap is reserved by the nav's
+   bottom margin, account panel stays inset 10px from its outer edge.
+   Do not implement selected/hover state styling here. */
