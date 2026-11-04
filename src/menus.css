@@ -406,3 +406,89 @@ html[data-petrifyui-active] [data-pui-menu-kind="effort"] :is(
   background-color:#f6e2c3 !important;
   border-color:#754e32 !important;
 }
+
+
+/* v1.21: Full Add and slash-command surfaces. The native gray frame around
+   an Add menu is a separate portal shell; leave sizing and hit targets alone. */
+html[data-petrifyui-active] [data-pui-menu-shell] {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  border-color:transparent !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+)[data-petrifyui-menu] {
+  --pui-menu-ink:#392819;
+  --pui-menu-secondary:#684a33;
+  color:#392819 !important;
+  color-scheme:light;
+  background-color:#e8c99f !important;
+  background-image:var(--pui-resolved-paper,none) !important;
+  background-size:256px 256px !important;
+  background-repeat:repeat !important;
+  border:3px solid #76502e !important;
+  border-radius:5px !important;
+  box-shadow:inset 0 0 0 2px #bd965f,2px 3px 0 #25170f55 !important;
+  position:relative;
+  isolation:isolate;
+}
+/* Coronation motif: tiny gold crowns entwined with pixel-green leaves.
+   It is decorative and cannot intercept clicks or scrolling. */
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+)[data-petrifyui-menu]::before,
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+)[data-petrifyui-menu]::after {
+  content:"";
+  position:absolute;
+  left:3px;
+  right:3px;
+  height:16px;
+  background-image:var(--pui-coronation-vine,none);
+  background-size:128px 16px;
+  background-position:left center;
+  background-repeat:repeat-x;
+  image-rendering:pixelated;
+  z-index:2;
+  pointer-events:none;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+)[data-petrifyui-menu]::before {top:-2px;}
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+)[data-petrifyui-menu]::after {bottom:-2px;transform:scaleY(-1);}
+/* Clear inner dark scroll panels, not the real item icons or previews. */
+html[data-petrifyui-active] :is(
+  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
+) :is(div,section,nav,ul,ol,footer,[role="group"],[role="presentation"],
+  [class*="overflow-y-auto"],[class*="overflow-y-scroll"]
+):not(button):not([role="menuitem"]):not([role="option"]):not(:has(img,video,canvas)) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="slash"] :is(
+  button,[role="menuitem"],[role="option"],[cmdk-item],a
+) {
+  color:#392819 !important;
+  -webkit-text-fill-color:#392819 !important;
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="slash"] :is(
+  button,[role="menuitem"],[role="option"],[cmdk-item],a
+):is(:hover,:focus-visible,[data-highlighted],[aria-selected="true"]) {
+  background-color:#c4976444 !important;
+  box-shadow:inset 3px 0 0 #895e3c !important;
+}
+html[data-petrifyui-active] [data-pui-menu-kind="slash"] :is(
+  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],
+  [data-slot*="description"],small
+) {
+  color:#624630 !important;
+  -webkit-text-fill-color:#624630 !important;
+  opacity:1 !important;
+}
