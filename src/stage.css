@@ -15,7 +15,7 @@ html[data-petrifyui-active] body {
   background-color:#105e84 !important;
   background-image:
     linear-gradient(rgba(5,32,49,.11),rgba(7,31,52,.19)),
-    var(--pui-ambient-art,none) !important;
+    var(--pui-custom-scene,var(--pui-ambient-art,none)) !important;
   background-position:center center,center center !important;
   background-size:cover,cover !important;
   background-attachment:fixed,fixed !important;
@@ -67,7 +67,7 @@ html[data-petrifyui-active][data-pui-stage-ready]
   background-color:var(--pui-stage-paper);
   background-image:
     linear-gradient(#fff6df21,#aa794c17),
-    var(--pui-stage-paper,none);
+    var(--pui-custom-paper,var(--pui-stage-paper,none));
   background-position:center,0 0;
   background-size:100% 100%,256px 256px;
   background-repeat:no-repeat,repeat;
@@ -212,7 +212,7 @@ html[data-petrifyui-active] [data-pui-main-stage]
   --pui-paper:#e1bd90;
   background-color:#e1bd90 !important;
   background-image:linear-gradient(#fff3d018,#93643b1c),
-    var(--pui-stage-paper,none) !important;
+    var(--pui-custom-paper,var(--pui-stage-paper,none)) !important;
   background-size:100% 100%,256px 256px !important;
   background-repeat:no-repeat,repeat !important;
   border:2px solid #a67b51 !important;
@@ -257,7 +257,7 @@ html[data-petrifyui-active] [data-pui-floating-sidebar]::before {
   border:2px solid #9e7450;
   border-radius:9px;
   background-color:var(--pui-stage-wood);
-  background-image:var(--pui-resolved-wood,none);
+  background-image:var(--pui-custom-wood,var(--pui-resolved-wood,none));
   background-position:0 0;
   background-size:512px 512px;
   background-repeat:repeat;
@@ -301,7 +301,7 @@ html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached]::b
   border:2px solid #9e7450;
   border-radius:8px;
   background-color:var(--pui-stage-wood);
-  background-image:var(--pui-resolved-wood,none);
+  background-image:var(--pui-custom-wood,var(--pui-resolved-wood,none));
   background-position:0 0;
   background-size:512px 512px;
   background-repeat:repeat;
@@ -390,7 +390,7 @@ html[data-petrifyui-active] [data-pui-stage-composer] {
   color:#3e2c20 !important;
   color-scheme:light;
   background-color:#e1bd90 !important;
-  background-image:linear-gradient(#fff3d01a,#93643b1b),var(--pui-stage-paper,none) !important;
+  background-image:linear-gradient(#fff3d01a,#93643b1b),var(--pui-custom-paper,var(--pui-stage-paper,none)) !important;
   background-size:100% 100%,256px 256px !important;
   background-repeat:no-repeat,repeat !important;
   background-position:center,0 0 !important;
@@ -422,7 +422,7 @@ html[data-petrifyui-active] :is([data-pui-flow-shell],[class*="bg-black"],[class
    before our JS callback runs. Never style the whole footer as paper. */
 html[data-petrifyui-active] :is(#composer-background,[data-testid="composer-background"],[data-testid="composer-root"],form[data-type="unified-composer"]) {
   background-color:#e1bd90 !important;
-  background-image:var(--pui-stage-paper,none) !important;
+  background-image:var(--pui-custom-paper,var(--pui-stage-paper,none)) !important;
   background-size:256px 256px !important;
   background-repeat:repeat !important;
 }
@@ -592,7 +592,7 @@ html[data-petrifyui-active] :is(
   color:#34251a !important;
   color-scheme:light;
   background-color:#e8c69b !important;
-  background-image:linear-gradient(180deg,#ffebc936,#986e4014),var(--pui-stage-paper,none) !important;
+  background-image:linear-gradient(180deg,#ffebc936,#986e4014),var(--pui-custom-paper,var(--pui-stage-paper,none)) !important;
   background-size:100% 100%,256px 256px !important;
   background-repeat:no-repeat,repeat !important;
   border:2px solid #a5774c !important;
