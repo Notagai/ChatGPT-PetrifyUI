@@ -427,39 +427,23 @@ html[data-petrifyui-active] :is(
   background-image:var(--pui-resolved-paper,none) !important;
   background-size:256px 256px !important;
   background-repeat:repeat !important;
-  border:3px solid #76502e !important;
-  border-radius:5px !important;
-  box-shadow:inset 0 0 0 2px #bd965f,2px 3px 0 #25170f55 !important;
+  border:2px solid #76502e !important;
+  border-radius:4px !important;
+  box-shadow:0 2px 0 #25170f35 !important;
   position:relative;
   isolation:isolate;
 }
-/* Coronation motif: tiny gold crowns entwined with pixel-green leaves.
-   It is decorative and cannot intercept clicks or scrolling. */
+/* Plain border only: never draw pseudo-elements across scrollable menu rows. */
 html[data-petrifyui-active] :is(
   [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
 )[data-petrifyui-menu]::before,
 html[data-petrifyui-active] :is(
   [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
 )[data-petrifyui-menu]::after {
-  content:"";
-  position:absolute;
-  left:3px;
-  right:3px;
-  height:16px;
-  background-image:var(--pui-coronation-vine,none);
-  background-size:128px 16px;
-  background-position:left center;
-  background-repeat:repeat-x;
-  image-rendering:pixelated;
-  z-index:2;
-  pointer-events:none;
+  content:none !important;
+  background:none !important;
+  border:0 !important;
 }
-html[data-petrifyui-active] :is(
-  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
-)[data-petrifyui-menu]::before {top:-2px;}
-html[data-petrifyui-active] :is(
-  [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
-)[data-petrifyui-menu]::after {bottom:-2px;transform:scaleY(-1);}
 /* Clear inner dark scroll panels, not the real item icons or previews. */
 html[data-petrifyui-active] :is(
   [data-pui-menu-kind="add"],[data-pui-menu-kind="slash"]
