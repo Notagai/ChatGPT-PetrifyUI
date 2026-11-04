@@ -90,8 +90,10 @@
       'button,[role="option"],[role="menuitem"],[cmdk-item],span'
     );
     let scanned=0;
-    for(const el of anchors){
-      if(scanned++>2600)break;
+    // Popovers are typically mounted near the end of the document. Search
+    // backwards so a long conversation cannot consume the bounded scan first.
+    for(let index=anchors.length-1;index>=0&&scanned<2600;index--,scanned++){
+      const el=anchors[index];
       const text=(el.textContent||"").trim();
       if(text!=="Dictate"&&text!=="Read aloud"&&text!=="Feedback")continue;
       // A text label may be narrower than geometry()'s 100px popup limit.
