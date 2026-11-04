@@ -65,45 +65,67 @@
     return best;
   }
   function findSlashMenu(){
-    // ChatGPT may mount slash suggestions inside the composer itself.
-    // Use the visible collection of command labels, not a portal role.
-    const commands=["Dictate","Feedback","Model","Read aloud","Study"];
-    const countLabels=el=>{
-      const text=(el.textContent||"");
-      return commands.filter(label=>text.includes(label)).length;
-    };
-    let best=null,bestArea=Infinity;
-    const consider=el=>{
-      if(!(el instanceof HTMLElement)||!visiblePopup(el,1100,800))return;
-      if(countLabels(el)<4)return;
-      const r=geometry(el);
-      if(!r||r.width<230||r.height<125)return;
-      const a=r.width*r.height;
-      // The tightest menu-sized element containing the command collection.
-      if(a<bestArea){best=el;bestArea=a;}
-    };
-    for(const el of document.querySelectorAll(OPEN))consider(el);
-    if(best)return best;
-    // Slash rows can be div/span elements instead of semantic menu items.
-    // This runs after input/keyboard events, never on streaming messages.
-    const anchors=document.querySelectorAll(
-      'button,[role="option"],[role="menuitem"],[cmdk-item],span'
+    // Slash suggestions are filtered dynamically while ChatGPT streams.
+    // Sometimes only Dictate / Feedback / Read aloud exist. Do NOT require
+    // the original five entries or assume a portal outside the composer.
+    const commands=new Set(["Dictate","Feedback","Model","Read aloud","Study"]);
+    const editor=document.querySelector(
+      '#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"][role="textbox"]'
     );
-    let scanned=0;
-    // Popovers are typically mounted near the end of the document. Search
-    // backwards so a long conversation cannot consume the bounded scan first.
-    for(let index=anchors.length-1;index>=0&&scanned<2600;index--,scanned++){
-      const el=anchors[index];
-      const text=(el.textContent||"").trim();
-      if(text!=="Dictate"&&text!=="Read aloud"&&text!=="Feedback")continue;
-      // A text label may be narrower than geometry()'s 100px popup limit.
+    const er=editor?.getBoundingClientRect();
+    // Require a real, currently visible composer to avoid confusing chat text
+    // about these commands with the menu itself.
+    if(!er||er.bottom<innerHeight*.3)return null;
+    const labels=[];
+    const candidates=document.querySelectorAll(
+      '[role="menuitem"],[role="option"],[cmdk-item],button,span,p,div'
+    );
+    let checked=0;
+    for(let index=candidates.length-1;index>=0&&checked<4400;index--,checked++){
+      const el=candidates[index];
+      if(!(el instanceof HTMLElement)||!el.isConnected)continue;
+      const name=(el.textContent||"").replace(/\s+/g," ").trim();
+      if(!commands.has(name))continue;
+      // Ignore layout wrappers with a nested matching label.
+      if([...el.children].some(child=>
+        commands.has((child.textContent||"").replace(/\s+/g," ").trim())))continue;
       const r=el.getBoundingClientRect();
       if(r.width<2||r.height<2||r.bottom<0||r.top>innerHeight)continue;
-      for(let p=el.parentElement,depth=0;p&&depth<12;p=p.parentElement,depth++){
-        if(p===document.body)break;
-        consider(p);
+      // Visible menu is immediately above or overlapping the composer,
+      // not a random earlier message using the same word.
+      if(r.bottom<er.top-780||r.top>er.bottom+24)continue;
+      labels.push({el,name});
+      if(labels.length>30)break;
+    }
+    if(!labels.length)return null;
+    let best=null,bestScore=-Infinity;
+    const seen=new Set();
+    for(const {el} of labels){
+      for(let p=el.parentElement,depth=0;p&&depth<12&&p!==document.body;p=p.parentElement,depth++){
+        if(seen.has(p))continue;
+        seen.add(p);
+        if(!(p instanceof HTMLElement))continue;
+        const r=p.getBoundingClientRect();
+        if(r.width<220||r.width>Math.min(1100,innerWidth*.99)||
+          r.height<85||r.height>Math.min(780,innerHeight*.8)||
+          r.right<=0||r.left>=innerWidth||r.bottom<=0||r.top>=innerHeight)continue;
+        if(r.bottom<er.top-65 || r.top>er.bottom+12)continue;
+        const names=new Set();
+        for(const label of labels)if(p.contains(label.el))names.add(label.name);
+        // Only TWO visible command names are required.
+        if(names.size<2)continue;
+        const style=getComputedStyle(p);
+        if(style.display==="none"||style.visibility==="hidden")continue;
+        const painted=style.backgroundColor!=="rgba(0, 0, 0, 0)"&&
+          style.backgroundColor!=="transparent";
+        const role=p.matches('[role="menu"],[role="listbox"],[data-cmdk-list],'+
+          '[data-radix-popper-content-wrapper],[data-side],[data-slot*="popover"]');
+        // Prefer the painted outer menu, not a single row or giant ancestor.
+        const score=names.size*14+(painted?28:0)+(role?20:0)+
+          (parseFloat(style.borderTopLeftRadius)>6?12:0)-
+          Math.max(0,r.height-450)*.12-depth*1.8;
+        if(score>bestScore){best=p;bestScore=score;}
       }
-      if(best)break;
     }
     return best;
   }
