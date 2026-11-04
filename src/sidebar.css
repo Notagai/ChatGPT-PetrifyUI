@@ -62,13 +62,7 @@ html[data-petrifyui-active] :is(
   #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
   [data-testid="sidebar-container"]
 ) a[href^="/c/"] { color:#f2dfc4 !important; }
-html[data-petrifyui-active] :is(
-  #stage-slideover-sidebar,#sidebar,[data-testid="sidebar"],
-  [data-testid="sidebar-container"]
-) a[href^="/c/"]:is(:hover,[aria-current="page"]) {
-  background-color:rgba(214,166,111,.13) !important;
-  border-radius:4px !important;
-}
+/* Hover and current-chat highlighting remain entirely native. */
 /* Safe native focus outline. The top header/sidebar toggle and any tooltip
    stay entirely under ChatGPT's own styling and event handlers. */
 html[data-petrifyui-active] :is(
