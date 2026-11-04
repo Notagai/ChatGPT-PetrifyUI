@@ -670,3 +670,51 @@ html[data-petrifyui-active] :is(
 ):not(:disabled) svg {
   color:#fff0d4 !important;
 }
+
+
+/* v1.29.6: list markers and inline code, scoped to actual assistant turns.
+   The stage marker can be mounted on a sibling or a narrower column, so
+   requiring [data-pui-main-stage] made the previous overrides miss replies. */
+html[data-petrifyui-active] :is(
+  [data-message-author-role="assistant"],
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+) :is(ul,ol) > li {
+  --tw-prose-bullets:#67452c !important;
+  --tw-prose-counters:#67452c !important;
+  color:#34251a !important;
+}
+html[data-petrifyui-active] :is(
+  [data-message-author-role="assistant"],
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+) :is(ul,ol) > li::marker {
+  color:#67452c !important;
+  -webkit-text-fill-color:#67452c !important;
+}
+html[data-petrifyui-active] :is(
+  [data-message-author-role="assistant"],
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+) :is(ul,ol) > li::before {
+  color:#67452c !important;
+  -webkit-text-fill-color:#67452c !important;
+}
+/* Inline snippets and file paths are ink on solid light tan. This is not
+   a code-block rule: only <code> outside <pre> qualifies. */
+html[data-petrifyui-active] :is(
+  [data-message-author-role="assistant"],
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+) code:not(pre code):not([data-testid="code-block"] code):not([class*="code-block"] code) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+  background:#dfb98a !important;
+  background-image:none !important;
+  box-shadow:inset 0 0 0 1px #a5774c66 !important;
+  text-shadow:none !important;
+}
+/* Preserve readable inline-code text even when ChatGPT uses nested spans. */
+html[data-petrifyui-active] :is(
+  [data-message-author-role="assistant"],
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+) code:not(pre code):not([data-testid="code-block"] code):not([class*="code-block"] code) :is(span,b,strong) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
