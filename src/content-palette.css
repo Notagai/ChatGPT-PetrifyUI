@@ -222,3 +222,12 @@ html[data-petrifyui-active] [data-pui-composer-dock] {
   background-image:none !important;
   box-shadow:none !important;
 }
+
+
+/* The saved DOM confirms the form is inside several data-pui-flow-shell
+   ancestors. They are structural, not the actual parchment surface. The
+   previous clear rule only worked when nested under data-pui-main-stage. */
+html[data-petrifyui-active] [data-pui-flow-shell]:not([data-petrifyui-composer]):not([data-pui-stage-composer]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
