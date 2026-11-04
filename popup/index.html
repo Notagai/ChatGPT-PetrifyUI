@@ -10,12 +10,20 @@
   </head>
   <body>
     <main>
-      <div class="brand"><span class="mark" aria-hidden="true">▥</span><div><h1>PetrifyUI</h1><p>FLOATING STAGE · 1.31.0</p></div></div>
+      <div class="brand"><span class="mark" aria-hidden="true">▥</span><div><h1>PetrifyUI</h1><p>FLOATING STAGE · 1.33.0</p></div></div>
       <label class="switch-row" for="enabled">
         <span><strong>PetrifyUI theme</strong><small>Style only. No content changes.</small></span>
         <input id="enabled" type="checkbox" checked />
       </label>
       <p class="hint">Toggle off to compare with the original. Refresh ChatGPT after updating extension files.</p>
+      <section class="background-settings" aria-labelledby="background-title">
+        <h2 id="background-title">Custom backgrounds</h2>
+        <p class="hint">Images stay on this device. Uploads are resized for performance.</p>
+        <div class="background-row"><label for="background-scene">Ocean / outside</label><input id="background-scene" type="file" accept="image/png,image/jpeg,image/webp" /><button type="button" data-reset-background="scene">Reset</button></div>
+        <div class="background-row"><label for="background-wood">Wood panels</label><input id="background-wood" type="file" accept="image/png,image/jpeg,image/webp" /><button type="button" data-reset-background="wood">Reset</button></div>
+        <div class="background-row"><label for="background-paper">Parchment</label><input id="background-paper" type="file" accept="image/png,image/jpeg,image/webp" /><button type="button" data-reset-background="paper">Reset</button></div>
+        <p id="background-status" role="status" aria-live="polite">Using bundled backgrounds.</p>
+      </section>
       <div class="diagnostics"><button id="diagnose" type="button">Inspect active ChatGPT tab</button><p id="diagnose-status" role="status" aria-live="polite">On-demand only. No message content collected.</p><textarea id="diagnose-report" aria-label="Structural DOM report" readonly hidden rows="8" spellcheck="false"></textarea></div>
       <p class="footer">Local-only • chatgpt.com</p>
     </main>
