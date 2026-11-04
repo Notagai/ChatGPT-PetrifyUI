@@ -533,3 +533,33 @@ html[data-petrifyui-active] [data-pui-main-stage] :is(.markdown,.prose,[class*="
   -webkit-text-fill-color:#503521 !important;
   background-color:#a77b4d2b !important;
 }
+
+
+/* v1.29.4: bullet color regression. Lists can be rendered outside the
+   .markdown/.prose wrapper (e.g. rich response blocks). Target assistant
+   message lists directly, without recoloring menu options or code tokens. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-message-author-role="assistant"] :is(ul,ol) > li::marker,
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+  :is(ul,ol) > li::marker {
+  color:#79502f !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-message-author-role="assistant"] :is(ul,ol) > li,
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+  :is(ul,ol) > li {
+  --tw-prose-bullets:#79502f;
+  --tw-prose-counters:#79502f;
+}
+/* Native list utility implementations may use their own marker pseudo
+   element. Match the direct list item, never arbitrary child spans. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-message-author-role="assistant"] :is(ul,ol) > li::before,
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])
+  :is(ul,ol) > li::before {
+  color:#79502f !important;
+  -webkit-text-fill-color:#79502f !important;
+}
