@@ -531,3 +531,22 @@ html[data-petrifyui-active] [data-pui-main-stage]
   svg:not([data-code-block] svg) {
   color:#694a31 !important;
 }
+
+
+/* v1.31.3: The parchment frame is a FIXED ::before background, while
+   .thread-scroll-container is an independent overflow-y scrollport.
+   Adding message padding does not stop intermediate scroll positions
+   crossing the frame. Clip the visible scrollport at the same 12px
+   viewport inset as the frame. Unlike mask-image, clip-path does not
+   fade pixels or reveal the blue ocean through partially transparent text.
+   Keep scrolling, layout, overflow and native footer geometry unchanged. */
+html[data-petrifyui-active][data-pui-stage-ready]
+  [data-pui-main-stage] .thread-scroll-container {
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+  clip-path:inset(12px 0 12px 0);
+}
+/* The clip above is on the viewport, not on transcript content:
+   absolute/sticky composer controls inside the viewport retain their
+   native relative placement; only artwork crossing the outer frame edge
+   is discarded. */
