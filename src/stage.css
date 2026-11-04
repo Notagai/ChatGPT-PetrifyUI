@@ -1,196 +1,302 @@
-/* PetrifyUI floating ocean stage, v1.28.2. Experimental branch only.
-   This is a visual skin, not a replacement chat interface. */
-/* Supplied scenic image has been resampled into a lightweight palette-based
-   pixel image for bundling as a local extension asset. */
+/* PetrifyUI experimental floating ocean layout v1.28.3.
+   One coherent stage stylesheet, loaded AFTER sidebar/composer CSS.
+   Paint only; never replace ChatGPT content or controls. */
 html[data-petrifyui-active] {
-  background-color:#0a4168 !important;
+  --pui-ink:#39291d;
+  --pui-ink-muted:#6a503b;
+  --pui-paper:#efd3ab;
+  --pui-paper-inset:#dfbb90;
+  --pui-walnut:#49372c;
+  --pui-code:#49372c;
+  --pui-code-ink:#f6e3c6;
+  background-color:#104b74 !important;
 }
 html[data-petrifyui-active] body {
-  background-color:#0d638e !important;
+  background-color:#115a84 !important;
   background-image:
-    linear-gradient(rgba(8,29,47,.10),rgba(6,26,44,.26)),
+    linear-gradient(rgba(4,25,43,.12),rgba(5,28,51,.28)),
     var(--pui-ambient-art,none) !important;
   background-size:cover,cover !important;
   background-position:center,center !important;
-  background-repeat:no-repeat !important;
   background-attachment:fixed,fixed !important;
+  background-repeat:no-repeat !important;
 }
-/* Native app containers should not cover the scene with their old dark
-   background. Scope to layout-level shells only, never messages or popovers. */
-html[data-petrifyui-active] :is(
-  #__next,#root,[data-testid="chatgpt-app"],[data-testid="chat-layout"],
-  [data-testid="conversation-layout"]
-) {
+html[data-petrifyui-active] :is(#__next,#root,[data-testid="chatgpt-app"],
+  [data-testid="chat-layout"],[data-testid="conversation-layout"]) {
   background-color:transparent !important;
 }
+
+/* PAGE: paper belongs to the actual main host, not a pseudo-element.
+   Preserve the native chat flex/scroll layout; only color its paint. */
 html[data-petrifyui-active] [data-pui-main-stage] {
-  --text-primary:#39291c;
-  --text-secondary:#694d38;
-  --text-tertiary:#785c45;
-  --token-text-primary:#39291c;
-  --token-text-secondary:#694d38;
-  --token-text-tertiary:#785c45;
+  --text-primary:var(--pui-ink);
+  --text-secondary:var(--pui-ink-muted);
+  --text-tertiary:#866b50;
+  --token-text-primary:var(--pui-ink);
+  --token-text-secondary:var(--pui-ink-muted);
+  --token-text-tertiary:#866b50;
   --main-surface-primary:transparent;
   --main-surface-secondary:transparent;
   --token-main-surface-primary:transparent;
-  color:#39291c !important;
+  --token-main-surface-secondary:transparent;
+  color:var(--pui-ink) !important;
   color-scheme:light;
-  position:relative !important;
   box-sizing:border-box !important;
+  position:relative !important;
   width:calc(100% - 36px) !important;
   max-width:1160px !important;
   min-height:calc(100dvh - 28px) !important;
   margin:14px auto !important;
-  background-color:#f0d5ac !important;
-  background-image:
-    linear-gradient(rgba(255,242,217,.25),rgba(211,177,128,.09)),
+  background-color:var(--pui-paper) !important;
+  background-image:linear-gradient(#fff5de20,#b9876020),
     var(--pui-stage-paper,none) !important;
   background-size:100% 100%,256px 256px !important;
   background-repeat:no-repeat,repeat !important;
-  background-position:center,0 0 !important;
-  border:2px solid #956b47 !important;
+  border:2px solid #896444 !important;
   border-radius:8px !important;
-  box-shadow:0 10px 0 #062e4d30,0 16px 34px #09233850,
-    inset 0 0 0 2px #fff0d180 !important;
+  box-shadow:0 8px 0 #092f4a50,0 12px 22px #062d4a55,
+    inset 0 0 0 2px #f7e2c5a0 !important;
   image-rendering:pixelated;
 }
-/* v1.28.1 drew the paper as a pseudo-element narrower than the chat,
-   leaving native dark content layers and a black lower composer section.
-   The real stage surface now owns the full-height background. */
 html[data-petrifyui-active] [data-pui-main-stage]::before,
 html[data-petrifyui-active] [data-pui-main-stage]::after {
   content:none !important;
   display:none !important;
 }
-/* Preserve the entire paper scene through native full-width scroll wrappers. */
+/* TRANSPARENT STRUCTURE: black regions were native footer/scroll shells.
+   Never clear the composer itself, message cards, menus or code blocks. */
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-pui-stage-shell],
-  #thread,[data-testid="conversation-thread"],
-  [data-testid="conversation-scroll-container"],
+  [data-pui-stage-shell],[data-pui-stage-footer],#thread,
+  [data-testid="conversation-thread"],
+  [data-testid="conversation-scroll-container"]
+):not([data-petrifyui-composer]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-pui-stage-footer],
+  [class*="bg-black"]:has([data-petrifyui-composer]),
+  [class*="bg-token-main-surface"]:has([data-petrifyui-composer])
+):not([data-petrifyui-composer]):not([data-pui-main-stage]) {
+  background:transparent !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] [data-pui-stage-footer]::before,
+html[data-petrifyui-active] [data-pui-main-stage] [data-pui-stage-footer]::after {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
   [class*="bg-token-main-surface-primary"],
   [class*="bg-token-bg-primary"]
-):not(button):not([role="menu"]):not([role="dialog"]):not(pre):not(code) {
+):not(button):not([role="menu"]):not([role="dialog"]):not(pre)
+:not([data-testid="code-block"]):not([data-petrifyui-composer]) {
   background-color:transparent !important;
   background-image:none !important;
 }
-/* Do not reposition individual chat turns: preserve ChatGPT scroll/keyboard
-   handling. Text colour is deliberately constrained to rendered prose. */
+
+/* INK: ChatGPT often uses white fills on individual markdown children,
+   not just their parent. Exclude code and interactive dialog content. */
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  .markdown,.prose,[class*="markdown"],[data-message-author-role="assistant"]
+  [data-message-author-role="assistant"],.markdown,.prose,
+  [class*="markdown"]
 ) {
-  --tw-prose-body:#39291c;
-  --tw-prose-headings:#2e2118;
-  --tw-prose-bold:#302116;
-  --tw-prose-links:#764a2d;
-  --tw-prose-code:#59402d;
-  color:#39291c !important;
+  --tw-prose-body:var(--pui-ink);
+  --tw-prose-headings:#2d2118;
+  --tw-prose-bold:#2d2118;
+  --tw-prose-links:#74492c;
+  --tw-prose-code:#4f3524;
+  color:var(--pui-ink) !important;
+  -webkit-text-fill-color:var(--pui-ink) !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  .markdown,.prose,[class*="markdown"],[data-message-author-role="assistant"]
-) :is(p,li,h1,h2,h3,h4,h5,h6,strong,em,blockquote,span) {
-  color:#39291c !important;
-  -webkit-text-fill-color:#39291c !important;
-}
-/* ChatGPT often sets text-white or token-text-primary directly on markdown
-   nodes; treat the actual generated prose as ink, not pale-white text. */
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  .markdown,.prose,[class*="markdown"]
-) :is([class*="text-white"],[class*="text-token-text-primary"]) {
-  color:#39291c !important;
-  -webkit-text-fill-color:#39291c !important;
+  [data-message-author-role="assistant"],.markdown,.prose,[class*="markdown"]
+) :is(p,span,li,ul,ol,div,h1,h2,h3,h4,h5,h6,strong,em,blockquote)
+:not(pre *):not(code *):not([data-testid="code-block"] *)
+:not([class*="code-block"] *):not(button *):not([role="menu"] *) {
+  color:var(--pui-ink) !important;
+  -webkit-text-fill-color:var(--pui-ink) !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
   .markdown,.prose,[class*="markdown"]
-) a {
-  color:#754724 !important;
-  -webkit-text-fill-color:#754724 !important;
-  text-decoration-color:#94724d !important;
-}
-/* Code and syntax highlighting must NOT be recolored as ordinary prose. */
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  pre,[data-testid="code-block"],[class*="code-block"]
-) {
-  background-color:#41372f !important;
-  color:#f7e3c6 !important;
-  -webkit-text-fill-color:#f7e3c6 !important;
-  border:1px solid #926e4a !important;
-  border-radius:6px !important;
-  --text-primary:#f7e3c6;
-  --token-text-primary:#f7e3c6;
-}
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  pre,[data-testid="code-block"],[class*="code-block"]
-) :is(code,span) {
-  -webkit-text-fill-color:unset !important;
-  color:inherit;
-}
-/* Native user bubbles should be warm brown, not ChatGPT green. */
-html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="user"] {
-  --token-message-surface:#c39b70;
-  --message-surface:#c39b70;
-}
-html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="user"] :is(
-  [class*="bg-token-message-surface"],[class*="user-message-bubble"],
-  [data-testid="user-message"]
-) {
-  background-color:#c39b70 !important;
-  background-image:none !important;
-  color:#35261b !important;
-  border:1px solid #956e4b !important;
-}
-html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="user"] :is(
-  [class*="bg-token-message-surface"],[class*="user-message-bubble"],
-  [data-testid="user-message"]
-) :is(p,span) {
-  color:#35261b !important;
-  -webkit-text-fill-color:#35261b !important;
-}
-/* Composer stays within the parchment palette. The previous black gap below
-   is eliminated by styling the actual stage, rather than a top-only graphic. */
-html[data-petrifyui-active] [data-pui-main-stage] [data-petrifyui-composer] {
-  color:#39291c !important;
+) a:not(pre a):not([data-testid="code-block"] a) {
+  color:#74492c !important;
+  -webkit-text-fill-color:#74492c !important;
+  text-decoration-color:#a4774d !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
   [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"]
-):not(pre):not(code):not(button) {
-  color:#70513a !important;
+):not(pre *):not(code *):not([data-testid="code-block"] *):not(button *) {
+  color:var(--pui-ink-muted) !important;
+  -webkit-text-fill-color:var(--pui-ink-muted) !important;
 }
-/* Make the *actual* outer wooden sidebar float, not each row. The first
-   release only styled a JS-selected element which could be an inner nav. */
+
+/* ACTION ICONS: they remain the original ChatGPT icons, but in ink. */
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="assistant"] :is(button,[role="button"]) {
+  color:#654932 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="assistant"] :is(button,[role="button"]) svg {
+  color:#654932 !important;
+  stroke:currentColor;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-testid="conversation-turn"] button,
+  [data-testid^="conversation-turn"] button
+):not([data-petrifyui-composer] button):not([data-testid="code-block"] button) svg {
+  color:#654932 !important;
+}
+
+/* USER: swap the bright green chat surface for warm brown paper. */
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="user"] {
+  --token-message-surface:#c49b72;
+  --message-surface:#c49b72;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="user"] :is(
+  [class*="bg-token-message-surface"],[class*="user-message-bubble"],
+  [data-testid="user-message"]) {
+  background-color:#c49b72 !important;
+  background-image:none !important;
+  color:#33241a !important;
+  border:1px solid #956e4b !important;
+  box-shadow:1px 2px 0 #452e1c33 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="user"] :is(p,span):not(button *) {
+  color:#33241a !important;
+  -webkit-text-fill-color:#33241a !important;
+}
+
+/* CODE: ONE walnut surface, both heading and body. No gray header strip,
+   alternate brown line, or black nested panel. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  pre,[data-testid="code-block"],[class*="code-block"]
+) {
+  --text-primary:var(--pui-code-ink);
+  --token-text-primary:var(--pui-code-ink);
+  color:var(--pui-code-ink) !important;
+  background:var(--pui-code) !important;
+  border-color:#79583d !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  pre,[data-testid="code-block"],[class*="code-block"]
+) :is(header,pre,code,[class*="bg-gray"],[class*="bg-neutral"],
+  [class*="bg-token"],[class*="bg-black"]) {
+  background:var(--pui-code) !important;
+  border-color:#79583d !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  pre,[data-testid="code-block"],[class*="code-block"]
+) :is(pre *,code *,header *,button,svg,svg *) {
+  color:var(--pui-code-ink) !important;
+  -webkit-text-fill-color:var(--pui-code-ink) !important;
+}
+
+/* COMPOSER: same materials as the main page, but inset like a writing tray.
+   No second torn edge, no dark stripe between paper and input; expands with
+   attachments and multiline content using native height. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-petrifyui-composer] {
+  --pui-ink:#3e2c20;
+  --pui-muted:#74543b;
+  --pui-paper:#e2c094;
+  color:#3e2c20 !important;
+  background-color:#e2c094 !important;
+  background-image:linear-gradient(#fff3d018,#8f5b3220),
+    var(--pui-stage-paper,none) !important;
+  background-size:100% 100%,256px 256px !important;
+  border:2px solid #a47b52 !important;
+  border-radius:7px !important;
+  box-shadow:inset 0 0 0 2px #f3d9b240,0 2px 0 #61412b35 !important;
+  min-height:52px;
+  height:auto;
+  isolation:isolate;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-petrifyui-composer]::before,
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-petrifyui-composer]::after {
+  content:none !important;
+  display:none !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-petrifyui-composer] :is(
+  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+  [contenteditable="true"],textarea) {
+  color:#3e2c20 !important;
+  -webkit-text-fill-color:#3e2c20 !important;
+  caret-color:#805534 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-petrifyui-composer] button:not([aria-label="Stop"]) svg {
+  color:#69472d !important;
+}
+
+/* FLOATING SIDEBAR: Native DOM can split header and nav. Mark and style both
+   pieces; translate is paint-only and avoids overriding layout transforms. */
 @media(min-width:960px) {
-  html[data-petrifyui-active] :is(
-    #sidebar,#stage-slideover-sidebar,[data-testid="sidebar-container"],
-    [data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],
-    [data-testid="collapsed-sidebar"],[data-pui-floating-sidebar]
-  ) {
-    box-sizing:border-box !important;
-    border:2px solid #9c7450 !important;
-    border-radius:10px !important;
-    box-shadow:4px 6px 0 #09273b65,8px 12px 18px #06233c50 !important;
-  }
   html[data-petrifyui-active] [data-pui-floating-sidebar] {
-    margin:12px 0 12px 12px !important;
-    height:calc(100dvh - 24px) !important;
-    max-height:calc(100dvh - 24px) !important;
-    overflow:hidden;
+    translate:12px 0 !important;
+    box-sizing:border-box !important;
+    width:calc(100% - 24px) !important;
+    height:calc(100dvh - 13px) !important;
+    max-height:calc(100dvh - 13px) !important;
+    border:2px solid #a47b52 !important;
+    border-radius:10px !important;
+    box-shadow:3px 5px 0 #092b4466,6px 9px 17px #031d3560 !important;
   }
-  html[data-petrifyui-active] [data-petrifyui-topbar] {
-    border-radius:8px !important;
+  html[data-petrifyui-active] [data-pui-floating-sidebar]:not(:has([data-pui-stage-header])) {
+    margin-top:8px !important;
+    height:calc(100dvh - 18px) !important;
+    max-height:calc(100dvh - 18px) !important;
+  }
+  html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached] {
+    translate:12px 9px !important;
+    border-radius:8px 8px 4px 4px !important;
+    border:2px solid #a47b52 !important;
+    box-shadow:2px 3px 0 #092b4460 !important;
   }
 }
-/* ChatGPT's narrow and mobile layouts need full native dimensions. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-header],[data-petrifyui-topbar],
+  #sidebar header,[data-testid="sidebar-container"] header,
+  #stage-slideover-sidebar header,[data-testid="sidebar"] header
+) {
+  background-color:#63412e !important;
+  background-image:var(--pui-resolved-wood,none),
+    repeating-linear-gradient(90deg,#674530 0 27px,#5e3e2d 27px 54px,
+      #745139 54px 63px,#4f3426 63px 65px) !important;
+  background-repeat:repeat !important;
+  background-size:512px 512px,128px 128px !important;
+  color:#f1dfc6 !important;
+}
+/* React may insert another black panel *inside* a correctly themed header. */
+html[data-petrifyui-active] :is(
+  [data-pui-stage-header],[data-petrifyui-topbar]
+) > :is([class*="bg-black"],[class*="bg-token-sidebar"],
+  [class*="bg-neutral"],[class*="bg-token-main-surface"]) {
+  background:transparent !important;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-header],[data-petrifyui-topbar]
+) :is(button,button span,svg) {
+  color:#f1dfc6 !important;
+}
 @media(max-width:959px) {
   html[data-petrifyui-active] [data-pui-main-stage] {
-    width:calc(100% - 16px) !important;
-    margin:8px auto !important;
-    min-height:calc(100dvh - 16px) !important;
+    width:calc(100% - 14px) !important;
+    margin:7px auto !important;
+    min-height:calc(100dvh - 14px) !important;
     border-radius:5px !important;
   }
-  html[data-petrifyui-active] [data-pui-floating-sidebar] {
-    margin:0 !important;
-    height:auto !important;
-    max-height:none !important;
-    box-shadow:none !important;
+  html[data-petrifyui-active] [data-pui-floating-sidebar],
+  html[data-petrifyui-active] [data-pui-stage-header] {
+    translate:none !important;
   }
 }
 html[data-petrifyui-low-power][data-petrifyui-active] [data-pui-main-stage] {
