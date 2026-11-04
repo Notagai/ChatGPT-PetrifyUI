@@ -308,3 +308,23 @@ html[data-petrifyui-active] [data-petrifyui-composer] :is(
 }
 /* ChatGPT's square stop symbol can be a filled SVG path. Retain its
    native fill/geometry and recolor currentColor-based shapes only. */
+
+
+/* v1.26: DOM-confirmed Stop control from ChatGPT DevTools.
+   The real control is button[aria-label="Stop"] inside
+   [data-composer-trailing-controls="true"], not "Stop generating".
+   Target the actual control even if the outer composer marker is on
+   a different ancestor. This changes paint only, not its behavior. */
+html[data-petrifyui-active] [data-composer-trailing-controls="true"] button[aria-label="Stop" i] {
+  background:#805639 !important;
+  background-color:#805639 !important;
+  background-image:none !important;
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+  border-color:#624028 !important;
+  box-shadow:inset 0 0 0 1px #b88a5e !important;
+}
+html[data-petrifyui-active] [data-composer-trailing-controls="true"] button[aria-label="Stop" i] :is(svg,svg *,span) {
+  color:#fff0d4 !important;
+  -webkit-text-fill-color:#fff0d4 !important;
+}
