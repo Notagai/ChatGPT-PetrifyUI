@@ -12,12 +12,7 @@ html[data-petrifyui-active] {
 html[data-petrifyui-active] [data-pui-floating-sidebar] {
   border:2px solid var(--pui-cabinet-rim) !important;
   border-radius:12px !important;
-  box-shadow:
-    0 0 0 3px var(--pui-cabinet-edge),
-    5px 7px 0 #142538a6,
-    9px 14px 22px #09172573,
-    inset 0 0 0 2px #f1c89045,
-    inset 0 0 18px #23150e59 !important;
+  box-shadow:2px 3px 7px #09243d45,inset 0 0 0 1px #f1c89045,inset 0 0 18px #23150e59 !important;
   background-color:#61402d !important;
   background-image:
     linear-gradient(90deg,#281a1142 0%,transparent 7%,transparent 94%,#22150f4f 100%),
@@ -42,11 +37,7 @@ html[data-petrifyui-active] :is(
 ) {
   border:2px solid var(--pui-cabinet-rim) !important;
   border-radius:11px !important;
-  box-shadow:
-    0 0 0 2px var(--pui-cabinet-edge),
-    3px 5px 0 #14253891,
-    inset 0 1px 0 #f0c89154,
-    inset 0 -6px 11px #21130d4d !important;
+  box-shadow:2px 3px 7px #09243d45,inset 0 1px 0 #f0c89154,inset 0 -6px 11px #21130d4d !important;
   background-color:#61402d !important;
   background-image:
     linear-gradient(180deg,#e3b78216,#22150f2e),
@@ -76,7 +67,7 @@ html[data-petrifyui-low-power][data-petrifyui-active]
   [data-pui-floating-sidebar],
 html[data-petrifyui-low-power][data-petrifyui-active]
   :is([data-petrifyui-topbar],[data-pui-stage-header]) {
-  box-shadow:0 0 0 2px #382518,inset 0 0 0 1px #e5bb8650 !important;
+  box-shadow:inset 0 0 0 1px #e5bb8650 !important;
 }
 
 
@@ -85,15 +76,14 @@ html[data-petrifyui-low-power][data-petrifyui-active]
    account footer. Inset the NAV itself instead of drawing full-bleed wood.
    Keep its native scroll content and event handlers. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-  margin:8px 10px 88px !important;
+  margin:10px 10px 98px !important;
   min-height:0 !important;
   width:auto !important;
   flex-shrink:1 !important;
   border-radius:10px !important;
   background-clip:padding-box !important;
   box-shadow:
-    0 0 0 2px #39251b,
-    4px 5px 8px #08243c80,
+    2px 3px 7px #09243d45,
     inset 0 0 0 1px #ebc38e68 !important;
 }
 /* The header is separate from the scroll area; give it a matching inset
@@ -123,7 +113,6 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 html[data-petrifyui-active] nav[data-pui-floating-sidebar]
   section[class~="group/nav-section"] .sidebar-item {
   min-height:0 !important;
-  max-height:34px !important;
 }
 
 /* The native account footer is a sibling of the nav and contains the
@@ -142,7 +131,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
     linear-gradient(180deg,#f0c18d22,#23140d46),
     var(--pui-resolved-wood,none) !important;
   background-size:100% 100%,512px 512px !important;
-  box-shadow:0 0 0 2px #382518,3px 5px 8px #08243b80,
+  box-shadow:2px 3px 7px #09243d45,
     inset 0 1px 0 #f4d09a55 !important;
   overflow:visible !important;
 }
@@ -154,7 +143,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 /* Compact layouts keep native mobile/mini navigation geometry. */
 @media(max-width:899px) {
   html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-    margin:5px 5px 68px !important;
+    margin:7px 5px 76px !important;
     border-radius:6px !important;
   }
   html[data-petrifyui-active] nav[data-pui-floating-sidebar]
@@ -184,3 +173,45 @@ html[data-petrifyui-active] .app-shell-sidebar:has(nav[data-pui-floating-sidebar
 /* Header/nav gap is 8px, nav/account gap is reserved by the nav's
    bottom margin, account panel stays inset 10px from its outer edge.
    Do not implement selected/hover state styling here. */
+
+
+/* v1.32.4: These are the REAL ancestors in the saved ChatGPT document:
+   aside.app-shell-left-panel > div... > .app-shell-sidebar >
+   .absolute.inset-0.bg-surface > ... > .sidebar-navigation.
+   The opaque backing is outside the nav and cannot be cleared through
+   descendant-only selectors. Keep panel wood surfaces untouched. */
+html[data-petrifyui-active] aside.app-shell-left-panel:has(nav[data-pui-floating-sidebar]),
+html[data-petrifyui-active] aside.app-shell-left-panel:has(nav[data-pui-floating-sidebar])
+  > div,
+html[data-petrifyui-active] .app-shell-sidebar:has(nav[data-pui-floating-sidebar]),
+html[data-petrifyui-active] .app-shell-sidebar:has(nav[data-pui-floating-sidebar])
+  > div.absolute.inset-0.bg-surface,
+html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* The selected/hovered appearance is generated on the native row and a
+   link ::before overlay, NOT by PetrifyUI's former a:hover CSS.
+   Remove the slabs rather than inventing replacement selection styling.
+   Native focus ring, navigation, hover buttons and keyboard remain. */
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item,
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item:is(:hover,:focus-within),
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item:has(a[aria-current="page"]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item a[href]::before,
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item a[href]:is(:hover,[aria-current="page"])::before {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* One gap language, without outlines filling it with near-black pixels. */
+html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
+  --pui-panel-gap:10px;
+}
