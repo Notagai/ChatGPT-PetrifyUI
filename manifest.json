@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
-  "description": "Experimental PetrifyUI stage with on-demand local DOM diagnostics",
-  "version": "1.29.7",
+  "description": "Experimental shared DOM adapter and local diagnostics",
+  "version": "1.30.0",
   "permissions": [
     "storage",
     "activeTab",
@@ -33,7 +33,7 @@
       ],
       "js": [
         "src/sidebar.js",
-        "src/composer.js",
+        "src/core.js",
         "src/stage.js"
       ],
       "css": [
