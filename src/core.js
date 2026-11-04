@@ -142,7 +142,18 @@
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",startup,{once:true});
   else startup();
   document.addEventListener("click",event=>{
-    if(event.target instanceof Element&&event.target.closest('a[href],button,[role="button"]'))schedule();
+    if(!(event.target instanceof Element))return;
+    const control=event.target.closest('a[href],button,[role="button"]');
+    if(!control)return;
+    schedule();
+    // SPA sidebar animations and Settings transitions replace containers
+    // after the click handler. Two bounded resamples, not continuous polling.
+    if(control.matches('[aria-label*="sidebar" i],[title*="sidebar" i]')||
+       control.closest('[aria-label*="sidebar" i],[title*="sidebar" i]')||
+       /settings|back to app|profile/i.test(control.textContent||"")){
+      setTimeout(schedule,140);
+      setTimeout(schedule,420);
+    }
   },{passive:true});
   document.addEventListener("focusin",event=>{
     if(event.target instanceof Element&&event.target.matches(editorSelector))schedule();
