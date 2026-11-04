@@ -3,7 +3,7 @@
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
   "description": "Experimental shared DOM adapter and local diagnostics",
-  "version": "1.31.4",
+  "version": "1.32.0",
   "permissions": [
     "storage",
     "activeTab",
@@ -41,7 +41,8 @@
         "src/global.css",
         "src/composer.css",
         "src/stage.css",
-        "src/content-palette.css"
+        "src/content-palette.css",
+        "src/sidebar-panel.css"
       ],
       "run_at": "document_start"
     },
