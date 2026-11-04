@@ -12,6 +12,11 @@ window.petrifyInspect = async function () {
       const root=document.documentElement;
       const selected={
         assistant:'[data-message-author-role="assistant"]',
+        proseContainers:'main :is(.markdown,.prose,[class*="markdown"],[class*="prose"])',
+        anyList:'main :is(ul,ol) > li',
+        anyInlineCode:'main code:not(pre code)',
+        anyCodeBlock:'main pre',
+        genericRoleMessages:'main [data-message-author-role],main article,main [role="article"]',
         turn:'[data-testid^="conversation-turn"]',
         list:'[data-message-author-role="assistant"] li',
         inlineCode:'[data-message-author-role="assistant"] code:not(pre code)',
@@ -55,12 +60,13 @@ window.petrifyInspect = async function () {
         ancestors.push(clean(el));
       }
       return {
-        schema:1,kind:"petrifyui-structural-diagnostic",
+        schema:2,kind:"petrifyui-structural-diagnostic",
         note:"No chat text, input values, or URLs captured.",
         routeKind:location.pathname==="/"?"new-chat":"conversation-or-other",
         viewport:{width:innerWidth,height:innerHeight},
         themeActive:root.hasAttribute("data-petrifyui-active"),
         stageStatus:root.getAttribute("data-pui-stage-status"),
+        contentStatus:results.anyList.count || results.anyInlineCode.count || results.anyCodeBlock.count ? "content-found" : "no-target-content-in-current-DOM",
         results,editorAncestors:ancestors,
         durationMs:Math.round((performance.now()-t0)*100)/100
       };
