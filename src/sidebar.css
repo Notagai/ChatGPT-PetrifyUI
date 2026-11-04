@@ -17,7 +17,7 @@ html[data-petrifyui-active] :is(
   --pui-font:"Petrify VT323","Courier New",monospace;
   --pui-ink:#f2dfc4;
   background-color:#63412e !important;
-  background-image:var(--pui-resolved-wood,none),
+  background-image:var(--pui-custom-wood,var(--pui-resolved-wood,none)),
     repeating-linear-gradient(90deg,
       #674530 0 27px,#5e3e2d 27px 54px,
       #745139 54px 63px,#4f3426 63px 65px,
@@ -112,7 +112,7 @@ html[data-petrifyui-low-power][data-petrifyui-active] :is(
    dimensions, pseudo-elements, pointer rules or tooltip customizations. */
 html[data-petrifyui-active] [data-petrifyui-topbar] {
   background-color:#63412e !important;
-  background-image:var(--pui-resolved-wood,none),
+  background-image:var(--pui-custom-wood,var(--pui-resolved-wood,none)),
     repeating-linear-gradient(90deg,
       #674530 0 27px,#5e3e2d 27px 54px,
       #745139 54px 63px,#4f3426 63px 65px,
