@@ -339,15 +339,8 @@ html[data-petrifyui-active] [data-pui-main-stage]
   padding-top:var(--pui-scroll-top-safe,36px) !important;
   padding-bottom:var(--pui-scroll-bottom-safe,112px) !important;
 }
-/* The scrollport is a viewport. Fade content that passes its top edge
-   during scrolling rather than letting code headers clash with the top
-   border. The composer remains clear at the bottom of the scrollport. */
-html[data-petrifyui-active] [data-pui-main-stage]
-  .thread-scroll-container {
-  mask-image:linear-gradient(to bottom,
-    transparent 0px, black 34px,
-    black calc(100% - 12px), transparent 100%) !important;
-}
+/* Removed the edge mask: it exposed the blue backdrop through text and
+   floating controls. Keep native scrolling and scroll-padding instead. */
 /* Text links in the rich renderer and Markdown respond to semantic ink.
    Exclude code surfaces, which use cream text on walnut. */
 html[data-petrifyui-active] [data-pui-main-stage]
@@ -460,3 +453,37 @@ html[data-petrifyui-active] .turn-action-controls
   background-color:#e8c69b !important;
   color:#65442f !important;
 }
+
+
+/* v1.31.1: remove the bad masked transcript viewport in every state.
+   The blue backdrop must never be revealed by text-opacity gradients. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  .thread-scroll-container {
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+}
+/* The paper is a fixed inset panel. Keep content from bleeding over its
+   upper/lower frame edge by clipping only the transcript *viewport*, not
+   the floating footer or the fixed parchment background. Native scrolling
+   stays on the original scroll container. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  .thread-scroll-container > [container-type="inline-size"] {
+  overflow:clip;
+  overflow-clip-margin:0px;
+}
+/* The scroll-to-bottom control is a floating overlay, not a message.
+   Give the button a fully opaque surface and a readable down chevron. */
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] {
+  background:#e8c69b !important;
+  background-image:none !important;
+  color:#563720 !important;
+  border:1px solid #8d6039 !important;
+  box-shadow:0 2px 7px #2e1d1270 !important;
+}
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"]
+  :is(svg,svg path,svg polyline,svg line) {
+  color:#563720 !important;
+  stroke:#563720 !important;
+}
+/* On compact layouts the scroll control may be outside a footer wrapper.
+   Avoid changing its translate, z-index, opacity or native click target. */
