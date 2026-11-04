@@ -3,7 +3,7 @@
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
   "description": "Experimental ocean-backed floating parchment and walnut shell, preserving ChatGPT native layout.",
-  "version": "1.29.0",
+  "version": "1.29.1",
   "permissions": [
     "storage"
   ],
