@@ -5,6 +5,7 @@
   "use strict";
   const root=document.documentElement;
   let currentMain=null,currentSidebar=null,currentPlan=null;
+  const currentFlow=new Set();
   const rect=el=>el instanceof HTMLElement?el.getBoundingClientRect():null;
   function mark(previous,next,name){
     if(previous!==next){previous?.removeAttribute(name);next?.setAttribute(name,"");}
@@ -24,7 +25,18 @@
       if(!r||r.left>Math.min(innerWidth*.28,420)||!visible(el))continue;
       if((el.textContent||"").trim()==="Back to app"){back=el;break;}
     }
-    if(!back)return null;
+    if(!back){
+      // Fallback for Settings variants without an exact Back label.
+      for(const candidate of document.querySelectorAll("aside,nav")){
+        const r=rect(candidate);
+        if(!r||r.left>40||r.width>Math.min(480,innerWidth*.38)||
+           r.height<innerHeight*.55)continue;
+        const labels=candidate.textContent||"";
+        if(labels.includes("General")&&labels.includes("Appearance")&&
+           labels.includes("Notifications"))return candidate;
+      }
+      return null;
+    }
     for(let parent=back.parentElement,depth=0;parent&&depth<10;parent=parent.parentElement,depth++){
       const r=rect(parent);
       if(!r||r.width>Math.min(innerWidth*.5,550))break;
@@ -89,6 +101,22 @@
     currentSidebar=mark(currentSidebar,sidebar,"data-pui-settings-sidebar");
     const main=detected?findSettingsMain(sidebar):null;
     currentMain=mark(currentMain,main,"data-pui-settings-main");
+    const nextFlow=new Set();
+    if(main){
+      for(const heading of main.querySelectorAll("h1,h2")){
+        if((heading.textContent||"").trim()!=="General")continue;
+        for(let n=heading.parentElement,d=0;n&&n!==main&&d<10;n=n.parentElement,d++)
+          nextFlow.add(n);
+        break;
+      }
+    }
+    for(const element of currentFlow)
+      if(!nextFlow.has(element))element.removeAttribute("data-pui-settings-flow");
+    currentFlow.clear();
+    for(const element of nextFlow){
+      element.setAttribute("data-pui-settings-flow","");
+      currentFlow.add(element);
+    }
   }
   globalThis.PetrifyCore?.register("settings",update);
 })();
