@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Experimental floating parchment chat, walnut sidebar, and ambient pixel study scene.",
-  "version": "1.28.0",
+  "description": "Experimental floating parchment layout with ChatGPT container fallback and visible ambient surfaces.",
+  "version": "1.28.1",
   "permissions": [
     "storage"
   ],
