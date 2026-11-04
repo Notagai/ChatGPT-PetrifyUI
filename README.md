@@ -197,3 +197,19 @@ The previous effort-popup detector selected the smallest slider-containing eleme
 - The "Medium" effort selector keeps its live VT323 label, but its text descendants now have consistent font weight and no duplicate shadow/stroke/animation effects. It retains ChatGPT's native button sizing, chevron, padding and event handlers.
 - No change to paper textures, menu discovery, popup geometry or the existing compact-sidebar logic. Text hardcoded in px by ChatGPT may not scale with root sizing.
 - Because the exact source of overlapping text cannot be confirmed from screenshots alone, the selector needs a real browser visual check after updating.
+
+
+## Experimental branch: floating parchment stage (v1.28)
+
+**Branch:** `experiment/floating-parchment-stage` (not merged into `main`). This experiment layers a low-contrast, locally bundled pixel-art study background behind the UI; paints a centered parchment page behind the existing chat messages and composer; and gives the outer sidebar a small desktop-only margin, frame, and shadow. The right side of the background has a deliberately subtle window, shelf and plant as an ambient focal point. No new functionality or buttons are introduced.
+
+The scene uses `src/stage.js`, `src/stage.css`, and `assets/stage/study-ambient.svg`. All new styles are gated behind `html[data-petrifyui-active]` and apply only on conversation and new-chat routes. ChatGPT still owns navigation, scrolling, inputs, attachments and message layout. A lightweight event-driven refresh identifies the chat main and outer sidebar; the ambient image itself is static with no animations.
+
+### Test this branch
+
+```powershell
+ git fetch origin
+ git switch experiment/floating-parchment-stage
+```
+
+Reload the unpacked extension in `chrome://extensions`, hard-refresh `https://chatgpt.com`, and test new chats, long chats, sidebar collapsed/expanded, attachment menus and smaller window widths. Return to `main` with `git switch main`. Keep it experimental until the signed-in browser visuals are reviewed.

@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "VT323 text scaled approximately 10% larger across the ChatGPT paper-and-wood theme.",
-  "version": "1.27.0",
+  "description": "Experimental floating parchment chat, walnut sidebar, and ambient pixel study scene.",
+  "version": "1.28.0",
   "permissions": [
     "storage"
   ],
@@ -31,12 +31,14 @@
       ],
       "js": [
         "src/sidebar.js",
-        "src/composer.js"
+        "src/composer.js",
+        "src/stage.js"
       ],
       "css": [
         "src/sidebar.css",
         "src/global.css",
-        "src/composer.css"
+        "src/composer.css",
+        "src/stage.css"
       ],
       "run_at": "document_start"
     },
@@ -67,7 +69,8 @@
         "assets/walnut-wood-v3.svg",
         "assets/composer/paper-grain-geekify.svg",
         "assets/composer/paper-torn-top.svg",
-        "assets/composer/paper-torn-bottom.svg"
+        "assets/composer/paper-torn-bottom.svg",
+        "assets/stage/study-ambient.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",

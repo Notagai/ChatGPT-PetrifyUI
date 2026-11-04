@@ -1,0 +1,148 @@
+/* PetrifyUI floating stage experiment.
+   Ambient pixels are decorative; native ChatGPT conversation and controls
+   stay in place and keep their existing event handlers and scrolling. */
+html[data-petrifyui-active] body {
+  background-color:#241d1b !important;
+  background-image:
+    linear-gradient(90deg,rgba(19,14,13,.46),rgba(19,14,13,.20) 60%,rgba(19,14,13,.36)),
+    var(--pui-ambient-art,none) !important;
+  background-size:cover,cover !important;
+  background-position:center center,center center !important;
+  background-attachment:fixed,fixed !important;
+  background-repeat:no-repeat !important;
+}
+/* Keep the ambient layer visible through the full-screen React shells.
+   The selector does not touch smaller dialogs, code blocks, or messages. */
+html[data-petrifyui-active] :is(#__next,#root,[data-testid="chatgpt-app"],#page-header) {
+  background-color:transparent !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] {
+  position:relative !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  isolation:isolate;
+}
+/* A page-like surface rather than a giant rectangle that changes the chat's
+   layout. It paints behind existing children and never captures pointer events.
+   Auto width uses the available main area, including collapsed sidebar mode. */
+html[data-petrifyui-active] [data-pui-main-stage]::before {
+  content:"";
+  display:block;
+  position:absolute;
+  top:14px;
+  bottom:14px;
+  left:50%;
+  width:min(1000px,calc(100% - 32px));
+  transform:translateX(-50%);
+  pointer-events:none;
+  border:2px solid #805b3d;
+  border-radius:8px;
+  box-shadow:
+    0 8px 0 rgba(19,12,9,.30),
+    0 18px 30px rgba(17,12,9,.42),
+    inset 0 0 0 3px rgba(255,231,191,.38),
+    inset 0 0 0 7px rgba(136,90,49,.08);
+  background-color:#e9cba4;
+  background-image:
+    linear-gradient(rgba(253,237,208,.20),rgba(206,157,109,.12)),
+    var(--pui-stage-paper,none);
+  background-position:0 0,0 0;
+  background-size:100% 100%,256px 256px;
+  background-repeat:no-repeat,repeat;
+  image-rendering:pixelated;
+  z-index:0;
+}
+/* Conversation content belongs above the parchment without moving it. */
+html[data-petrifyui-active] [data-pui-main-stage] > * {
+  position:relative;
+  z-index:1;
+}
+/* Remove only broad surface backgrounds beneath the chat content.
+   Never blanket-clear descendant backgrounds: popovers and code blocks retain
+   their own surfaces. */
+html[data-petrifyui-active] [data-pui-main-stage] >
+  :is([class*="bg-token-main-surface"],[class*="bg-token-bg-primary"]) {
+  background-color:transparent !important;
+}
+/* Readable ink for assistant responses and basic rich text on the parchment. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="assistant"] {
+  color:#3e2a1d !important;
+  --text-primary:#3e2a1d;
+  --text-secondary:#684c37;
+  --text-tertiary:#7b634d;
+  --token-text-primary:#3e2a1d;
+  --token-text-secondary:#684c37;
+}
+html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="assistant"] :is(
+  p,li,h1,h2,h3,h4,h5,h6,strong,em,blockquote
+) {
+  color:#3e2a1d !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="assistant"] a {
+  color:#805032 !important;
+  text-decoration-color:#a2744f !important;
+}
+/* Keep native message spacing; recolor the existing user bubble if present. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="user"]
+  :is([class*="bg-token-message-surface"],[class*="user-message-bubble"]) {
+  background-color:#b98c64 !important;
+  color:#332216 !important;
+  border:1px solid #946944 !important;
+  box-shadow:2px 2px 0 rgba(54,31,20,.22) !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="user"]
+  :is([class*="bg-token-message-surface"],[class*="user-message-bubble"]) :is(p,span) {
+  color:#332216 !important;
+}
+/* Dark inset code blocks remain dark and readable rather than forced to ink. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  pre,[data-testid="code-block"],[class*="code-block"]
+) {
+  --text-primary:#f1dcc1;
+  background-color:#453327 !important;
+  color:#f1dcc1 !important;
+  border:1px solid #815b3c;
+  border-radius:5px;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(pre,[data-testid="code-block"]) code {
+  color:inherit;
+}
+/* A restrained floating walnut sidebar. Only the outer sidebar is tagged,
+   so nested sidebar sections don't each acquire an unwanted inset. */
+@media(min-width:900px) {
+  html[data-petrifyui-active] [data-pui-floating-sidebar] {
+    margin:10px 0 10px 10px !important;
+    height:calc(100dvh - 20px) !important;
+    max-height:calc(100dvh - 20px) !important;
+    border:2px solid #9d754f !important;
+    border-radius:9px !important;
+    box-shadow:3px 6px 0 #1b120d60,7px 12px 18px #100c0c66 !important;
+    overflow:clip;
+  }
+  html[data-petrifyui-active] [data-pui-main-stage]::before {
+    top:16px;
+    bottom:16px;
+  }
+}
+/* Smaller windows retain ChatGPT's original sidebar and navigation geometry. */
+@media(max-width:899px) {
+  html[data-petrifyui-active] [data-pui-floating-sidebar] {
+    margin:0 !important;
+  }
+  html[data-petrifyui-active] [data-pui-main-stage]::before {
+    width:calc(100% - 12px);
+    top:6px;
+    bottom:6px;
+    border-radius:5px;
+  }
+}
+html[data-petrifyui-low-power][data-petrifyui-active] [data-pui-main-stage]::before {
+  box-shadow:0 3px 0 rgba(19,12,9,.30),inset 0 0 0 2px rgba(255,231,191,.2);
+}
+@media(prefers-reduced-motion:reduce) {
+  html[data-petrifyui-active] body {
+    background-attachment:scroll,scroll !important;
+  }
+}
+/* Turn the entire stage off when the extension is disabled. All styles
+   use data-petrifyui-active; no modifications to ChatGPT source nodes persist. */
