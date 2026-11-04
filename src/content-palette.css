@@ -91,7 +91,6 @@ html[data-petrifyui-active] button[aria-label="Scroll to bottom"] {
 }
 html[data-petrifyui-active] button[aria-label="Scroll to bottom"] :is(svg,svg *,use) {
   color:#fce8c8 !important;
-  fill:currentColor !important;
 }
 /* Native round stop/send actions use the same dark-on-light contrast rule
    in reverse: walnut background, cream pictogram. */
@@ -114,7 +113,6 @@ html[data-petrifyui-active] form[data-chatgpt-composer] :is(
   button[data-testid="stop-button"]
 ) :is(svg,svg *,use) {
   color:#fce8c8 !important;
-  fill:currentColor !important;
 }
 /* The code icon is an SVG sprite inside ActionBar, not a text glyph.
    Force the entire code header to a walnut surface, then paint sprite
@@ -126,7 +124,6 @@ html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"] {
 }
 html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"] :is(svg,svg *,use) {
   color:#f7e7cd !important;
-  fill:currentColor !important;
 }
 /* Thinking duration chip: stable class and expanded-state attributes in
    the saved DOM, separate from message body text. */
@@ -145,10 +142,83 @@ html[data-petrifyui-active] [data-pui-main-stage]
 html[data-petrifyui-active] [data-pui-main-stage] [data-d-component="list-item"]
   :is(svg[data-d-component="icon"],svg.InlineIcon-KLrnew) {
   color:#65442f !important;
-  fill:currentColor !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
   :is([data-d-component="box"],[data-d-component="row"]) > svg[data-d-component="icon"] {
   color:#65442f !important;
-  fill:currentColor !important;
+}
+
+
+/* v1.30.4: SVG foregrounds only, never force fill or stroke on all
+   descendant paths. Lucide stroke icons and multicolor logos keep their
+   native geometry. */
+html[data-petrifyui-active] [data-pui-main-stage] svg[data-d-component="icon"],
+html[data-petrifyui-active] [data-pui-main-stage] svg[class*="InlineIcon"],
+html[data-petrifyui-active] [data-pui-main-stage] [data-d-component="list-item"] svg,
+html[data-petrifyui-active] [data-pui-main-stage] .turn-action-controls svg {
+  color:#65442f !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] [data-d-component="badge"] svg {
+  color:inherit !important;
+}
+/* Branded white-on-transparent favicons: provide a dark backing, not a
+   filter which would destroy the original icon artwork. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-d-component="favicon"] {
+  background-color:#65442f !important;
+  border-radius:3px;
+}
+/* Native action icons that are not inside the old turn-action-controls.
+   Limit to buttons in the assistant content region, never all SVG globally. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([data-d-component="row"],[data-d-component="list-item"])
+  button svg {
+  color:#65442f !important;
+}
+/* Expanded editor: ChatGPT changes data-composer-layout and uses a
+   separate dark surface token. The old rule only changed one-line mode.
+   Constrain the override to the actual semantic composer and its root. */
+html[data-petrifyui-active] form[data-chatgpt-composer] {
+  --color-background-composer-primary:#e8c69b !important;
+  --color-text-composer-primary:#34251a !important;
+  --composer-layout-surface-background:#e8c69b !important;
+  --app-color-background-editor-opaque:#e8c69b !important;
+  --app-color-background-surface:#e8c69b !important;
+  --app-color-text-foreground:#34251a !important;
+  --app-color-text-foreground-secondary:#705139 !important;
+  --app-color-icon-primary:#34251a !important;
+  --app-color-icon-secondary:#705139 !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is([class*="ComposerLayoutRoot-"],[data-composer-dark]) {
+  --color-background-composer-primary:#e8c69b !important;
+  --composer-layout-surface-background:#e8c69b !important;
+  --color-text-composer-primary:#34251a !important;
+  color-scheme:light !important;
+  background-color:#e8c69b !important;
+  background-image:var(--pui-paper-composer,none) !important;
+  background-size:256px 256px !important;
+  background-repeat:repeat !important;
+}
+/* Body/footer/editor wrappers never create a second black rectangle when
+   the input grows to multiple lines. Do not alter height or overflow. */
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is([data-composer-body],[data-composer-footer-responsive],
+      [class*="LegacyExpandableBody-"],[class*="LegacyExpandableFooter-"],
+      [class*="AdaptiveFooterInput-"],[class*="ComposerLayoutInput-"],
+      [class*="LegacyExpandableInput-"]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is(.ProseMirror,[contenteditable="true"],[role="textbox"]) {
+  background:transparent !important;
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+  caret-color:#79502f !important;
+}
+/* Clear black footer dock independently of the expansion state. */
+html[data-petrifyui-active] [data-pui-composer-dock] {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
 }
