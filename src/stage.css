@@ -1,334 +1,330 @@
-/* PetrifyUI experimental floating ocean layout v1.28.3.
-   One coherent stage stylesheet, loaded AFTER sidebar/composer CSS.
-   Paint only; never replace ChatGPT content or controls. */
+/* PetrifyUI experimental presentation layer v1.29.
+   IMPORTANT: no width/height/margin/translate overrides on ChatGPT's main,
+   sidebar, conversation turns or composer. Native layout stays native. */
 html[data-petrifyui-active] {
-  --pui-ink:#39291d;
-  --pui-ink-muted:#6a503b;
-  --pui-paper:#efd3ab;
-  --pui-paper-inset:#dfbb90;
-  --pui-walnut:#49372c;
-  --pui-code:#49372c;
-  --pui-code-ink:#f6e3c6;
-  background-color:#104b74 !important;
+  --pui-stage-ink:#39291d;
+  --pui-stage-muted:#6b503a;
+  --pui-stage-paper:#efd5ae;
+  --pui-stage-user:#c49b72;
+  --pui-stage-wood:#63412e;
+  --pui-stage-code:#49372c;
+  --pui-stage-code-ink:#f6e3c6;
+  background-color:#124a6b !important;
 }
 html[data-petrifyui-active] body {
-  background-color:#115a84 !important;
+  background-color:#105e84 !important;
   background-image:
-    linear-gradient(rgba(4,25,43,.12),rgba(5,28,51,.28)),
+    linear-gradient(rgba(5,32,49,.11),rgba(7,31,52,.19)),
     var(--pui-ambient-art,none) !important;
+  background-position:center center,center center !important;
   background-size:cover,cover !important;
-  background-position:center,center !important;
   background-attachment:fixed,fixed !important;
   background-repeat:no-repeat !important;
 }
-html[data-petrifyui-active] :is(#__next,#root,[data-testid="chatgpt-app"],
-  [data-testid="chat-layout"],[data-testid="conversation-layout"]) {
+/* Only app structural ANCESTORS of the selected chat main are transparent.
+   Native floating menus, media, and message surfaces are not blanket-cleared. */
+html[data-petrifyui-active] [data-pui-scene-shell],
+html[data-petrifyui-active] :is(
+  #__next,#root,[data-testid="chatgpt-app"]
+):has([data-pui-main-stage]) {
   background-color:transparent !important;
+  background-image:none !important;
 }
-
-/* PAGE: paper belongs to the actual main host, not a pseudo-element.
-   Preserve the native chat flex/scroll layout; only color its paint. */
+/* The main node keeps ALL native positioning and dimensions. It merely owns
+   a behind-content parchment painting with a fixed viewport-sized frame. */
 html[data-petrifyui-active] [data-pui-main-stage] {
-  --text-primary:var(--pui-ink);
-  --text-secondary:var(--pui-ink-muted);
-  --text-tertiary:#866b50;
-  --token-text-primary:var(--pui-ink);
-  --token-text-secondary:var(--pui-ink-muted);
-  --token-text-tertiary:#866b50;
+  position:relative !important;
+  isolation:isolate !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  color:var(--pui-stage-ink);
+  --text-primary:var(--pui-stage-ink);
+  --text-secondary:var(--pui-stage-muted);
+  --text-tertiary:#82644b;
+  --token-text-primary:var(--pui-stage-ink);
+  --token-text-secondary:var(--pui-stage-muted);
+  --token-text-tertiary:#82644b;
   --main-surface-primary:transparent;
   --main-surface-secondary:transparent;
   --token-main-surface-primary:transparent;
   --token-main-surface-secondary:transparent;
-  color:var(--pui-ink) !important;
-  color-scheme:light;
-  box-sizing:border-box !important;
-  position:relative !important;
-  width:calc(100% - 36px) !important;
-  max-width:1160px !important;
-  min-height:calc(100dvh - 28px) !important;
-  margin:14px auto !important;
-  background-color:var(--pui-paper) !important;
-  background-image:linear-gradient(#fff5de20,#b9876020),
-    var(--pui-stage-paper,none) !important;
-  background-size:100% 100%,256px 256px !important;
-  background-repeat:no-repeat,repeat !important;
-  border:2px solid #896444 !important;
-  border-radius:8px !important;
-  box-shadow:0 8px 0 #092f4a50,0 12px 22px #062d4a55,
-    inset 0 0 0 2px #f7e2c5a0 !important;
+}
+/* The paper cannot reflow the native New Chat welcome/input or scrollable
+   conversations. No stretching with message length, no intercepted clicks. */
+html[data-petrifyui-active][data-pui-stage-ready]
+  [data-pui-main-stage]::before {
+  content:"";
+  position:fixed;
+  left:var(--pui-panel-left,auto);
+  top:12px;
+  bottom:12px;
+  width:var(--pui-panel-width,980px);
+  pointer-events:none;
+  z-index:-1;
+  border:2px solid #916a48;
+  border-radius:8px;
+  box-sizing:border-box;
+  background-color:var(--pui-stage-paper);
+  background-image:
+    linear-gradient(#fff6df21,#aa794c17),
+    var(--pui-stage-paper,none);
+  background-position:center,0 0;
+  background-size:100% 100%,256px 256px;
+  background-repeat:no-repeat,repeat;
   image-rendering:pixelated;
+  box-shadow:0 8px 0 #092b4640,0 13px 26px #061d3150,
+    inset 0 0 0 2px #fff3d58c;
 }
-html[data-petrifyui-active] [data-pui-main-stage]::before,
-html[data-petrifyui-active] [data-pui-main-stage]::after {
-  content:none !important;
-  display:none !important;
-}
-/* TRANSPARENT STRUCTURE: black regions were native footer/scroll shells.
-   Never clear the composer itself, message cards, menus or code blocks. */
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-pui-stage-shell],[data-pui-stage-footer],#thread,
-  [data-testid="conversation-thread"],
-  [data-testid="conversation-scroll-container"]
-):not([data-petrifyui-composer]) {
+/* Dark native scroll and composer wrappers caused the black footer bars.
+   Clear only wrappers identified from the active editor/message ancestry. */
+html[data-petrifyui-active] [data-pui-main-stage] [data-pui-flow-shell] {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
 }
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-pui-stage-footer],
-  [class*="bg-black"]:has([data-petrifyui-composer]),
-  [class*="bg-token-main-surface"]:has([data-petrifyui-composer])
-):not([data-petrifyui-composer]):not([data-pui-main-stage]) {
-  background:transparent !important;
-  box-shadow:none !important;
-}
-html[data-petrifyui-active] [data-pui-main-stage] [data-pui-stage-footer]::before,
-html[data-petrifyui-active] [data-pui-main-stage] [data-pui-stage-footer]::after {
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-pui-flow-shell]::before,
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-pui-flow-shell]::after {
   background-color:transparent !important;
   background-image:none !important;
-  box-shadow:none !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
+  #thread,[data-testid="conversation-thread"],
+  [data-testid="conversation-scroll-container"],
   [class*="bg-token-main-surface-primary"],
   [class*="bg-token-bg-primary"]
-):not(button):not([role="menu"]):not([role="dialog"]):not(pre)
-:not([data-testid="code-block"]):not([data-petrifyui-composer]) {
+):not([data-petrifyui-composer]):not([role="menu"])
+:not([role="dialog"]):not(pre):not([data-testid="code-block"]) {
   background-color:transparent !important;
   background-image:none !important;
 }
-
-/* INK: ChatGPT often uses white fills on individual markdown children,
-   not just their parent. Exclude code and interactive dialog content. */
+/* Replace only native prose's light-mode text color; do not recolor icons or
+   syntax highlighting by blindly forcing all descendant spans. */
 html[data-petrifyui-active] [data-pui-main-stage] :is(
   [data-message-author-role="assistant"],.markdown,.prose,
   [class*="markdown"]
 ) {
-  --tw-prose-body:var(--pui-ink);
+  color:var(--pui-stage-ink) !important;
+  --tw-prose-body:var(--pui-stage-ink);
   --tw-prose-headings:#2d2118;
   --tw-prose-bold:#2d2118;
-  --tw-prose-links:#74492c;
-  --tw-prose-code:#4f3524;
-  color:var(--pui-ink) !important;
-  -webkit-text-fill-color:var(--pui-ink) !important;
+  --tw-prose-links:#70492d;
+  --tw-prose-code:#4f3626;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-message-author-role="assistant"],.markdown,.prose,[class*="markdown"]
-) :is(p,span,li,ul,ol,div,h1,h2,h3,h4,h5,h6,strong,em,blockquote)
-:not(pre *):not(code *):not([data-testid="code-block"] *)
-:not([class*="code-block"] *):not(button *):not([role="menu"] *) {
-  color:var(--pui-ink) !important;
-  -webkit-text-fill-color:var(--pui-ink) !important;
+  .markdown,.prose,[class*="markdown"],
+  [data-message-author-role="assistant"]
+) :is(p,li,h1,h2,h3,h4,h5,h6,strong,em,blockquote,
+  [class*="text-token-text-primary"],[class*="text-white"])
+:not(:is(pre,[data-testid="code-block"],[class*="code-block"]) *)
+:not(:is(button,[role="button"],[role="menu"],[role="dialog"]) *) {
+  color:var(--pui-stage-ink) !important;
+  -webkit-text-fill-color:var(--pui-stage-ink) !important;
 }
+/* New Chat has a standalone welcome prompt that isn't markdown. */
+html[data-petrifyui-active][data-pui-new-chat]
+  [data-pui-main-stage] :is(h1,h2,h3,p)
+:not(:is(pre,[data-testid="code-block"],[class*="code-block"]) *)
+:not(:is(button,[role="button"],[role="menu"],[role="dialog"]) *) {
+  color:var(--pui-stage-ink) !important;
+  -webkit-text-fill-color:var(--pui-stage-ink) !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is(.markdown,.prose,[class*="markdown"]) a {
+  color:#70492d !important;
+  -webkit-text-fill-color:#70492d !important;
+  text-decoration-color:#9b7556 !important;
+}
+/* Secondary labels outside markdown, including status/tool timestamps. */
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  .markdown,.prose,[class*="markdown"]
-) a:not(pre a):not([data-testid="code-block"] a) {
-  color:#74492c !important;
-  -webkit-text-fill-color:#74492c !important;
-  text-decoration-color:#a4774d !important;
+  [class*="text-token-text-secondary"],
+  [class*="text-token-text-tertiary"]
+):not(:is(pre,[data-testid="code-block"],[class*="code-block"]) *)
+:not(:is(button,[role="button"],[role="menu"],[role="dialog"]) *) {
+  color:var(--pui-stage-muted) !important;
+  -webkit-text-fill-color:var(--pui-stage-muted) !important;
 }
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [class*="text-token-text-secondary"],[class*="text-token-text-tertiary"]
-):not(pre *):not(code *):not([data-testid="code-block"] *):not(button *) {
-  color:var(--pui-ink-muted) !important;
-  -webkit-text-fill-color:var(--pui-ink-muted) !important;
-}
-
-/* ACTION ICONS: they remain the original ChatGPT icons, but in ink. */
+/* Existing message actions keep their native icons and focus behavior. */
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="assistant"] :is(button,[role="button"]) {
-  color:#654932 !important;
+  [data-message-author-role="assistant"] :is(button,[role="button"]),
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-message-author-role="assistant"] :is(button,[role="button"]) svg {
+  color:#674b33 !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="assistant"] :is(button,[role="button"]) svg {
-  color:#654932 !important;
-  stroke:currentColor;
-}
-html[data-petrifyui-active] [data-pui-main-stage] :is(
-  [data-testid="conversation-turn"] button,
-  [data-testid^="conversation-turn"] button
-):not([data-petrifyui-composer] button):not([data-testid="code-block"] button) svg {
-  color:#654932 !important;
-}
-
-/* USER: swap the bright green chat surface for warm brown paper. */
-html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="user"] {
-  --token-message-surface:#c49b72;
-  --message-surface:#c49b72;
+  [data-message-author-role="user"] {
+  --token-message-surface:var(--pui-stage-user);
+  --message-surface:var(--pui-stage-user);
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="user"] :is(
-  [class*="bg-token-message-surface"],[class*="user-message-bubble"],
-  [data-testid="user-message"]) {
-  background-color:#c49b72 !important;
+  [data-message-author-role="user"] :is(
+    [class*="bg-token-message-surface"],
+    [class*="user-message-bubble"],[data-testid="user-message"]
+  ) {
+  background-color:var(--pui-stage-user) !important;
   background-image:none !important;
   color:#33241a !important;
-  border:1px solid #956e4b !important;
-  box-shadow:1px 2px 0 #452e1c33 !important;
+  border-color:#99734f !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-message-author-role="user"] :is(p,span):not(button *) {
+  [data-message-author-role="user"] :is(p,span)
+  :not(:is(button,[role="button"]) *) {
   color:#33241a !important;
   -webkit-text-fill-color:#33241a !important;
 }
-
-/* CODE: ONE walnut surface, both heading and body. No gray header strip,
-   alternate brown line, or black nested panel. */
+/* One walnut color for code headers, terminal bodies and inline code
+   panels. Keep natural code height, overflow, copy buttons and scroll. */
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  pre,[data-testid="code-block"],[class*="code-block"]
+  pre,[data-testid="code-block"],[class*="code-block"],
+  div:has(> pre)
 ) {
-  --text-primary:var(--pui-code-ink);
-  --token-text-primary:var(--pui-code-ink);
-  color:var(--pui-code-ink) !important;
-  background:var(--pui-code) !important;
-  border-color:#79583d !important;
+  --text-primary:var(--pui-stage-code-ink);
+  --token-text-primary:var(--pui-stage-code-ink);
+  background-color:var(--pui-stage-code) !important;
+  background-image:none !important;
+  border-color:#7f5c41 !important;
+  color:var(--pui-stage-code-ink) !important;
   box-shadow:none !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
-  pre,[data-testid="code-block"],[class*="code-block"]
-) :is(header,pre,code,[class*="bg-gray"],[class*="bg-neutral"],
-  [class*="bg-token"],[class*="bg-black"]) {
-  background:var(--pui-code) !important;
-  border-color:#79583d !important;
+  pre,[data-testid="code-block"],[class*="code-block"],
+  div:has(> pre)
+) :is(header,pre,code,[class*="bg-"],button) {
+  background-color:var(--pui-stage-code) !important;
+  background-image:none !important;
+  border-color:#7f5c41 !important;
+  color:var(--pui-stage-code-ink) !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage] :is(
   pre,[data-testid="code-block"],[class*="code-block"]
-) :is(pre *,code *,header *,button,svg,svg *) {
-  color:var(--pui-code-ink) !important;
-  -webkit-text-fill-color:var(--pui-code-ink) !important;
+) :is(code,span,button,svg) {
+  color:var(--pui-stage-code-ink) !important;
+  -webkit-text-fill-color:var(--pui-stage-code-ink) !important;
 }
-
-/* COMPOSER: same materials as the main page, but inset like a writing tray.
-   No second torn edge, no dark stripe between paper and input; expands with
-   attachments and multiline content using native height. */
-html[data-petrifyui-active] [data-pui-main-stage] [data-petrifyui-composer] {
+/* The composer is an inset parchment writing tray. Native height and input
+   centering are unchanged on New Chat and in long conversations. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  [data-petrifyui-composer] {
   --pui-ink:#3e2c20;
-  --pui-muted:#74543b;
-  --pui-paper:#e2c094;
-  color:#3e2c20 !important;
-  background-color:#e2c094 !important;
-  background-image:linear-gradient(#fff3d018,#8f5b3220),
+  --pui-muted:#725239;
+  --pui-paper:#e1bd90;
+  background-color:#e1bd90 !important;
+  background-image:linear-gradient(#fff3d018,#93643b1c),
     var(--pui-stage-paper,none) !important;
   background-size:100% 100%,256px 256px !important;
-  border:2px solid #a47b52 !important;
+  background-repeat:no-repeat,repeat !important;
+  border:2px solid #a67b51 !important;
   border-radius:7px !important;
-  box-shadow:inset 0 0 0 2px #f3d9b240,0 2px 0 #61412b35 !important;
-  min-height:52px;
-  height:auto;
-  isolation:isolate;
+  box-shadow:inset 0 0 0 2px #f8dfb34d,0 2px 0 #51391e35 !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-petrifyui-composer]::before,
+  [data-petrifyui-composer]::before,
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-petrifyui-composer]::after {
+  [data-petrifyui-composer]::after {
   content:none !important;
   display:none !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-petrifyui-composer] :is(
-  #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
-  [contenteditable="true"],textarea) {
+  [data-petrifyui-composer] :is(
+    #prompt-textarea,[data-testid="prompt-textarea"],.ProseMirror,
+    [contenteditable="true"],textarea
+  ) {
   color:#3e2c20 !important;
   -webkit-text-fill-color:#3e2c20 !important;
   caret-color:#805534 !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-[data-petrifyui-composer] button:not([aria-label="Stop"]) svg {
-  color:#69472d !important;
+  [data-petrifyui-composer] :is(button,button svg)
+:not([aria-label="Stop"]) {
+  color:#694b32 !important;
 }
-
-/* FLOATING SIDEBAR: Native DOM can split header and nav. Mark and style both
-   pieces; translate is paint-only and avoids overriding layout transforms. */
-@media(min-width:960px) {
-  html[data-petrifyui-active] [data-pui-floating-sidebar] {
-    translate:12px 0 !important;
-    box-sizing:border-box !important;
-    max-height:calc(100dvh - 20px) !important;
-    border:2px solid #a47b52 !important;
-    border-radius:10px !important;
-    box-shadow:3px 5px 0 #092b4466,6px 9px 17px #031d3560 !important;
-  }
-  html[data-petrifyui-active] [data-pui-floating-sidebar]:not([data-pui-sidebar-has-header]) {
-    margin-top:8px !important;
-    height:calc(100dvh - 80px) !important;
-    max-height:calc(100dvh - 80px) !important;
-  }
-  html[data-petrifyui-active] [data-pui-floating-sidebar][data-pui-sidebar-has-header] {
-    margin-top:9px !important;
-    height:calc(100dvh - 20px) !important;
-    max-height:calc(100dvh - 20px) !important;
-  }
-  html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached] {
-    translate:12px 9px !important;
-    border-radius:8px 8px 4px 4px !important;
-    border:2px solid #a47b52 !important;
-    box-shadow:2px 3px 0 #092b4460 !important;
-  }
+/* Sidebar: draw one wood panel INSIDE the native dock. Its original width,
+   position, scrolling and pointer targets are entirely untouched. */
+html[data-petrifyui-active] [data-pui-floating-sidebar] {
+  position:relative !important;
+  isolation:isolate !important;
+  background-color:transparent !important;
+  background-image:none !important;
 }
-html[data-petrifyui-active] :is(
-  [data-pui-stage-header],[data-petrifyui-topbar],
-  #sidebar header,[data-testid="sidebar-container"] header,
-  #stage-slideover-sidebar header,[data-testid="sidebar"] header
-) {
-  background-color:#63412e !important;
-  background-image:var(--pui-resolved-wood,none),
-    repeating-linear-gradient(90deg,#674530 0 27px,#5e3e2d 27px 54px,
-      #745139 54px 63px,#4f3426 63px 65px) !important;
-  background-repeat:repeat !important;
-  background-size:512px 512px,128px 128px !important;
-  color:#f1dfc6 !important;
+html[data-petrifyui-active] [data-pui-floating-sidebar]::before {
+  content:"";
+  position:absolute;
+  top:10px;bottom:10px;left:10px;right:5px;
+  z-index:-1;
+  pointer-events:none;
+  border:2px solid #9e7450;
+  border-radius:9px;
+  background-color:var(--pui-stage-wood);
+  background-image:var(--pui-resolved-wood,none);
+  background-position:0 0;
+  background-size:512px 512px;
+  background-repeat:repeat;
+  image-rendering:pixelated;
+  box-shadow:3px 5px 0 #062d4750,5px 9px 16px #08294448,
+    inset 0 0 0 2px #deb88d34;
 }
-/* React may insert another black panel *inside* a correctly themed header. */
+html[data-petrifyui-active] [data-pui-floating-sidebar]
+  [data-pui-sidebar-shell] {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* A separate remounted header gets the same wood panel and soft inset.
+   If it is inside the sidebar dock, the dock provides the wood already. */
 html[data-petrifyui-active] :is(
   [data-pui-stage-header],[data-petrifyui-topbar]
-) > :is([class*="bg-black"],[class*="bg-token-sidebar"],
-  [class*="bg-neutral"],[class*="bg-token-main-surface"]) {
-  background:transparent !important;
+) {
+  background-color:transparent !important;
+  background-image:none !important;
+  color:#f1dfc6 !important;
+  position:relative;
+  isolation:isolate;
+}
+html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached]::before {
+  content:"";
+  position:absolute;
+  top:8px;bottom:0;left:10px;right:5px;
+  z-index:-1;
+  pointer-events:none;
+  border:2px solid #9e7450;
+  border-radius:8px;
+  background-color:var(--pui-stage-wood);
+  background-image:var(--pui-resolved-wood,none);
+  background-position:0 0;
+  background-size:512px 512px;
+  background-repeat:repeat;
+}
+html[data-petrifyui-active] :is(
+  [data-pui-stage-header],[data-petrifyui-topbar]
+) > :is([class*="bg-black"],[class*="bg-neutral"],
+  [class*="bg-token-sidebar"],[class*="bg-token-main-surface"]) {
+  background-color:transparent !important;
+  background-image:none !important;
 }
 html[data-petrifyui-active] :is(
   [data-pui-stage-header],[data-petrifyui-topbar]
 ) :is(button,button span,svg) {
   color:#f1dfc6 !important;
 }
-@media(max-width:959px) {
-  html[data-petrifyui-active] [data-pui-main-stage] {
-    width:calc(100% - 14px) !important;
-    margin:7px auto !important;
-    min-height:calc(100dvh - 14px) !important;
-    border-radius:5px !important;
+/* Compact rail and mobile nav retain their native responsive arrangements. */
+@media(max-width:899px) {
+  html[data-petrifyui-active] [data-pui-floating-sidebar]::before {
+    inset:5px 3px 5px 5px;
+    border-radius:5px;
   }
-  html[data-petrifyui-active] [data-pui-floating-sidebar],
-  html[data-petrifyui-active] [data-pui-stage-header] {
-    translate:none !important;
+  html[data-petrifyui-active][data-pui-stage-ready]
+    [data-pui-main-stage]::before {
+    top:7px;bottom:7px;border-radius:5px;
   }
 }
-html[data-petrifyui-low-power][data-petrifyui-active] [data-pui-main-stage] {
-  box-shadow:0 4px 0 #102c4250 !important;
+html[data-petrifyui-low-power][data-petrifyui-active]
+  [data-pui-main-stage]::before,
+html[data-petrifyui-low-power][data-petrifyui-active]
+  [data-pui-floating-sidebar]::before {
+  box-shadow:0 2px 0 #062d4740;
 }
-@media(prefers-reduced-motion:reduce) {
+@media(prefers-reduced-motion:reduce){
   html[data-petrifyui-active] body {
     background-attachment:scroll,scroll !important;
   }
-}
-
-
-/* Some current ChatGPT builds place code headers adjacent to <pre>, rather
-   than inside a named code-block node. Match their immediate wrapper too. */
-html[data-petrifyui-active] [data-pui-main-stage] div:has(> pre) {
-  background-color:var(--pui-code) !important;
-  border-color:#79583d !important;
-}
-html[data-petrifyui-active] [data-pui-main-stage] div:has(> pre) >
-  :is(div,header) {
-  background-color:var(--pui-code) !important;
-  color:var(--pui-code-ink) !important;
-  -webkit-text-fill-color:var(--pui-code-ink) !important;
-}
-/* Protect against explicit white token utilities in prose fragments. */
-html[data-petrifyui-active] [data-pui-main-stage]
-:is([class*="text-white"],[class*="text-token-text-primary"])
-:not(pre *):not(code *):not([data-testid="code-block"] *)
-:not([class*="code-block"] *):not(button *):not([role="menu"] *) {
-  color:var(--pui-ink) !important;
-  -webkit-text-fill-color:var(--pui-ink) !important;
 }
