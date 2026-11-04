@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Pixel-paper ChatGPT menus with simple clean borders and no decorative vine overlays.",
-  "version": "1.22.0",
+  "description": "Detect slash command menus mounted inside composer and theme with pixel parchment.",
+  "version": "1.23.0",
   "permissions": [
     "storage"
   ],
