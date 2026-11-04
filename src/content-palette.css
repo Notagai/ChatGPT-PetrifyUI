@@ -589,3 +589,35 @@ html[data-petrifyui-active] button.text-tertiary[aria-expanded]
   color:#65442f !important;
   -webkit-text-fill-color:#65442f !important;
 }
+
+
+/* v1.32.1: ChatGPT's user bubbles are dark walnut while stage.css
+   previously forced #33241a (dark brown) onto their text.
+   Match the visible surface and keep assistant parchment text untouched. */
+html[data-petrifyui-active] :is(
+  [data-message-author-role="user"] [class*="user-message-bubble"],
+  [data-message-author-role="user"] [data-testid="user-message"],
+  [data-message-author-role="user"] [class*="bg-token-message-surface"],
+  [data-message-author-role="user"][data-testid="user-message"],
+  [data-message-author-role="user"] .whitespace-pre-wrap
+) {
+  --color-text-user-message:#fff0d8;
+  --text-primary:#fff0d8;
+  --token-text-primary:#fff0d8;
+  color:#fff0d8 !important;
+  -webkit-text-fill-color:#fff0d8 !important;
+}
+html[data-petrifyui-active] [data-message-author-role="user"]
+  :is([class*="user-message-bubble"],[data-testid="user-message"],
+      [class*="bg-token-message-surface"],.whitespace-pre-wrap)
+  :is(p,span,strong,em,div):not(:is(button *,a *,code *,pre *)) {
+  color:#fff0d8 !important;
+  -webkit-text-fill-color:#fff0d8 !important;
+}
+/* User text may be a direct descendant with no conventional bubble class.
+   Limit the fallback to prose nodes, never action controls or attachments. */
+html[data-petrifyui-active] [data-message-author-role="user"]
+  :is(p,.whitespace-pre-wrap):not(:is(button *,a *,code *,pre *)) {
+  color:#fff0d8 !important;
+  -webkit-text-fill-color:#fff0d8 !important;
+}
