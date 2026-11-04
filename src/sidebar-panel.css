@@ -190,28 +190,56 @@ html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sideba
   background-color:transparent !important;
   background-image:none !important;
 }
-/* The selected/hovered appearance is generated on the native row and a
-   link ::before overlay, NOT by PetrifyUI's former a:hover CSS.
-   Remove the slabs rather than inventing replacement selection styling.
-   Native focus ring, navigation, hover buttons and keyboard remain. */
-html[data-petrifyui-active] nav[data-pui-floating-sidebar]
-  section[class~="group/nav-section"] .sidebar-item,
-html[data-petrifyui-active] nav[data-pui-floating-sidebar]
-  section[class~="group/nav-section"] .sidebar-item:is(:hover,:focus-within),
-html[data-petrifyui-active] nav[data-pui-floating-sidebar]
-  section[class~="group/nav-section"] .sidebar-item:has(a[aria-current="page"]) {
-  background-color:transparent !important;
-  background-image:none !important;
-  box-shadow:none !important;
-}
-html[data-petrifyui-active] nav[data-pui-floating-sidebar]
-  section[class~="group/nav-section"] .sidebar-item a[href]::before,
-html[data-petrifyui-active] nav[data-pui-floating-sidebar]
-  section[class~="group/nav-section"] .sidebar-item a[href]:is(:hover,[aria-current="page"])::before {
-  background-color:transparent !important;
-  background-image:none !important;
-}
+/* Native selected and hovered conversation rows are intentionally untouched. */
 /* One gap language, without outlines filling it with near-black pixels. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
   --pui-panel-gap:10px;
+}
+
+
+/* v1.32.5: Actual saved DOM selectors:
+   .app-shell-left-panel contains .absolute.inset-0.flex.bg-surface;
+   .sidebar-navigation owns .absolute.inset-x-0.bottom-0.z-20.
+   Unlike nav ~ div, these match the real backdrop and account footer. */
+
+/* Transparentize ONLY the full-screen backing, not wooden panel surfaces. */
+html[data-petrifyui-active] aside.app-shell-left-panel
+  div.absolute.inset-0.flex.bg-surface:has(.sidebar-navigation),
+html[data-petrifyui-active] aside.app-shell-left-panel
+  div.absolute.inset-0.flex.bg-surface:has(nav[data-pui-floating-sidebar]) {
+  background:transparent !important;
+}
+html[data-petrifyui-active] aside.app-shell-left-panel {
+  background:transparent !important;
+  background-image:none !important;
+}
+/* The account is its own bottom overlay within .sidebar-navigation. Give it
+   the same inset as header + nav; its button remains React-controlled. */
+html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
+  > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
+  left:10px !important;
+  right:10px !important;
+  bottom:10px !important;
+  width:auto !important;
+  border:2px solid #b78b5f !important;
+  border-radius:10px !important;
+  background-color:#513523 !important;
+  background-image:linear-gradient(180deg,#f0c18d22,#23140d46),
+    var(--pui-resolved-wood,none) !important;
+  background-size:100% 100%,512px 512px !important;
+  box-shadow:2px 3px 7px #09243d45,inset 0 1px 0 #f4d09a55 !important;
+}
+/* Don't let the account footer's native dark underlay fill the cabinet gap. */
+html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
+  > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"])
+  > div:not(:has(button[aria-label="Open profile menu"])) {
+  background-color:transparent !important;
+}
+@media(max-width:899px) {
+  html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sidebar])
+    > div.absolute.inset-x-0.bottom-0:has(button[aria-label="Open profile menu"]) {
+    left:5px !important;
+    right:5px !important;
+    bottom:5px !important;
+  }
 }
