@@ -7,7 +7,7 @@ html[data-petrifyui-active] [data-petrifyui-composer] {
   color-scheme:light;
   color:var(--pui-ink) !important;
   background-color:var(--pui-paper) !important;
-  background-image:var(--pui-paper-composer,none) !important;
+  background-image:var(--pui-custom-paper,var(--pui-paper-composer,none)) !important;
   background-position:0 0 !important;
   background-repeat:repeat !important;
   background-size:256px 256px !important;
