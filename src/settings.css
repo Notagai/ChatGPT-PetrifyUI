@@ -82,3 +82,17 @@ html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar]
     border-radius:6px !important;
   }
 }
+
+/* Inset Settings surfaces to match the floating chat/navigation cabinet.
+   Keep the original CSS grid/flex model; margins consume available space. */
+@media(min-width:900px) {
+  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar] {
+    margin:10px !important;
+    width:calc(100% - 20px) !important;
+    box-sizing:border-box !important;
+  }
+  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main] {
+    margin:10px !important;
+    min-width:0;
+  }
+}
