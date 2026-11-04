@@ -88,10 +88,14 @@
     if(!seed)return null;
     const sr=box(sidebar);
     // Native <main> is preferred, but only if it does not contain the sidebar.
+    const minSceneWidth=Math.min(700,Math.max(360,
+      (innerWidth-(sr?.right||0))*.63));
     for(const candidate of [editor?.closest(NATIVE_MAIN),message?.closest(NATIVE_MAIN)]){
       const r=box(candidate);
       if(!r||candidate.contains(sidebar))continue;
-      if(r.width>=Math.min(380,innerWidth*.52))return candidate;
+      // On New Chat, <main> may be only the narrow centered welcome
+      // column. Its parent is the real scene that should receive paper.
+      if(r.width>=minSceneWidth)return candidate;
     }
     let best=null,bestScore=-Infinity;
     for(let node=seed.parentElement,depth=0;
