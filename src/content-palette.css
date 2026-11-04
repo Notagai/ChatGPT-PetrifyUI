@@ -351,10 +351,7 @@ html[data-petrifyui-active] [data-pui-main-stage]
 /* Text links in the rich renderer and Markdown respond to semantic ink.
    Exclude code surfaces, which use cream text on walnut. */
 html[data-petrifyui-active] [data-pui-main-stage]
-  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href]
-  :not(svg):not(svg *),
-html[data-petrifyui-active] [data-pui-main-stage]
-  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href] {
+  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href]:not([data-code-block] a) {
   color:#644022 !important;
   -webkit-text-fill-color:#644022 !important;
   text-decoration-color:#997047 !important;
