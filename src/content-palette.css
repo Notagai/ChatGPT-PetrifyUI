@@ -231,3 +231,32 @@ html[data-petrifyui-active] [data-pui-flow-shell]:not([data-petrifyui-composer])
   background-color:transparent !important;
   background-image:none !important;
 }
+
+
+/* v1.30.5: Thinking duration text.
+   The saved DOM confirms: div.text-size-chat.text-secondary >
+   button.text-tertiary[aria-expanded] > span + svg.
+   Do not require [data-pui-main-stage]: popover/scroll variants move it. */
+html[data-petrifyui-active] .text-size-chat.text-secondary >
+  button.text-tertiary[aria-expanded] {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+}
+html[data-petrifyui-active] .text-size-chat.text-secondary >
+  button.text-tertiary[aria-expanded] > span {
+  color:#65442f !important;
+  -webkit-text-fill-color:#65442f !important;
+  opacity:1 !important;
+}
+html[data-petrifyui-active] .text-size-chat.text-secondary >
+  button.text-tertiary[aria-expanded] > svg {
+  color:#65442f !important;
+  opacity:1 !important;
+}
+/* DIL success badge as the first response element must sit INSIDE
+   the parchment frame. Move only that badge; no global scroll offsets
+   or changes to message/viewport dimensions. */
+html[data-petrifyui-active] [class*="DilResponseRoot-"] >
+  [data-d-component="badge"]:first-child {
+  margin-block-start:14px !important;
+}
