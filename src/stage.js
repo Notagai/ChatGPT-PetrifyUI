@@ -161,10 +161,15 @@
       for(const seed of sources){
         let n=seed?.parentElement;
         for(let depth=0;n&&n!==stage&&depth<16;n=n.parentElement,depth++){
+          const composerShell=[
+            '[data-petrifyui-composer]','#composer-background',
+            '[data-testid="composer-root"]',
+            '[data-testid="composer-background"]',
+            'form[data-type="unified-composer"]'
+          ].join(',');
           if(!(n instanceof HTMLElement)||n.matches(
-            '[data-petrifyui-composer],[role="dialog"],[role="menu"],pre,code'
-          ))continue;
-          if(n.closest('[data-petrifyui-composer]'))continue;
+            '[role="dialog"],[role="menu"],pre,code'
+          )||n.matches(composerShell)||n.closest(composerShell))continue;
           const r=box(n);
           // Wide structural scroll/footer shells can paint the black bands,
           // but small cards, attachments and tool blocks must remain intact.
