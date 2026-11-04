@@ -11,7 +11,8 @@
     'url("'+chrome.runtime.getURL('assets/stage/ocean-pixel.png')+'")');
   html.style.setProperty('--pui-stage-paper',
     'url("'+chrome.runtime.getURL('assets/composer/paper-grain-geekify.svg')+'")');
-  let stage=null,sidebar=null,queued=false,observer=null;
+  let stage=null,sidebar=null,header=null,queued=false,observer=null,sideObserver=null;
+  const footerMarks=new Set();
   const shellMarks=new Set();
 
   function routeAllowed(){
@@ -29,6 +30,57 @@
   function findSidebar(){
     const options=[...document.querySelectorAll(SIDEBAR)].filter(x=>rect(x));
     return options.find(node=>!options.some(other=>other!==node&&other.contains(node)))||options[0]||null;
+  }
+  function findHeader(side){
+    // Native ChatGPT uses more than one header arrangement. Pick the toolbar
+    // from its on-screen location and content, not a brittle hashed class.
+    const candidates=[
+      ...document.querySelectorAll('[data-petrifyui-topbar],header,[data-testid*="sidebar-header"]')
+    ];
+    for(const button of document.querySelectorAll('button,[role="button"]')){
+      if(!/^ChatGPT(?:\s|$)/i.test((button.textContent||"").trim()))continue;
+      for(let p=button.parentElement,d=0;p&&d<5;p=p.parentElement,d++)
+        candidates.push(p);
+    }
+    let best=null,score=-Infinity;
+    for(const node of candidates){
+      const r=rect(node);
+      if(!r||r.left>36||r.top>35||r.width<175||r.width>470||
+        r.height<32||r.height>105)continue;
+      if(side&&!side.contains(node)&&r.right>500)continue;
+      const buttons=node.querySelectorAll('button,[role="button"]').length;
+      if(buttons<1)continue;
+      const value=(node.hasAttribute('data-petrifyui-topbar')?40:0)+
+        Math.min(buttons,5)*6+Math.max(0,100-r.height)*.15+
+        (r.top<15?10:0);
+      if(value>score){best=node;score=value;}
+    }
+    return best;
+  }
+  function markFooter(panel){
+    const next=new Set();
+    const editor=panel?.querySelector(COMPOSER);
+    if(editor){
+      const base=rect(panel);
+      for(let p=editor.parentElement,d=0;p&&p!==panel&&d<14;p=p.parentElement,d++){
+        const r=rect(p);
+        if(!r||!base)continue;
+        // A wide, short wrapper behind the composer is responsible for the
+        // black left/right bars. Do not repaint the actual editor or buttons.
+        if(r.width>=Math.min(base.width*.72,850)&&
+          r.height<=Math.max(460,innerHeight*.5)&&
+          r.height>=38&&r.bottom>=base.bottom-150&&
+          !p.hasAttribute('data-petrifyui-composer')&&
+          !p.matches('[role="dialog"],[role="menu"]'))next.add(p);
+      }
+    }
+    for(const node of footerMarks)if(!next.has(node))
+      node.removeAttribute('data-pui-stage-footer');
+    footerMarks.clear();
+    for(const node of next){
+      node.setAttribute('data-pui-stage-footer','');
+      footerMarks.add(node);
+    }
   }
   function findStage(nav){
     if(!routeAllowed())return null;
@@ -76,19 +128,33 @@
     shellMarks.clear();
     for(const el of next){el.setAttribute('data-pui-stage-shell','');shellMarks.add(el);}
   }
+  function watchSidebar(node){
+    if(sideObserver){sideObserver.disconnect();sideObserver=null;}
+    if(!node)return;
+    // A small observer only on sidebar chrome, never streamed chat content.
+    sideObserver=new MutationObserver(schedule);
+    sideObserver.observe(node,{childList:true,subtree:true});
+  }
   function update(){
     queued=false;
     if(document.hidden)return;
     const nextSidebar=findSidebar();
     const nextStage=findStage(nextSidebar);
+    const nextHeader=findHeader(nextSidebar);
     if(stage!==nextStage)stage?.removeAttribute('data-pui-main-stage');
-    if(sidebar!==nextSidebar)sidebar?.removeAttribute('data-pui-floating-sidebar');
-    stage=nextStage;sidebar=nextSidebar;
+    if(sidebar!==nextSidebar){
+      sidebar?.removeAttribute('data-pui-floating-sidebar');
+      watchSidebar(nextSidebar);
+    }
+    if(header!==nextHeader)header?.removeAttribute('data-pui-stage-header');
+    stage=nextStage;sidebar=nextSidebar;header=nextHeader;
     stage?.setAttribute('data-pui-main-stage','');
     sidebar?.setAttribute('data-pui-floating-sidebar','');
+    header?.setAttribute('data-pui-stage-header','');
+    markFooter(stage);
     html.toggleAttribute('data-pui-stage-ready',!!stage);
     html.setAttribute('data-pui-stage-status',stage?'ready':'no-chat-stage');
-    html.dataset.puiStageRevision='ocean-v1282';
+    html.dataset.puiStageRevision='layout-v1283';
     updateShells(stage);
   }
   function schedule(){
