@@ -1,0 +1,25 @@
+// Run: node tests/core-architecture.test.cjs
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const mf=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const files=mf.content_scripts[0].js;
+assert(files.includes("src/core.js"),"Core must be loaded");
+assert(files.indexOf("src/core.js")<files.indexOf("src/stage.js"),"Core before stage");
+assert(!files.includes("src/composer.js"),"Legacy independent composer detector must stay disabled");
+const core=fs.readFileSync("src/core.js","utf8");
+const stage=fs.readFileSync("src/stage.js","utf8");
+const diagnostics=fs.readFileSync("popup/diagnostics.js","utf8");
+new Function(core);
+new Function(stage);
+new Function(diagnostics);
+assert(core.includes('register(name,callback)'), "Core has module lifecycle");
+assert(core.includes("requestAnimationFrame(flush)"),"Core batches updates");
+assert(core.includes("observer.observe(host,{childList:true})"),"Root observer shallow only");
+assert(core.includes("composerObserver.observe(parent,{childList:true})"),"Composer observer shallow only");
+assert(!core.includes("subtree:true"),"No document-wide descendant observation");
+assert(!core.includes("characterData:true"),"No streamed text observation");
+assert(stage.includes('PetrifyCore.register("stage",update)'),"Stage uses shared lifecycle");
+assert(!stage.includes("new MutationObserver"),"Stage must not own observers");
+assert(diagnostics.includes("chrome.scripting.executeScript"),"Inspector on-demand");
+assert(!diagnostics.includes("innerHTML"),"Inspector must not serialize chat DOM");
+console.log("PASS: shared core, bounded observers, module registration, on-demand diagnostics");
