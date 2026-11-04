@@ -571,3 +571,56 @@ html[data-petrifyui-active][data-pui-stage-ready] :is(
   background-color:transparent !important;
   background-image:none !important;
 }
+
+
+/* v1.29.2 composer recovery. This paint target is tagged directly from the
+   real editor/trailing controls, independently of the older composer script. */
+html[data-petrifyui-active] [data-pui-stage-composer] {
+  --pui-ink:#3e2c20;
+  --pui-muted:#725239;
+  --pui-paper:#e1bd90;
+  --text-primary:#3e2c20;
+  --token-text-primary:#3e2c20;
+  color:#3e2c20 !important;
+  color-scheme:light;
+  background-color:#e1bd90 !important;
+  background-image:linear-gradient(#fff3d01a,#93643b1b),
+    var(--pui-stage-paper,none) !important;
+  background-size:100% 100%,256px 256px !important;
+  background-repeat:no-repeat,repeat !important;
+  background-position:center,0 0 !important;
+  border-color:#a67b51 !important;
+  box-shadow:inset 0 0 0 2px #f8dfb34d,0 2px 0 #51391e35 !important;
+}
+html[data-petrifyui-active] [data-pui-stage-composer] :is(
+  #prompt-textarea,[data-testid="prompt-textarea"],
+  [contenteditable="true"],textarea
+) {
+  color:#3e2c20 !important;
+  -webkit-text-fill-color:#3e2c20 !important;
+  caret-color:#805534 !important;
+}
+html[data-petrifyui-active] [data-pui-stage-composer] :is(
+  [data-pui-paper-inner],[data-pui-paper-toolbar],
+  [data-composer-trailing-controls="true"]
+) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active] [data-pui-stage-composer]::before,
+html[data-petrifyui-active] [data-pui-stage-composer]::after {
+  content:none !important;
+  display:none !important;
+}
+/* Native full-width lower rails are not the composer itself. Turn off only
+   their dark paint where they directly wrap our positively identified tray. */
+html[data-petrifyui-active] :is(
+  [data-pui-flow-shell],
+  [class*="bg-black"],
+  [class*="bg-token-main-surface"]
+):has(> [data-pui-stage-composer])
+:not([data-pui-stage-composer]):not([data-pui-main-stage]) {
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
