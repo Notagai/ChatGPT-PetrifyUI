@@ -65,25 +65,44 @@
     return best;
   }
   function findSlashMenu(){
-    const words=["Dictate","Feedback","Model","Read aloud","Study"];
-    const matches=el=>words.filter(w=>(el.textContent||"").includes(w)).length>=4;
-    let result=null,bestArea=Infinity;
+    // ChatGPT may mount slash suggestions inside the composer itself.
+    // Use the visible collection of command labels, not a portal role.
+    const commands=["Dictate","Feedback","Model","Read aloud","Study"];
+    const countLabels=el=>{
+      const text=(el.textContent||"");
+      return commands.filter(label=>text.includes(label)).length;
+    };
+    let best=null,bestArea=Infinity;
     const consider=el=>{
-      if(!(el instanceof HTMLElement)||!visiblePopup(el,1080,760)||!matches(el))return;
+      if(!(el instanceof HTMLElement)||!visiblePopup(el,1100,800))return;
+      if(countLabels(el)<4)return;
       const r=geometry(el);
-      if(!r||r.width<220||r.height<120||el.closest('[data-petrifyui-composer]'))return;
-      const area=r.width*r.height;
-      if(area<bestArea){result=el;bestArea=area;}
+      if(!r||r.width<230||r.height<125)return;
+      const a=r.width*r.height;
+      // The tightest menu-sized element containing the command collection.
+      if(a<bestArea){best=el;bestArea=a;}
     };
     for(const el of document.querySelectorAll(OPEN))consider(el);
-    if(result)return result;
-    let checked=0;
-    for(const el of document.querySelectorAll('button,[role="option"],[role="menuitem"],[cmdk-item]')){
-      if(checked++>700)break;
-      if(!/^\s*(Dictate|Feedback|Model|Read aloud|Study)\b/i.test(el.textContent||""))continue;
-      for(let n=el.parentElement,d=0;n&&d<10;n=n.parentElement,d++)consider(n);
+    if(best)return best;
+    // Slash rows can be div/span elements instead of semantic menu items.
+    // This runs after input/keyboard events, never on streaming messages.
+    const anchors=document.querySelectorAll(
+      'button,[role="option"],[role="menuitem"],[cmdk-item],span'
+    );
+    let scanned=0;
+    for(const el of anchors){
+      if(scanned++>2600)break;
+      const text=(el.textContent||"").trim();
+      if(text!=="Dictate"&&text!=="Read aloud"&&text!=="Feedback")continue;
+      const r=geometry(el);
+      if(!r||r.bottom<0||r.top>innerHeight)continue;
+      for(let p=el.parentElement,depth=0;p&&depth<12;p=p.parentElement,depth++){
+        if(p===document.body)break;
+        consider(p);
+      }
+      if(best)break;
     }
-    return result;
+    return best;
   }
   function markMenuShells(menus){
     const next=new Set();
