@@ -102,7 +102,7 @@ html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]::before 
   position:fixed;
   top:12px;
   bottom:12px;
-  left:calc(max(330px, (100vw + 310px - 1040px)/2));
+  left:max(330px, calc((100vw - 730px)/2));
   width:min(1040px, calc(100vw - 350px));
   pointer-events:none;
   z-index:-1;
@@ -167,4 +167,16 @@ html[data-petrifyui-active] [data-pui-plan-label] {
     left:12px;
     width:calc(100vw - 24px);
   }
+}
+
+/* Remove black paint only from the structural ancestors of the Settings
+   heading. The actual setting cards and modal surfaces stay intact. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-flow] {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active][data-pui-settings]
+  [data-pui-settings-sidebar] :is(a,button,span) {
+  color:#f3dfbf !important;
+  -webkit-text-fill-color:#f3dfbf !important;
 }
