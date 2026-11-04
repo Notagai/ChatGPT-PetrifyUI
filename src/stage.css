@@ -64,6 +64,36 @@ html[data-petrifyui-active] [data-pui-main-stage] >
   :is([class*="bg-token-main-surface"],[class*="bg-token-bg-primary"]) {
   background-color:transparent !important;
 }
+/* v1.28.1: native ChatGPT often paints opaque black on intermediate
+   scroll/content wrappers. Clearing only the stage's direct children was
+   insufficient, which made the entire experiment appear invisible. */
+html[data-petrifyui-active][data-pui-stage-ready]
+ [data-pui-main-stage] [data-pui-stage-shell] {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active][data-pui-stage-ready] :is(
+  #main, main, [role="main"]
+)[data-pui-main-stage] {
+  background:transparent !important;
+}
+/* Keep structural scroll shells transparent; individual message bubbles,
+   attachment previews and code blocks remain separately styled. */
+html[data-petrifyui-active][data-pui-stage-ready]
+ [data-pui-main-stage] :is(
+  #thread,[data-testid="conversation-thread"],
+  [data-testid="conversation-scroll-container"]
+) {
+  background-color:transparent !important;
+}
+/* Make the stage visible even when the native page has no <main>: the
+   targeted root gets the paper scene, never a generic body text overlay.
+   Ambient art remains visible outside this constrained paper surface. */
+html[data-petrifyui-active][data-pui-stage-ready] [data-pui-main-stage]::before {
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
 /* Readable ink for assistant responses and basic rich text on the parchment. */
 html[data-petrifyui-active] [data-pui-main-stage] [data-message-author-role="assistant"] {
   color:#3e2a1d !important;
