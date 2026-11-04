@@ -462,15 +462,9 @@ html[data-petrifyui-active] [data-pui-main-stage]
   -webkit-mask-image:none !important;
   mask-image:none !important;
 }
-/* The paper is a fixed inset panel. Keep content from bleeding over its
-   upper/lower frame edge by clipping only the transcript *viewport*, not
-   the floating footer or the fixed parchment background. Native scrolling
-   stays on the original scroll container. */
-html[data-petrifyui-active] [data-pui-main-stage]
-  .thread-scroll-container > [container-type="inline-size"] {
-  overflow:clip;
-  overflow-clip-margin:0px;
-}
+/* Keep native transcript overflow so sticky controls, tooltips, and message
+   attachments remain functional. Edge clipping requires measured viewport
+   geometry and must not be guessed from the saved HTML. */
 /* The scroll-to-bottom control is a floating overlay, not a message.
    Give the button a fully opaque surface and a readable down chevron. */
 html[data-petrifyui-active] button[aria-label="Scroll to bottom"] {
