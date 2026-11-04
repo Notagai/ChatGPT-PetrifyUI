@@ -319,3 +319,73 @@ html[data-petrifyui-active] form[data-chatgpt-composer]
       button[data-testid="send-button"],button[data-testid="composer-submit-button"]):disabled {
   color:#e2cbaa !important;
 }
+
+
+/* v1.30.7 | Native thread-scroll-container is confirmed by saved DOM.
+   Add reserved room at the start/end of the transcript. Scroll padding
+   also prevents focus/scrollIntoView from hiding content at the paper edge.
+   The footer remains native and is not moved by these rules. */
+html[data-petrifyui-active] [data-pui-main-stage] .thread-scroll-container {
+  --pui-scroll-top-safe:36px;
+  --pui-scroll-bottom-safe:112px;
+  scroll-padding-top:var(--pui-scroll-top-safe) !important;
+  scroll-padding-bottom:var(--pui-scroll-bottom-safe) !important;
+}
+/* Only the first transcript-content column receives padding; its absolute
+   sibling footer is not altered. This prevents first/last messages from
+   touching the parchment frame when the thread reaches its ends. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  .thread-scroll-container > [container-type="inline-size"] {
+  padding-top:var(--pui-scroll-top-safe,36px) !important;
+  padding-bottom:var(--pui-scroll-bottom-safe,112px) !important;
+}
+/* The scrollport is a viewport. Fade content that passes its top edge
+   during scrolling rather than letting code headers clash with the top
+   border. The composer remains clear at the bottom of the scrollport. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  .thread-scroll-container {
+  mask-image:linear-gradient(to bottom,
+    transparent 0px, black 34px,
+    black calc(100% - 12px), transparent 100%) !important;
+}
+/* Text links in the rich renderer and Markdown respond to semantic ink.
+   Exclude code surfaces, which use cream text on walnut. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href]
+  :not(svg):not(svg *),
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href] {
+  color:#644022 !important;
+  -webkit-text-fill-color:#644022 !important;
+  text-decoration-color:#997047 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([class*="MarkdownRoot-"],[class*="DilResponseRoot-"]) a[href] :is(span,strong,em) {
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+}
+/* Message timestamps and tertiary caption text, never code blocks or
+   interactive controls. */
+html[data-petrifyui-active] [data-pui-main-stage]
+  :is([class*="transcriptContent-"],[class*="DilResponseRoot-"])
+  :is(.text-tertiary,.text-secondary,[class*="text-token-text-tertiary"]):not(button):not(a):not([data-code-block]):not([data-code-block] *) {
+  color:#806044 !important;
+  -webkit-text-fill-color:#806044 !important;
+}
+/* Visible scroll-to-bottom control: light parchment button, walnut arrow.
+   Native hide/reveal opacity and position are left untouched. */
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] {
+  background-color:#e8c69b !important;
+  background-image:none !important;
+  border-color:#986a43 !important;
+  color:#5b3922 !important;
+  -webkit-text-fill-color:#5b3922 !important;
+  box-shadow:0 2px 5px #3a241a4d !important;
+}
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] svg {
+  color:#5b3922 !important;
+}
+html[data-petrifyui-active] button[aria-label="Scroll to bottom"] svg :is(path,line,polyline) {
+  color:#5b3922 !important;
+  stroke:currentColor !important;
+}
