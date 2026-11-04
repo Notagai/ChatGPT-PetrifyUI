@@ -195,7 +195,7 @@ html[data-petrifyui-active] form[data-chatgpt-composer]
   --color-text-composer-primary:#34251a !important;
   color-scheme:light !important;
   background-color:#e8c69b !important;
-  background-image:var(--pui-paper-composer,none) !important;
+  background-image:var(--pui-custom-paper,var(--pui-paper-composer,none)) !important;
   background-size:256px 256px !important;
   background-repeat:repeat !important;
 }
