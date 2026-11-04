@@ -8,7 +8,7 @@
   const actions='button[data-testid="send-button"],button[data-testid="composer-submit-button"],button[aria-label*="send" i],button[aria-label="Stop" i],[data-composer-trailing-controls="true"]';
   const modules=new Map();
   let queued=false,frame=0,lastEditor=null,lastComposer=null,lastMode=null;
-  let observer=null,observedHost=null;
+  let observer=null,observedHost=null,composerObserver=null,composerObservedParent=null;
   const stats={runs:0,workMs:0,lastMs:0,observerEvents:0};
 
   for(const [key,path] of [
@@ -52,6 +52,19 @@
     }
     return best;
   }
+  function observeComposerParent(composer){
+    const parent=composer?.parentElement||null;
+    if(parent===composerObservedParent)return;
+    composerObserver?.disconnect();
+    composerObservedParent=parent;
+    if(!parent)return;
+    composerObserver=new MutationObserver(records=>{
+      if(records.some(r=>r.addedNodes.length||r.removedNodes.length)){
+        stats.observerEvents++;schedule();
+      }
+    });
+    composerObserver.observe(parent,{childList:true});
+  }
   function setMarker(previous,next,attribute){
     if(previous!==next){
       previous?.removeAttribute(attribute);
@@ -63,6 +76,7 @@
     setMarker(lastComposer,composer,"data-petrifyui-composer");
     setMarker(lastComposer,composer,"data-pui-stage-composer");
     lastEditor=editor;lastComposer=composer;
+    observeComposerParent(composer);
     // Native mode selector may be replaced during an effort change.
     let mode=null;
     if(composer){
@@ -85,6 +99,7 @@
       setMarker(lastComposer,null,"data-pui-stage-composer");
       setMarker(lastMode,null,"data-petrifyui-mode-button");
       lastComposer=lastEditor=lastMode=null;
+      observeComposerParent(null);
     }
     for(const [name,callback] of modules){
       try{callback(anchors);}catch(error){console.warn("[PetrifyUI] module",name,error);}
@@ -121,7 +136,7 @@
     },
     schedule,
     getAnchors:()=>({editor:lastEditor,composer:lastComposer}),
-    getStats:()=>({...stats,moduleCount:modules.size,hasObserver:!!observer})
+    getStats:()=>({...stats,moduleCount:modules.size,hasObserver:!!observer,hasComposerObserver:!!composerObserver&&!!composerObservedParent})
   });
   globalThis.PetrifyCore=api;
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",startup,{once:true});
