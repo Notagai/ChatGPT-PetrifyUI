@@ -146,11 +146,17 @@
       sidebar?.removeAttribute('data-pui-floating-sidebar');
       watchSidebar(nextSidebar);
     }
-    if(header!==nextHeader)header?.removeAttribute('data-pui-stage-header');
+    if(header!==nextHeader){
+      header?.removeAttribute('data-pui-stage-header');
+      header?.removeAttribute('data-pui-header-detached');
+    }
     stage=nextStage;sidebar=nextSidebar;header=nextHeader;
     stage?.setAttribute('data-pui-main-stage','');
     sidebar?.setAttribute('data-pui-floating-sidebar','');
     header?.setAttribute('data-pui-stage-header','');
+    if(header){
+      header.toggleAttribute('data-pui-header-detached',!(sidebar?.contains(header)));
+    }
     markFooter(stage);
     html.toggleAttribute('data-pui-stage-ready',!!stage);
     html.setAttribute('data-pui-stage-status',stage?'ready':'no-chat-stage');
