@@ -300,7 +300,16 @@
   }
   document.addEventListener("pointerup",afterInteraction,{passive:true});
   document.addEventListener("input",e=>{
-    if(e.target instanceof Element&&e.target.closest('[contenteditable="true"],textarea,input'))afterInteraction();
+    if(!(e.target instanceof Element))return;
+    const field=e.target.closest('[contenteditable="true"],textarea,input');
+    if(!field)return;
+    // Menu-search fields still update as usual. Normal paragraph typing does
+    // not need a full popup scan on every keystroke.
+    const text=field instanceof HTMLInputElement||field instanceof HTMLTextAreaElement
+      ?field.value:(field.textContent||"");
+    const hasOpenMenus=styled.size>0;
+    const slashTail=/\/[a-z\s-]{0,50}$/i.test(text.slice(-70));
+    if(hasOpenMenus||slashTail)afterInteraction();
   },{passive:true});
   document.addEventListener("keydown",event=>{
     if(["Enter"," ","Escape","ArrowDown","ArrowUp","ArrowLeft","ArrowRight","/"].includes(event.key))
