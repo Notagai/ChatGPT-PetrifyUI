@@ -243,17 +243,20 @@ html[data-petrifyui-active] [data-pui-main-stage]
   html[data-petrifyui-active] [data-pui-floating-sidebar] {
     translate:12px 0 !important;
     box-sizing:border-box !important;
-    width:calc(100% - 24px) !important;
-    height:calc(100dvh - 13px) !important;
-    max-height:calc(100dvh - 13px) !important;
+    max-height:calc(100dvh - 20px) !important;
     border:2px solid #a47b52 !important;
     border-radius:10px !important;
     box-shadow:3px 5px 0 #092b4466,6px 9px 17px #031d3560 !important;
   }
-  html[data-petrifyui-active] [data-pui-floating-sidebar]:not(:has([data-pui-stage-header])) {
+  html[data-petrifyui-active] [data-pui-floating-sidebar]:not([data-pui-sidebar-has-header]) {
     margin-top:8px !important;
-    height:calc(100dvh - 18px) !important;
-    max-height:calc(100dvh - 18px) !important;
+    height:calc(100dvh - 80px) !important;
+    max-height:calc(100dvh - 80px) !important;
+  }
+  html[data-petrifyui-active] [data-pui-floating-sidebar][data-pui-sidebar-has-header] {
+    margin-top:9px !important;
+    height:calc(100dvh - 20px) !important;
+    max-height:calc(100dvh - 20px) !important;
   }
   html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached] {
     translate:12px 9px !important;
@@ -306,4 +309,26 @@ html[data-petrifyui-low-power][data-petrifyui-active] [data-pui-main-stage] {
   html[data-petrifyui-active] body {
     background-attachment:scroll,scroll !important;
   }
+}
+
+
+/* Some current ChatGPT builds place code headers adjacent to <pre>, rather
+   than inside a named code-block node. Match their immediate wrapper too. */
+html[data-petrifyui-active] [data-pui-main-stage] div:has(> pre) {
+  background-color:var(--pui-code) !important;
+  border-color:#79583d !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] div:has(> pre) >
+  :is(div,header) {
+  background-color:var(--pui-code) !important;
+  color:var(--pui-code-ink) !important;
+  -webkit-text-fill-color:var(--pui-code-ink) !important;
+}
+/* Protect against explicit white token utilities in prose fragments. */
+html[data-petrifyui-active] [data-pui-main-stage]
+:is([class*="text-white"],[class*="text-token-text-primary"])
+:not(pre *):not(code *):not([data-testid="code-block"] *)
+:not([class*="code-block"] *):not(button *):not([role="menu"] *) {
+  color:var(--pui-ink) !important;
+  -webkit-text-fill-color:var(--pui-ink) !important;
 }
