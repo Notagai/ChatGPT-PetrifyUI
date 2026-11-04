@@ -197,16 +197,24 @@
     }
     replaceMarks(tracked.sidebar,nodes,SHELL_ATTRS.sidebar);
   }
-  function positionPaper(stage,sidebar){
-    const r=box(stage),s=box(sidebar);
+  function positionPaper(stage,sidebar,collapsed,composer){
+    const r=box(stage),s=box(sidebar),cr=box(composer);
     if(!r)return;
-    const contentLeft=Math.max(r.left,s?.right||0,0);
-    const contentRight=Math.min(innerWidth,r.right);
-    const available=Math.max(300,contentRight-contentLeft);
-    const width=Math.max(300,Math.min(1040,available-32));
-    const left=Math.max(8,Math.min(
-      contentLeft+(available-width)/2,innerWidth-width-8
-    ));
+    let width,left;
+    if(collapsed && cr){
+      // In icon-rail mode the native conversation may retain its old
+      // horizontal anchor. Center paper on the real composer, not on
+      // the full-width app shell. Never resize or translate ChatGPT.
+      width=Math.min(innerWidth-24,Math.max(880,cr.width+40));
+      left=Math.max(8,Math.min(cr.left-20,innerWidth-width-8));
+    }else{
+      const contentLeft=Math.max(r.left,s?.right||0,0);
+      const contentRight=Math.min(innerWidth,r.right);
+      const available=Math.max(300,contentRight-contentLeft);
+      width=Math.max(300,Math.min(1040,available-32));
+      left=Math.max(8,Math.min(contentLeft+(available-width)/2,
+        innerWidth-width-8));
+    }
     html.style.setProperty("--pui-panel-left",Math.round(left)+"px");
     html.style.setProperty("--pui-panel-width",Math.round(width)+"px");
   }
@@ -258,7 +266,10 @@
     markComposerDock(composer);
     markFlow(stage);
     markSidebarLayers(side);
-    if(stage)positionPaper(stage,side);
+    const sideRect=box(side);
+    const collapsed=!sideRect||sideRect.width<125;
+    html.toggleAttribute("data-pui-sidebar-collapsed",collapsed);
+    if(stage)positionPaper(stage,side,collapsed,composer);
     html.toggleAttribute("data-pui-stage-ready",!!stage);
     html.setAttribute("data-pui-stage-status",
       stage?"ready":"no-chat-stage");
