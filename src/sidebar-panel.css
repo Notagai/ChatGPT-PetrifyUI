@@ -92,3 +92,89 @@ html[data-petrifyui-low-power][data-petrifyui-active]
   :is([data-petrifyui-topbar],[data-pui-stage-header]) {
   box-shadow:0 0 0 2px #382518,inset 0 0 0 1px #e5bb8650 !important;
 }
+
+
+/* v1.32.2 | The saved DOM confirms a .sidebar-navigation flex column:
+   a toolbar, nav[data-pui-floating-sidebar], and a sibling absolute
+   account footer. Inset the NAV itself instead of drawing full-bleed wood.
+   Keep its native scroll content and event handlers. */
+html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
+  margin:8px 10px 74px !important;
+  min-height:0 !important;
+  width:auto !important;
+  flex-shrink:1 !important;
+  border-radius:10px !important;
+  background-clip:padding-box !important;
+  box-shadow:
+    0 0 0 2px #39251b,
+    4px 5px 8px #08243c80,
+    inset 0 0 0 1px #ebc38e68 !important;
+}
+/* The header is separate from the scroll area; give it a matching inset
+   so neither wooden part touches the viewport's sides. */
+html[data-petrifyui-active] [data-petrifyui-topbar] {
+  margin:8px 10px 0 !important;
+}
+/* Native header may be a detached marker rather than the topbar marker. */
+html[data-petrifyui-active] [data-pui-stage-header][data-pui-header-detached] {
+  margin-inline:10px !important;
+}
+
+/* Native project/recent sections have a row-height variable. Compress
+   those sections only, leaving top navigation and account controls alone. */
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] {
+  --height-token-row:32px;
+  --nav-item-height:32px;
+  --padding-row-y:2px;
+}
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] button[class~="group/section-toggle"] {
+  min-height:28px !important;
+  height:28px !important;
+  padding-block:0 !important;
+}
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  section[class~="group/nav-section"] .sidebar-item {
+  min-height:0 !important;
+  max-height:34px !important;
+}
+
+/* The native account footer is a sibling of the nav and contains the
+   real Open profile menu button. Frame that FOOTER as a separate wooden
+   button; do not clone it, replace its click handler, or edit React DOM. */
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  ~ div:has(button[aria-label="Open profile menu"]) {
+  left:10px !important;
+  right:10px !important;
+  bottom:10px !important;
+  width:auto !important;
+  border:2px solid #b78b5f !important;
+  border-radius:10px !important;
+  background-color:#513523 !important;
+  background-image:
+    linear-gradient(180deg,#f0c18d22,#23140d46),
+    var(--pui-resolved-wood,none) !important;
+  background-size:100% 100%,512px 512px !important;
+  box-shadow:0 0 0 2px #382518,3px 5px 8px #08243b80,
+    inset 0 1px 0 #f4d09a55 !important;
+  overflow:visible !important;
+}
+html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+  ~ div:has(button[aria-label="Open profile menu"])
+  button[aria-label="Open profile menu"] {
+  color:#f5dfc0 !important;
+}
+/* Compact layouts keep native mobile/mini navigation geometry. */
+@media(max-width:899px) {
+  html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
+    margin:5px 5px 60px !important;
+    border-radius:6px !important;
+  }
+  html[data-petrifyui-active] nav[data-pui-floating-sidebar]
+    ~ div:has(button[aria-label="Open profile menu"]) {
+    left:5px !important;
+    right:5px !important;
+    bottom:5px !important;
+  }
+}
