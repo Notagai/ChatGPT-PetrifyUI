@@ -341,3 +341,80 @@ html[data-petrifyui-low-power][data-petrifyui-active]
     background-attachment:scroll,scroll !important;
   }
 }
+
+
+/* v1.29.1 | TEXT COLOR ONLY.
+   ChatGPT styles prose descendants independently of the message wrapper.
+   Paint text at the leaf level, preserving native opacity/animations and
+   deliberately excluding code blocks, widgets, links-as-buttons and menus. */
+html[data-petrifyui-active] [data-pui-main-stage] {
+  --text-primary:#34251a;
+  --text-secondary:#654a35;
+  --text-tertiary:#795e45;
+  --token-text-primary:#34251a;
+  --token-text-secondary:#654a35;
+  --token-text-tertiary:#795e45;
+  --tw-prose-body:#34251a;
+  --tw-prose-headings:#2d2118;
+  --tw-prose-links:#714526;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-message-author-role="assistant"],
+  [data-message-author-role="user"],
+  .markdown,.prose,[class*="markdown"]
+) :is(
+  p,div,span,li,dt,dd,h1,h2,h3,h4,h5,h6,
+  strong,em,b,small,blockquote,figcaption,
+  [class*="text-token-text-primary"],[class*="text-white"]
+):not(:is(pre,pre *,code,code *,
+  [data-testid="code-block"],[data-testid="code-block"] *,
+  [class*="code-block"],[class*="code-block"] *,
+  button,button *,[role="button"],[role="button"] *,
+  [role="menu"],[role="menu"] *,
+  [role="dialog"],[role="dialog"] *,
+  [role="tooltip"],[role="tooltip"] *,
+  svg,svg *)) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+/* A New Chat welcome page has no message wrapper or markdown container. */
+html[data-petrifyui-active][data-pui-new-chat]
+  [data-pui-main-stage] :is(h1,h2,h3,h4,p,
+  [class*="text-token-text-primary"],[class*="text-white"])
+:not(:is(pre,pre *,code,code *,
+  button,button *,[role="button"],[role="button"] *,
+  [role="menu"],[role="menu"] *,
+  [role="dialog"],[role="dialog"] *)) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+/* Status messages, source captions, timestamps and assistant-action labels
+   use a darker secondary ink. Keep true disabled opacity under native control. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [class*="text-token-text-secondary"],
+  [class*="text-token-text-tertiary"],
+  [class*="text-gray-"],[class*="text-neutral-"]
+):not(:is(pre,pre *,code,code *,
+  [data-testid="code-block"],[data-testid="code-block"] *,
+  [class*="code-block"],[class*="code-block"] *,
+  button,button *,[role="button"],[role="button"] *,
+  [role="menu"],[role="menu"] *,
+  [role="dialog"],[role="dialog"] *)) {
+  color:#654a35 !important;
+  -webkit-text-fill-color:#654a35 !important;
+}
+/* Text links use a recognizable deeper ink, but not bright blue/white. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  .markdown,.prose,[class*="markdown"]
+) a:not(:is(pre,pre *,code,code *,button,button *)) {
+  color:#714526 !important;
+  -webkit-text-fill-color:#714526 !important;
+}
+/* User-bubble writing is dark as well, independently of the bubble wrapper. */
+html[data-petrifyui-active] [data-pui-main-stage]
+[data-message-author-role="user"] :is(p,span,div)
+:not(:is(button,button *,[role="button"],[role="button"] *,
+  pre,pre *,code,code *)) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
