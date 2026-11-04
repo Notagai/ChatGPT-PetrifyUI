@@ -210,6 +210,26 @@
     html.style.setProperty("--pui-panel-left",Math.round(left)+"px");
     html.style.setProperty("--pui-panel-width",Math.round(width)+"px");
   }
+  function markComposerDock(composer){
+    // The actual composer root is the parchment surface. Only mark its
+    // large surrounding footer shells; never repaint the editor itself.
+    const next=new Set();
+    const cr=box(composer);
+    if(cr){
+      for(let node=composer.parentElement,depth=0;
+          node&&node!==document.body&&depth<7;
+          node=node.parentElement,depth++){
+        const r=box(node);
+        if(!r||node.matches('main,[role="main"],#main')||
+           node.hasAttribute("data-pui-main-stage"))break;
+        if(r.width>=cr.width*1.1&&r.width>=Math.min(750,innerWidth*.7)&&
+           r.top>innerHeight*.4&&r.height<innerHeight*.46){
+          next.add(node);
+        }
+      }
+    }
+    replaceMarks(composerDocks,next,"data-pui-composer-dock");
+  }
   function update(){
     if(document.hidden)return;
     const side=findSidebar();
