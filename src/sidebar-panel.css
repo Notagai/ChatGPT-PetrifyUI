@@ -16,7 +16,7 @@ html[data-petrifyui-active] [data-pui-floating-sidebar] {
   background-color:#61402d !important;
   background-image:
     linear-gradient(90deg,#281a1142 0%,transparent 7%,transparent 94%,#22150f4f 100%),
-    var(--pui-resolved-wood,none) !important;
+    var(--pui-custom-wood,var(--pui-resolved-wood,none)) !important;
   background-position:center,0 0 !important;
   background-size:100% 100%,512px 512px !important;
   background-repeat:no-repeat,repeat !important;
@@ -41,7 +41,7 @@ html[data-petrifyui-active] :is(
   background-color:#61402d !important;
   background-image:
     linear-gradient(180deg,#e3b78216,#22150f2e),
-    var(--pui-resolved-wood,none) !important;
+    var(--pui-custom-wood,var(--pui-resolved-wood,none)) !important;
   background-size:100% 100%,512px 512px !important;
   background-repeat:no-repeat,repeat !important;
 }
@@ -129,7 +129,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
   background-color:#513523 !important;
   background-image:
     linear-gradient(180deg,#f0c18d22,#23140d46),
-    var(--pui-resolved-wood,none) !important;
+    var(--pui-custom-wood,var(--pui-resolved-wood,none)) !important;
   background-size:100% 100%,512px 512px !important;
   box-shadow:2px 3px 7px #09243d45,
     inset 0 1px 0 #f4d09a55 !important;
@@ -225,7 +225,7 @@ html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sideba
   border-radius:10px !important;
   background-color:#513523 !important;
   background-image:linear-gradient(180deg,#f0c18d22,#23140d46),
-    var(--pui-resolved-wood,none) !important;
+    var(--pui-custom-wood,var(--pui-resolved-wood,none)) !important;
   background-size:100% 100%,512px 512px !important;
   box-shadow:2px 3px 7px #09243d45,inset 0 1px 0 #f4d09a55 !important;
 }
