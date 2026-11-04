@@ -8,7 +8,7 @@
   const MESSAGE='#thread,[data-testid^="conversation-turn"],[data-message-author-role]';
   const MAIN='main,[role="main"],#main';
   html.style.setProperty('--pui-ambient-art',
-    'url("'+chrome.runtime.getURL('assets/stage/study-ambient.svg')+'")');
+    'url("'+chrome.runtime.getURL('assets/stage/ocean-pixel.png')+'")');
   html.style.setProperty('--pui-stage-paper',
     'url("'+chrome.runtime.getURL('assets/composer/paper-grain-geekify.svg')+'")');
   let stage=null,sidebar=null,queued=false,observer=null;
@@ -88,6 +88,7 @@
     sidebar?.setAttribute('data-pui-floating-sidebar','');
     html.toggleAttribute('data-pui-stage-ready',!!stage);
     html.setAttribute('data-pui-stage-status',stage?'ready':'no-chat-stage');
+    html.dataset.puiStageRevision='ocean-v1282';
     updateShells(stage);
   }
   function schedule(){

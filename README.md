@@ -213,3 +213,7 @@ The scene uses `src/stage.js`, `src/stage.css`, and `assets/stage/study-ambient.
 ```
 
 Reload the unpacked extension in `chrome://extensions`, hard-refresh `https://chatgpt.com`, and test new chats, long chats, sidebar collapsed/expanded, attachment menus and smaller window widths. Return to `main` with `git switch main`. Keep it experimental until the signed-in browser visuals are reviewed.
+
+## Experimental branch v1.28.2: ocean layout repair
+
+Replaced the old pixel study backdrop with a compact 128×72 indexed-color pixel rendition resampled from the user-supplied 2048×1152 ocean image. The original uploaded image is not hosted; the bundled asset is a visually faithful low-resolution pixel-art rendering. The floating chat panel now paints parchment on the actual selected chat container, rather than a narrow pseudo-element that left black areas exposed. Expanded the paper surface up to 1160px, maintained a full-viewport-height minimum, recolored assistant markdown to dark ink and user bubbles to muted parchment-brown, and added fallback wood borders on the sidebar's real outer container. No new widgets, scrolling overrides or click interceptions. This is still a browser visual experiment, not merged to main.
