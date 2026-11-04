@@ -258,3 +258,13 @@ New CSS is consolidated in `src/stage.css`, overriding rather than duplicating t
 ### v1.28.4 header remount guard
 
 Some ChatGPT builds independently remount the header while the sidebar is unchanged. A child-list observer watches only the current header's immediate parent and reacquires its wood-textured root. It does not observe chat messages or run periodic scans. The experiment is still not verified in the signed-in ChatGPT browser.
+
+## Experimental v1.29.2: text contrast and black bottom composer
+
+Diagnostics from browser screenshot and branch CSS:
+- The v1.29.1 pseudo-class exclusions had a newline/space separating `:is(...)` from `:not(...)`. That changed their meaning from filtering the intended element to selecting another descendant, so white text survived and some wrong elements could be affected.
+- The original composer theme depended on `[data-petrifyui-composer]` inside `[data-pui-main-stage]`, even though ChatGPT's footer can be mounted outside that stage. The composer selector could also disappear after remounting.
+
+Changes: removed the malformed contrast block; used directly attached pseudo-class exclusions on assistant text only; added a separate composer-tray detector in `stage.js`; and painted the detected editor tray directly, with native element fallbacks. Dark user bubbles and code colors are not newly overridden. The background and layout geometry are unchanged.
+
+Run `node tests/stage-contrast-composer-v1292.test.cjs` for static regression checks. These do not prove the live ChatGPT layout is correct; confirm in browser before merging.

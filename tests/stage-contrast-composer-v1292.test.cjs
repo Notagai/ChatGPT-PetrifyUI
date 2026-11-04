@@ -1,0 +1,20 @@
+const fs=require("node:fs");
+const assert=require("node:assert/strict");
+const m=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+const css=fs.readFileSync("src/stage.css","utf8");
+const js=fs.readFileSync("src/stage.js","utf8");
+assert.equal(m.version,"1.29.2");
+new Function(js);
+const patch=css.slice(css.indexOf("/* v1.29.2 | Verified selector semantics."));
+assert(patch.length>4000,"new patch exists");
+assert(!css.includes("/* v1.29.1 | TEXT COLOR ONLY."),"malformed old rules removed");
+assert(patch.includes("):not(:is(pre,pre *,code"),"exclusion joined directly to target");
+assert(patch.includes('[data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])'),"assistant turn only");
+assert(js.includes("function findComposerTray()"),"independent composer detector");
+assert(js.includes('setAttribute("data-pui-stage-composer"'),"direct composer marker");
+assert(patch.includes("[data-pui-stage-composer]"),"direct composer paper rule");
+assert(patch.includes("background-color:#e1bd90 !important"),"paper background");
+assert(!/(width|height|margin|padding|transform|translate)\s*:/.test(patch),"paint-only regression");
+let braces=0;for(const char of css){if(char==="{")braces++;if(char==="}")braces--;assert(braces>=0);}
+assert.equal(braces,0,"balanced CSS braces");
+console.log("PASS v1.29.2 selector semantics, composer recovery, no geometry changes");
