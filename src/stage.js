@@ -30,6 +30,7 @@
     scene:new Set(),flow:new Set(),sidebar:new Set()
   };
   let activeStage=null,activeSidebar=null,activeHeader=null,activeComposer=null;
+  const composerDocks=new Set();
   let queued=false,appObserver=null,sidebarObserver=null,headerObserver=null;
   const waiters=new Set();
 
@@ -140,6 +141,25 @@
       if(n.matches('form,[class*="composer"],[class*="rounded"]'))break;
     }
     return candidate;
+  }
+  function markComposerDock(composer){
+    // The dark bottom band is usually an outer footer/scroll dock, not the
+    // input itself. Mark only wide ancestors of the editor and never body/main.
+    const next=new Set();
+    if(composer){
+      const r=box(composer);
+      for(let n=composer.parentElement,d=0;n&&n!==document.body&&d<8;n=n.parentElement,d++){
+        const b=box(n);
+        if(!b||!r||n.matches('main,[role="main"],#main,#sidebar')||
+           n.hasAttribute("data-pui-main-stage")||
+           n.querySelector('[data-message-author-role="assistant"]'))break;
+        if(b.width>=r.width*1.12 && b.width>=Math.min(750,innerWidth*.7) &&
+           b.top>=innerHeight*.42 && b.height<=innerHeight*.46){
+          next.add(n);
+        }
+      }
+    }
+    replaceMarks(composerDocks,next,"data-pui-composer-dock");
   }
   function findHeader(sidebar){
     const nodes=[];
@@ -275,6 +295,7 @@
         !(side?.contains(header)));
     }
     markScene(stage);
+    markComposerDock(composer);
     markFlow(stage);
     markSidebarLayers(side);
     if(stage)positionPaper(stage,side);
