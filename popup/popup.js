@@ -14,8 +14,16 @@ diagnoseButton.addEventListener("click",async()=>{
   try{
     const data=await window.petrifyInspect();
     const json=JSON.stringify(data,null,2);
-    await navigator.clipboard.writeText(json);
-    diagnoseStatus.textContent="Structural report copied to clipboard. Paste it into chat for analysis. No message content included.";
+    const report=document.querySelector("#diagnose-report");
+    report.hidden=false;
+    report.value=json;
+    try {
+      await navigator.clipboard.writeText(json);
+      diagnoseStatus.textContent="Structural report copied. Paste it into chat for analysis.";
+    } catch {
+      diagnoseStatus.textContent="Copy the report text below and paste it into chat.";
+      report.focus();report.select();
+    }
   }catch(error){
     diagnoseStatus.textContent="Inspection failed: "+String(error.message||error);
   }finally{
