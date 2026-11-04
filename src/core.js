@@ -150,6 +150,7 @@
     // after the click handler. Two bounded resamples, not continuous polling.
     if(control.matches('[aria-label*="sidebar" i],[title*="sidebar" i]')||
        control.closest('[aria-label*="sidebar" i],[title*="sidebar" i]')||
+       control.matches('[aria-label="Open profile menu"]')||
        /settings|back to app|profile/i.test(control.textContent||"")){
       setTimeout(schedule,140);
       setTimeout(schedule,420);
