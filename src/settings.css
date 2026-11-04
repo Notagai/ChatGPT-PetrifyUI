@@ -83,16 +83,88 @@ html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar]
   }
 }
 
-/* Inset Settings surfaces to match the floating chat/navigation cabinet.
-   Keep the original CSS grid/flex model; margins consume available space. */
-@media(min-width:900px) {
-  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar] {
-    margin:10px !important;
-    width:calc(100% - 20px) !important;
-    box-sizing:border-box !important;
-  }
-  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main] {
-    margin:10px !important;
-    min-width:0;
+
+/* v1.33.2: Settings is sometimes an app overlay, not /settings.
+   Match the same floating parchment surface as conversations without
+   transforming the underlying React layout. The former main background
+   covered the entire pane and left the nested Settings view black. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main] {
+  position:relative !important;
+  isolation:isolate !important;
+  min-width:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]::before {
+  content:"";
+  position:fixed;
+  top:12px;
+  bottom:12px;
+  left:calc(max(330px, (100vw + 310px - 1040px)/2));
+  width:min(1040px, calc(100vw - 350px));
+  pointer-events:none;
+  z-index:-1;
+  box-sizing:border-box;
+  border:2px solid #916a48;
+  border-radius:8px;
+  background:#e8c69b
+    linear-gradient(#fff6df21,#aa794c17);
+  background-image:linear-gradient(#fff6df21,#aa794c17),
+    var(--pui-custom-paper,var(--pui-stage-paper,none));
+  background-size:100% 100%,256px 256px;
+  background-repeat:no-repeat,repeat;
+  box-shadow:0 8px 19px #061d3150,inset 0 0 0 2px #fff3d58c;
+}
+/* Clear only Settings structural surfaces. Real controls retain their
+   own backgrounds, especially dropdowns and interactive list items. */
+html[data-petrifyui-active][data-pui-settings]
+  [data-pui-settings-main] > :is(div,section) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is(h1,h2,h3,h4,label,p) {
+  color:#39291d !important;
+  -webkit-text-fill-color:#39291d !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is([class*="rounded-xl"][class*="border"],
+      [class*="rounded-2xl"][class*="border"],[role="group"][class*="border"]) {
+  --text-primary:#39291d;
+  --color-text-primary:#39291d;
+  --text-secondary:#75573d;
+  background-color:#e4bd91 !important;
+  border-color:#a47750 !important;
+  color:#39291d !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is([class*="rounded-xl"][class*="border"],
+      [class*="rounded-2xl"][class*="border"],[role="group"][class*="border"])
+  :is(span,small):not(:is(button *,[role="combobox"] *)) {
+  color:#39291d !important;
+  -webkit-text-fill-color:#39291d !important;
+}
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]
+  :is(button,[role="combobox"]):not(:disabled) {
+  --text-primary:#f5e2c5;
+  --color-text-primary:#f5e2c5;
+}
+/* The navigation should be wood, but its native selected row state stays
+   native. No width/margin hacks that break Settings' flex layout. */
+html[data-petrifyui-active][data-pui-settings] [data-pui-settings-sidebar] {
+  background-color:#61402d !important;
+  background-image:var(--pui-custom-wood,var(--pui-resolved-wood,none)) !important;
+  color:#f3dfbf !important;
+}
+html[data-petrifyui-active] [data-pui-plan-label] {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+@media(max-width:899px){
+  html[data-petrifyui-active][data-pui-settings] [data-pui-settings-main]::before {
+    left:12px;
+    width:calc(100vw - 24px);
   }
 }
