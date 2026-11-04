@@ -427,3 +427,109 @@ html[data-petrifyui-active] :is(#composer-background,[data-testid="composer-back
   background-size:256px 256px !important;
   background-repeat:repeat !important;
 }
+
+
+/* v1.29.3: text surfaces, code panels, and a self-contained accent palette.
+   Paint-only overrides. Do not change native spacing, positioning or click targets. */
+html[data-petrifyui-active] {
+  --pui-accent:#95643d;
+  --pui-accent-hover:#79502f;
+  --pui-accent-soft:#c59b7152;
+  --pui-code-surface:#49372c;
+  --pui-code-text:#f6e3c6;
+  --pui-list-ink:#34251a;
+  accent-color:var(--pui-accent) !important;
+}
+/* Make the underlying app's semantic accent tokens deterministic while the
+   extension is enabled. Never replace an icon's own semantic brand colors. */
+html[data-petrifyui-active] {
+  --theme-accent:var(--pui-accent);
+  --color-accent:var(--pui-accent);
+  --accent-primary:var(--pui-accent);
+  --accent-color:var(--pui-accent);
+}
+html[data-petrifyui-active] :is(input[type="checkbox"],input[type="radio"],input[type="range"],progress) {
+  accent-color:var(--pui-accent) !important;
+}
+/* Explicit native accent utilities can take precedence over the inherited
+   tokens. Repaint only accent-specific properties, not all buttons/links. */
+html[data-petrifyui-active] :is(
+  [class~="text-token-text-accent"],[class*="text-accent"],
+  [class*="text-token-text-accent"]
+):not(:is(svg,svg *,pre *,code *,[data-testid="code-block"] *)) {
+  color:var(--pui-accent) !important;
+  -webkit-text-fill-color:var(--pui-accent) !important;
+}
+html[data-petrifyui-active] :is(
+  [class*="bg-token-bg-accent"],[class*="bg-accent"],
+  [class*="bg-token-surface-accent"]
+):not(:is(pre *,code *,[data-testid="code-block"] *)) {
+  background-color:var(--pui-accent) !important;
+}
+html[data-petrifyui-active] :is(
+  [class*="border-accent"],[class*="border-token-border-accent"]
+) { border-color:var(--pui-accent) !important; }
+
+/* Markdown lists stay readable whether ChatGPT emits standard list markup
+   or ProseMirror's task-list structure. Keep numbering/bullets native. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-message-author-role="assistant"] .markdown,
+  [data-message-author-role="assistant"] .prose,
+  [data-message-author-role="assistant"] [class*="markdown"],
+  .markdown,.prose
+) :is(ul,ol,li,li > p,li > span,li > div,li > label,dt,dd)
+:not(:is(pre *,code *,[data-testid="code-block"] *,[class*="code-block"] *,button *,[role="button"] *)) {
+  color:var(--pui-list-ink) !important;
+  -webkit-text-fill-color:var(--pui-list-ink) !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(.markdown,.prose,[class*="markdown"]) :is(ul,ol,li)::marker {
+  color:#79502f !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(.markdown,.prose,[class*="markdown"]) :is(
+  input[type="checkbox"],[role="checkbox"]
+) {
+  accent-color:var(--pui-accent) !important;
+  border-color:#79502f !important;
+}
+/* ChatGPT draws some check marks with SVG. Recolor only checklist adornments,
+   preserving checked/unchecked/disabled state and native geometry. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(.markdown,.prose,[class*="markdown"]) li :is(
+  [data-state="checked"],[aria-checked="true"]
+) { accent-color:var(--pui-accent) !important; }
+
+/* Code header and code body share one walnut color. The top-level message
+   text selectors must never turn syntax spans dark or white-on-paper. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-testid="code-block"],[class*="code-block"],pre,div:has(> pre)
+) {
+  --text-primary:var(--pui-code-text);
+  --text-secondary:#d9bd99;
+  --token-text-primary:var(--pui-code-text);
+  --token-text-secondary:#d9bd99;
+  --tw-prose-code:var(--pui-code-text);
+  background-color:var(--pui-code-surface) !important;
+  background-image:none !important;
+  color:var(--pui-code-text) !important;
+  -webkit-text-fill-color:var(--pui-code-text) !important;
+  border-color:#7f5c41 !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-testid="code-block"],[class*="code-block"],div:has(> pre)
+) :is(div,header,section,pre,code,button,[role="button"],[class*="bg-"]) {
+  background-color:var(--pui-code-surface) !important;
+  background-image:none !important;
+  color:var(--pui-code-text) !important;
+  -webkit-text-fill-color:var(--pui-code-text) !important;
+}
+html[data-petrifyui-active] [data-pui-main-stage] :is(
+  [data-testid="code-block"],[class*="code-block"],pre
+) :is(span,code,code *,svg,button,button *) {
+  color:var(--pui-code-text) !important;
+  -webkit-text-fill-color:var(--pui-code-text) !important;
+}
+/* Inline code is ink-on-parchment, not a miniature dark code panel. */
+html[data-petrifyui-active] [data-pui-main-stage] :is(.markdown,.prose,[class*="markdown"]) :not(pre):not([data-testid="code-block"]) > code {
+  color:#503521 !important;
+  -webkit-text-fill-color:#503521 !important;
+  background-color:#a77b4d2b !important;
+}
