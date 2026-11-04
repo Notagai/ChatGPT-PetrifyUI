@@ -31,8 +31,7 @@
   };
   let activeStage=null,activeSidebar=null,activeHeader=null,activeComposer=null;
   const composerDocks=new Set();
-  let queued=false,appObserver=null,sidebarObserver=null,headerObserver=null;
-  const waiters=new Set();
+  // Scheduling and DOM observation are owned by PetrifyCore.
 
   html.style.setProperty("--pui-ambient-art",
     'url("'+chrome.runtime.getURL("assets/stage/ocean-pixel.png")+'")');
@@ -265,28 +264,22 @@
     return observer;
   }
   function update(){
-    queued=false;
     if(document.hidden)return;
     const side=findSidebar();
     const stage=findMain(side);
     const header=findHeader(side);
-    const composer=findComposerTray();
+    const composer=globalThis.PetrifyCore.getAnchors().composer;
 
     if(activeStage!==stage)activeStage?.removeAttribute("data-pui-main-stage");
     if(activeSidebar!==side){
       activeSidebar?.removeAttribute("data-pui-floating-sidebar");
-      sidebarObserver=observeParent(sidebarObserver,side,schedule);
     }
     if(activeHeader!==header){
       activeHeader?.removeAttribute("data-pui-stage-header");
       activeHeader?.removeAttribute("data-pui-header-detached");
-      headerObserver=observeParent(headerObserver,header,schedule);
     }
-    if(activeComposer!==composer)
-      activeComposer?.removeAttribute("data-pui-stage-composer");
     activeStage=stage;activeSidebar=side;activeHeader=header;
     activeComposer=composer;
-    composer?.setAttribute("data-pui-stage-composer","");
     stage?.setAttribute("data-pui-main-stage","");
     side?.setAttribute("data-pui-floating-sidebar","");
     if(header){
@@ -306,50 +299,6 @@
       chatRoute()&&!firstVisible('[data-message-author-role]'));
     html.dataset.puiStageRevision="architecture-v129";
   }
-  function schedule(){
-    if(queued||document.hidden)return;
-    queued=true;
-    requestAnimationFrame(update);
-  }
-  function resync(){
-    schedule();
-    for(const ms of [220,750,1700])setTimeout(schedule,ms);
-  }
-  function observeApp(){
-    if(appObserver||!document.body)return;
-    const host=document.querySelector('#__next,#root,[data-testid="chatgpt-app"]')||
-      document.body;
-    appObserver=new MutationObserver(records=>{
-      if(records.some(record=>
-        [...record.addedNodes,...record.removedNodes].some(n=>n.nodeType===1)
-      ))schedule();
-    });
-    // Shallow: do not watch streaming content or every text change.
-    appObserver.observe(host,{childList:true});
-  }
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",()=>{
-      observeApp();resync();
-    },{once:true});
-  } else {observeApp();resync();}
-  document.addEventListener("click",event=>{
-    if(event.target instanceof Element&&event.target.closest(
-      'a[href],button[aria-label*="sidebar" i],'+
-      'button[title*="sidebar" i],'+
-      '[data-testid="create-new-chat-button"]'
-    ))resync();
-  },{passive:true});
-  window.addEventListener("popstate",resync,{passive:true});
-  window.addEventListener("pageshow",resync,{passive:true});
-  window.addEventListener("resize",schedule,{passive:true});
-  document.addEventListener("visibilitychange",()=>{
-    if(!document.hidden)resync();
-  });
-  document.addEventListener("focusin",event=>{
-    if(event.target instanceof Element&&event.target.closest(EDITOR))
-      schedule();
-  },{passive:true});
-  chrome.storage.onChanged.addListener((changes,area)=>{
-    if(area==="local"&&changes.enabled)schedule();
-  });
+  // Stage is a passive module: one shared rAF and one DOM observer in Core.
+  globalThis.PetrifyCore.register("stage",update);
 })();
