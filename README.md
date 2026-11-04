@@ -217,3 +217,16 @@ Reload the unpacked extension in `chrome://extensions`, hard-refresh `https://ch
 ## Experimental branch v1.28.2: ocean layout repair
 
 Replaced the old pixel study backdrop with a compact 128×72 indexed-color pixel rendition resampled from the user-supplied 2048×1152 ocean image. The original uploaded image is not hosted; the bundled asset is a visually faithful low-resolution pixel-art rendering. The floating chat panel now paints parchment on the actual selected chat container, rather than a narrow pseudo-element that left black areas exposed. Expanded the paper surface up to 1160px, maintained a full-viewport-height minimum, recolored assistant markdown to dark ink and user bubbles to muted parchment-brown, and added fallback wood borders on the sidebar's real outer container. No new widgets, scrolling overrides or click interceptions. This is still a browser visual experiment, not merged to main.
+
+## Experiment v1.28.3: coherent floating surfaces and contrast
+
+These changes remain on `experiment/floating-parchment-stage`; stable `main` is unchanged.
+
+- **Floating sidebar:** added a visible 12px horizontal inset, walnut edge, and shadow, with separate size rules depending on whether the header is nested in the sidebar or rendered separately
+- **Black ChatGPT header:** a lightweight detector tags the real top-left toolbar (including after sidebar remounts) and reapplies the wood asset; its large structural child backgrounds become transparent
+- **Black footer strips:** identified wide native wrappers around the composer and cleared only those structural backgrounds and pseudo-elements
+- **Input redesign:** uses a darker, inset paper writing tray with a plain border; the old torn paper top/bottom overlays are suppressed on the parchment stage
+- **Text/icons:** assistant prose and explicit white text tokens become dark walnut ink; message action SVGs become readable brown
+- **Code blocks:** code heading, body, inner surfaces, and code lettering use a single dark walnut / cream palette, including wrappers with a direct `<pre>` child
+
+New CSS is consolidated in `src/stage.css`, overriding rather than duplicating the previous experimental rules. Existing chat layout, links, keyboard navigation, and sidebar interactions remain native. The fixes are structurally checked, but a signed-in browser visual pass is still necessary before merging.

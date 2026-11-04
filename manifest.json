@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Floating chat and sidebar with readable parchment, full-height scene, and ocean pixel background sampled from supplied image.",
-  "version": "1.28.2",
+  "description": "Experimental floating ocean, walnut sidebar/header, unified code panels and high-contrast parchment UI.",
+  "version": "1.28.3",
   "permissions": [
     "storage"
   ],
