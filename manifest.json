@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "More reliable slash command menu detection and readable disabled actions during generation.",
-  "version": "1.25.0",
+  "description": "Pixel parchment theme with DOM-confirmed walnut Stop button styling.",
+  "version": "1.26.0",
   "permissions": [
     "storage"
   ],
