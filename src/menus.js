@@ -7,8 +7,6 @@
   const ITEMS='[role="menuitem"],[role="option"],[role="menuitemcheckbox"],[role="menuitemradio"],button,a';
   const ADD_LABELS=["Add photos & files","Add from library","Create image"];
   const ADD_LOWER_LABELS=["Sketch","Spotify","Notion","Cloudflare"];
-  document.documentElement.style.setProperty("--pui-coronation-vine",
-    'url("'+chrome.runtime.getURL("assets/menus/coronation-vine.svg")+'")');
   const styled=new Map();
   const menuShells=new Set();
   const destructiveMarked=new Set();
