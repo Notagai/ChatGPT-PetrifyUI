@@ -1,0 +1,79 @@
+/* PetrifyUI palette module: verified against saved ChatGPT DOM.
+   Only presentation properties, no layout, no DOM scans, no handlers.
+   This loads after legacy stage.css to centralize final color choices. */
+html[data-petrifyui-active] {
+  --pui-color-ink:#34251a;
+  --pui-color-secondary:#795739;
+  --pui-color-icon:#65462f;
+  --pui-color-code-icon:#f2dfc2;
+  --pui-color-success-text:#414c2e;
+  --pui-color-success-bg:#d9d6aa;
+  --pui-color-success-border:#8b9064;
+}
+
+/* Screenshot 1: the small disclaimer is outside normal message wrappers
+   and uses ChatGPT's independent codex-description token. */
+html[data-petrifyui-active] [data-pui-main-stage] .text-codex-description,
+html[data-petrifyui-active] [data-pui-main-stage] [class~="text-codex-description"] {
+  color:var(--pui-color-secondary) !important;
+  -webkit-text-fill-color:var(--pui-color-secondary) !important;
+  --color-text-codex-description:var(--pui-color-secondary);
+}
+html[data-petrifyui-active] [data-pui-main-stage] .text-codex-description > * {
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+}
+
+/* Screenshot 2: real response action buttons live in .turn-action-controls,
+   not the legacy [data-message-author-role] container. */
+html[data-petrifyui-active] .turn-action-controls {
+  --color-text-tertiary:var(--pui-color-icon);
+  --color-text-secondary:var(--pui-color-icon);
+  --app-color-icon-tertiary:var(--pui-color-icon);
+}
+html[data-petrifyui-active] .turn-action-controls
+  button:not(:disabled):not([aria-disabled="true"]) {
+  color:var(--pui-color-icon) !important;
+  -webkit-text-fill-color:var(--pui-color-icon) !important;
+}
+html[data-petrifyui-active] .turn-action-controls
+  button:not(:disabled):not([aria-disabled="true"]) :is(svg,svg *) {
+  color:var(--pui-color-icon) !important;
+}
+html[data-petrifyui-active] .turn-action-controls
+  button:not(:disabled):hover {
+  background-color:#9b70452a !important;
+}
+/* Preserve disabled affordances, keyboard focus, click targets and layout. */
+
+/* Screenshot 3: success badges are an olive parchment accent, not neon
+   green. This targets the saved DIL badge structure by semantic attributes. */
+html[data-petrifyui-active] [data-d-component="badge"][data-color="success"] {
+  color:var(--pui-color-success-text) !important;
+  -webkit-text-fill-color:var(--pui-color-success-text) !important;
+  background-color:var(--pui-color-success-bg) !important;
+  background-image:none !important;
+  border-color:var(--pui-color-success-border) !important;
+}
+html[data-petrifyui-active] [data-d-component="badge"][data-color="success"]
+  :is(svg,svg *,span) {
+  color:var(--pui-color-success-text) !important;
+  -webkit-text-fill-color:var(--pui-color-success-text) !important;
+}
+
+/* Screenshot 4: language icon + action buttons in actual CodeSurface
+   action bar, which is NOT a native message action row. */
+html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"] {
+  --color-text-primary:var(--pui-color-code-icon);
+  --color-text-default:var(--pui-color-code-icon);
+  color:var(--pui-color-code-icon) !important;
+  -webkit-text-fill-color:var(--pui-color-code-icon) !important;
+}
+html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"]
+  :is(svg,svg *,button,button *,[class*="Icon-"]) {
+  color:var(--pui-color-code-icon) !important;
+}
+html[data-petrifyui-active] [data-code-block="true"] [class*="ActionBar-"]
+  button:hover {
+  background-color:#f2dfc21c !important;
+}
