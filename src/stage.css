@@ -77,15 +77,17 @@ html[data-petrifyui-active][data-pui-stage-ready]
 }
 /* Dark native scroll and composer wrappers caused the black footer bars.
    Clear only wrappers identified from the active editor/message ancestry. */
-html[data-petrifyui-active] [data-pui-main-stage] [data-pui-flow-shell] {
+html[data-petrifyui-active] [data-pui-main-stage]
+ [data-pui-flow-shell]:not([data-petrifyui-composer]):not(#composer-background)
+ :not([data-testid="composer-root"]):not([data-testid="composer-background"]) {
   background-color:transparent !important;
   background-image:none !important;
   box-shadow:none !important;
 }
 html[data-petrifyui-active] [data-pui-main-stage]
-  [data-pui-flow-shell]::before,
+  [data-pui-flow-shell]:not([data-petrifyui-composer])::before,
 html[data-petrifyui-active] [data-pui-main-stage]
-  [data-pui-flow-shell]::after {
+  [data-pui-flow-shell]:not([data-petrifyui-composer])::after {
   background-color:transparent !important;
   background-image:none !important;
 }
@@ -266,6 +268,17 @@ html[data-petrifyui-active] [data-pui-floating-sidebar]::before {
 }
 html[data-petrifyui-active] [data-pui-floating-sidebar]
   [data-pui-sidebar-shell] {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+
+/* Some builds give the sidebar's intermediate full-width shells an opaque
+   background. Transparentize only chrome containers, not links or menus. */
+html[data-petrifyui-active] [data-pui-floating-sidebar] :is(
+  [class*="bg-token-sidebar"],[class*="bg-black"],
+  [class*="bg-token-main-surface"]
+):not(a):not(button):not([role="button"]):not([role="menu"])
+:not([role="dialog"]):not([role="tooltip"]) {
   background-color:transparent !important;
   background-image:none !important;
 }
