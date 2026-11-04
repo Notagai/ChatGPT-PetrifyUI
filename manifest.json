@@ -2,10 +2,12 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Floating Stage (Experimental)",
   "short_name": "PetrifyUI",
-  "description": "Experimental parchment contrast and black composer recovery, with corrected selectors.",
-  "version": "1.29.2",
+  "description": "Experimental PetrifyUI stage with on-demand local DOM diagnostics",
+  "version": "1.29.7",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
     "https://fonts.googleapis.com/*",
