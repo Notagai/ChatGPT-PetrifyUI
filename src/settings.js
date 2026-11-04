@@ -12,9 +12,12 @@
     const path=location.pathname;
     // The settings pane has its own route and should never be styled as chat.
     const route=/^\/settings(?:\/|$)/i.test(path);
-    const link=[...document.querySelectorAll('a[href],button')].slice(0,100)
-      .find(el=>el.textContent?.trim()==="Back to app");
-    const isSettings=route || !!link;
+    const settingsRoot=document.querySelector(
+      '[data-testid="settings-page"],[data-testid="settings-screen"],[data-settings-root]');
+    const isSettings=route || !!settingsRoot;
+    // Avoid scanning buttons in long chats. Inspect settings controls only.
+    const link=isSettings?[...document.querySelectorAll('a[href],button')].slice(0,100)
+      .find(el=>el.textContent?.trim()==="Back to app"):null;
     root.toggleAttribute("data-pui-settings",isSettings);
     let nextMain=null,nextSidebar=null;
     if(isSettings){
