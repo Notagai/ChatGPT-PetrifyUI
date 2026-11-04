@@ -76,7 +76,7 @@ html[data-petrifyui-low-power][data-petrifyui-active]
    account footer. Inset the NAV itself instead of drawing full-bleed wood.
    Keep its native scroll content and event handlers. */
 html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-  margin:10px 10px 82px !important;
+  margin:10px 10px 94px !important;
   min-height:0 !important;
   width:auto !important;
   flex-shrink:1 !important;
@@ -143,7 +143,7 @@ html[data-petrifyui-active] nav[data-pui-floating-sidebar]
 /* Compact layouts keep native mobile/mini navigation geometry. */
 @media(max-width:899px) {
   html[data-petrifyui-active] nav[data-pui-floating-sidebar] {
-    margin:7px 5px 64px !important;
+    margin:7px 5px 76px !important;
     border-radius:6px !important;
   }
   html[data-petrifyui-active] nav[data-pui-floating-sidebar]
@@ -246,14 +246,14 @@ html[data-petrifyui-active] .sidebar-navigation:has(nav[data-pui-floating-sideba
 
 
 /* v1.34.1: Maintain a reserved account height while reducing the gap
-   by 8px to match the header/nav spacing. Keep chat state styling native. */
+   to expose a clear gap matching the header/nav spacing. Keep chat state styling native. */
 html[data-petrifyui-active] .sidebar-navigation > .contents >
   nav[data-pui-floating-sidebar] {
-  margin-bottom:82px !important;
+  margin-bottom:94px !important;
 }
 @media(max-width:899px){
   html[data-petrifyui-active] .sidebar-navigation > .contents >
     nav[data-pui-floating-sidebar] {
-    margin-bottom:64px !important;
+    margin-bottom:76px !important;
   }
 }
