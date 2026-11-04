@@ -350,7 +350,7 @@ html[data-petrifyui-active] {
   --pui-stage-ink:#34251a;
   --pui-stage-muted:#654a35;
 }
-html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])) {
   --text-primary:#34251a;
   --text-secondary:#654a35;
   --token-text-primary:#34251a;
@@ -360,15 +360,15 @@ html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-tes
 }
 /* Apply :not directly to the TEXT ELEMENT. Whitespace before :not would
    mistakenly select a descendant and was the v1.29.1 regression. */
-html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is(p,h1,h2,h3,h4,h5,h6,li,dt,dd,blockquote,figcaption,strong,b,em,small,span,div,[class*="text-white"],[class*="text-token-text-primary"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"],[data-testid="code-block"] *,[class*="code-block"],[class*="code-block"] *,button,button *,[role="button"],[role="button"] *,[role="menu"],[role="menu"] *,[role="dialog"],[role="dialog"] *,[role="tooltip"],[role="tooltip"] *,svg,svg *,[contenteditable],[contenteditable] *)) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])) :is(p,h1,h2,h3,h4,h5,h6,li,dt,dd,blockquote,figcaption,strong,b,em,small,span,div,[class*="text-white"],[class*="text-token-text-primary"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"],[data-testid="code-block"] *,[class*="code-block"],[class*="code-block"] *,button,button *,[role="button"],[role="button"] *,[role="menu"],[role="menu"] *,[role="dialog"],[role="dialog"] *,[role="tooltip"],[role="tooltip"] *,svg,svg *,[contenteditable],[contenteditable] *)) {
   color:#34251a !important;
   -webkit-text-fill-color:#34251a !important;
 }
-html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is([class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],[class*="text-gray-"],[class*="text-neutral-"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"] *,[class*="code-block"] *,button,button *,[role="button"] *,[role="menu"] *,[role="dialog"] *,[role="tooltip"] *)) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])) :is([class*="text-token-text-secondary"],[class*="text-token-text-tertiary"],[class*="text-gray-"],[class*="text-neutral-"]):not(:is(pre,pre *,code,code *,[data-testid="code-block"] *,[class*="code-block"] *,button,button *,[role="button"] *,[role="menu"] *,[role="dialog"] *,[role="tooltip"] *)) {
   color:#654a35 !important;
   -webkit-text-fill-color:#654a35 !important;
 }
-html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]) :is(.markdown,.prose,[class*="markdown"]) a:not(:is(pre a,code a,[data-testid="code-block"] a,button a)) {
+html[data-petrifyui-active] :is([data-message-author-role="assistant"],[data-testid^="conversation-turn"]:has([data-message-author-role="assistant"])) :is(.markdown,.prose,[class*="markdown"]) a:not(:is(pre a,code a,[data-testid="code-block"] a,button a)) {
   color:#714526 !important;
   -webkit-text-fill-color:#714526 !important;
 }
