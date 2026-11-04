@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "PetrifyUI | Sidebar",
   "short_name": "PetrifyUI",
-  "description": "Parchment Add and slash menus with transparent outer frames and pixel-vine coronation border.",
-  "version": "1.21.0",
+  "description": "Pixel-paper ChatGPT menus with simple clean borders and no decorative vine overlays.",
+  "version": "1.22.0",
   "permissions": [
     "storage"
   ],
@@ -67,8 +67,7 @@
         "assets/walnut-wood-v3.svg",
         "assets/composer/paper-grain-geekify.svg",
         "assets/composer/paper-torn-top.svg",
-        "assets/composer/paper-torn-bottom.svg",
-        "assets/menus/coronation-vine.svg"
+        "assets/composer/paper-torn-bottom.svg"
       ],
       "matches": [
         "https://chatgpt.com/*",
