@@ -1,95 +1,132 @@
-/* PetrifyUI experimental floating parchment scene.
-   Only decorates existing ChatGPT containers. No DOM replacement or page overlays
-   that intercept clicks, and no observation of streamed message content. */
+/* Experimental floating parchment stage, v1.28.1.
+   No changes to native chat controls or message content. */
 (() => {
   "use strict";
   const html=document.documentElement;
-  html.style.setProperty(
-    "--pui-ambient-art",
-    'url("'+chrome.runtime.getURL("assets/stage/study-ambient.svg")+'")'
-  );
-  html.style.setProperty(
-    "--pui-stage-paper",
-    'url("'+chrome.runtime.getURL("assets/composer/paper-grain-geekify.svg")+'")'
-  );
-  const NAV="main,[role='main'],#main";
-  const SIDEBAR="#sidebar,[data-testid='sidebar-container'],[data-testid='sidebar'],#stage-slideover-sidebar,[data-testid='sidebar-mini'],[data-testid='sidebar-collapsed'],[data-testid='collapsed-sidebar']";
-  const COMPOSER="#prompt-textarea,[data-testid='prompt-textarea']";
-  let stage=null,sidebar=null,queued=false;
+  const COMPOSER='#prompt-textarea,[data-testid="prompt-textarea"],[contenteditable="true"][role="textbox"]';
+  const SIDEBAR='#sidebar,[data-testid="sidebar-container"],[data-testid="sidebar"],#stage-slideover-sidebar,[data-testid="sidebar-mini"],[data-testid="sidebar-collapsed"],[data-testid="collapsed-sidebar"]';
+  const MESSAGE='#thread,[data-testid^="conversation-turn"],[data-message-author-role]';
+  const MAIN='main,[role="main"],#main';
+  html.style.setProperty('--pui-ambient-art',
+    'url("'+chrome.runtime.getURL('assets/stage/study-ambient.svg')+'")');
+  html.style.setProperty('--pui-stage-paper',
+    'url("'+chrome.runtime.getURL('assets/composer/paper-grain-geekify.svg')+'")');
+  let stage=null,sidebar=null,queued=false,observer=null;
+  const shellMarks=new Set();
 
-  function chatRoute(){
-    // Chat pages, a new-chat landing, and GPT conversations. Do not restyle
-    // Settings, Library, image viewer or other fullscreen application surfaces.
-    return /^\/(?:$|c\/|g\/|project\/|projects\/)/.test(location.pathname);
+  function routeAllowed(){
+    const path=location.pathname;
+    return /^\/(?:$|c\/|g\/|project\/|projects\/)/.test(path);
   }
-  function isShown(el){
-    if(!(el instanceof HTMLElement))return false;
-    const style=getComputedStyle(el);
-    return style.display!=="none" && style.visibility!=="hidden" &&
-      el.getBoundingClientRect().width>35;
-  }
-  function findMain(){
-    if(!chatRoute())return null;
-    const thread=document.querySelector(
-      '#thread,[data-testid="conversation-turn-0"],[data-message-author-role]'
-    );
-    const editor=document.querySelector(COMPOSER);
-    const root=thread?.closest(NAV) || editor?.closest(NAV);
-    if(isShown(root))return root;
-    // The landing page can have a composer before its first message.
-    return [...document.querySelectorAll(NAV)].find(el=>
-      isShown(el)&&el.querySelector(COMPOSER)
-    )||null;
+  function rect(el){
+    if(!(el instanceof HTMLElement)||!el.isConnected)return null;
+    const r=el.getBoundingClientRect();
+    const cs=getComputedStyle(el);
+    if(cs.display==='none'||cs.visibility==='hidden'||
+       r.width<35||r.height<20||r.right<0||r.bottom<0)return null;
+    return r;
   }
   function findSidebar(){
-    // Prefer the outer desktop sidebar container, not nested navigation rows.
-    const nodes=[...document.querySelectorAll(SIDEBAR)].filter(isShown);
-    if(!nodes.length)return null;
-    return nodes.find(el=>!nodes.some(other=>other!==el && other.contains(el)))||nodes[0];
+    const options=[...document.querySelectorAll(SIDEBAR)].filter(x=>rect(x));
+    return options.find(node=>!options.some(other=>other!==node&&other.contains(node)))||options[0]||null;
   }
-  function refresh(){
+  function findStage(nav){
+    if(!routeAllowed())return null;
+    const editor=[...document.querySelectorAll(COMPOSER)].find(el=>rect(el));
+    const thread=[...document.querySelectorAll(MESSAGE)].find(el=>rect(el));
+    const seed=editor||thread;
+    if(!seed)return null;
+
+    // Prefer actual native main. Some ChatGPT versions omit that tag, so
+    // walk up from the visible composer and select a viewport-sized ancestor
+    // that does not enclose the sidebar. No dependency on generated classnames.
+    for(const el of [editor,thread]){
+      const main=el?.closest(MAIN);
+      if(rect(main)&&!main.contains(nav))return main;
+    }
+    const candidates=[];
+    for(let node=seed.parentElement,depth=0;node&&node!==document.body&&depth<18;
+        node=node.parentElement,depth++){
+      const r=rect(node);
+      if(!r||node.contains(nav)||r.width<Math.min(460,innerWidth*.50)||
+         r.height<innerHeight*.52)continue;
+      const score=r.height/innerHeight*40+r.width/innerWidth*15+
+        (r.top<=90?20:0)+(r.bottom>=innerHeight-45?20:0)+depth*.4;
+      candidates.push({node,score});
+    }
+    candidates.sort((a,b)=>b.score-a.score);
+    return candidates[0]?.node||null;
+  }
+  function updateShells(panel){
+    const next=new Set();
+    if(panel){
+      // Remove only full-size, opaque structural coatings between message
+      // rows and their paper stage; never flatten text cards or code blocks.
+      for(const seed of [panel.querySelector(MESSAGE),panel.querySelector(COMPOSER)]){
+        for(let el=seed?.parentElement,depth=0;el&&el!==panel&&depth<9;
+            el=el.parentElement,depth++){
+          const r=rect(el),base=rect(panel);
+          if(!r||!base||r.width<base.width*.55||r.height<base.height*.35)continue;
+          if(el.matches('[role="dialog"],[role="menu"],[role="listbox"]'))continue;
+          next.add(el);
+        }
+      }
+    }
+    for(const el of shellMarks)if(!next.has(el))el.removeAttribute('data-pui-stage-shell');
+    shellMarks.clear();
+    for(const el of next){el.setAttribute('data-pui-stage-shell','');shellMarks.add(el);}
+  }
+  function update(){
     queued=false;
     if(document.hidden)return;
-    const nextStage=findMain(),nextSidebar=findSidebar();
-    if(nextStage!==stage){
-      stage?.removeAttribute("data-pui-main-stage");
-      stage=nextStage;
-    }
-    if(nextSidebar!==sidebar){
-      sidebar?.removeAttribute("data-pui-floating-sidebar");
-      sidebar=nextSidebar;
-    }
-    stage?.setAttribute("data-pui-main-stage","");
-    sidebar?.setAttribute("data-pui-floating-sidebar","");
+    const nextSidebar=findSidebar();
+    const nextStage=findStage(nextSidebar);
+    if(stage!==nextStage)stage?.removeAttribute('data-pui-main-stage');
+    if(sidebar!==nextSidebar)sidebar?.removeAttribute('data-pui-floating-sidebar');
+    stage=nextStage;sidebar=nextSidebar;
+    stage?.setAttribute('data-pui-main-stage','');
+    sidebar?.setAttribute('data-pui-floating-sidebar','');
+    html.toggleAttribute('data-pui-stage-ready',!!stage);
+    html.setAttribute('data-pui-stage-status',stage?'ready':'no-chat-stage');
+    updateShells(stage);
   }
   function schedule(){
     if(queued||document.hidden)return;
-    queued=true;
-    requestAnimationFrame(refresh);
+    queued=true;requestAnimationFrame(update);
   }
-  function afterNavigation(){
+  function resync(){
     schedule();
-    setTimeout(schedule,180);
-    setTimeout(schedule,650);
+    setTimeout(schedule,160);
+    setTimeout(schedule,700);
+    setTimeout(schedule,1900);
   }
-  if(document.readyState==="loading")
-    document.addEventListener("DOMContentLoaded",afterNavigation,{once:true});
-  else afterNavigation();
-  // ChatGPT is an SPA: native click/navigation events are sufficient for
-  // normal routing. No repeated intervals and no entire-chat MutationObserver.
-  document.addEventListener("click",event=>{
-    if(event.target instanceof Element &&
-      event.target.closest('a[href],button[aria-label*="sidebar" i],button[title*="sidebar" i]'))
-      afterNavigation();
+  function bindMountObserver(){
+    // Observe only immediate children of the native application root for
+    // chat creation/remounts; don't scan streamed message mutations.
+    if(observer||!document.body)return;
+    const root=document.querySelector('#__next,#root,[data-testid="chatgpt-app"]')||document.body;
+    observer=new MutationObserver(records=>{
+      if(records.some(r=>[...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1)))
+        schedule();
+    });
+    observer.observe(root,{childList:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{
+    bindMountObserver();resync();
+  },{once:true});
+  else {bindMountObserver();resync();}
+  document.addEventListener('click',event=>{
+    if(event.target instanceof Element&&event.target.closest(
+      'a[href],button[aria-label*="sidebar" i],button[title*="sidebar" i]'
+    ))resync();
   },{passive:true});
-  document.addEventListener("focusin",event=>{
-    if(event.target instanceof Element && event.target.closest(COMPOSER))
-      schedule();
+  document.addEventListener('focusin',event=>{
+    if(event.target instanceof Element&&event.target.closest(COMPOSER))schedule();
   },{passive:true});
-  window.addEventListener("popstate",afterNavigation,{passive:true});
-  window.addEventListener("resize",schedule,{passive:true});
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)afterNavigation();});
+  window.addEventListener('popstate',resync,{passive:true});
+  window.addEventListener('resize',schedule,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)resync();});
   chrome.storage.onChanged.addListener((changes,area)=>{
-    if(area==="local"&&changes.enabled)schedule();
+    if(area==='local'&&changes.enabled)schedule();
   });
 })();
