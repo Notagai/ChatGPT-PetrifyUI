@@ -718,3 +718,83 @@ html[data-petrifyui-active] :is(
   color:#34251a !important;
   -webkit-text-fill-color:#34251a !important;
 }
+
+
+/* v1.30.1 | Confirmed against a locally saved ChatGPT DOM snapshot.
+   The new DIL renderer uses data-d-component, not message-author-role.
+   Scope exclusively to real structured content, not editor controls. */
+html[data-petrifyui-active] [data-d-component="list"][data-d-marker-layout="native"] {
+  --tw-prose-bullets:#67452c !important;
+  --tw-prose-counters:#67452c !important;
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+html[data-petrifyui-active] [data-d-component="list"][data-d-marker-layout="native"]
+  > [data-d-component="list-item"] {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+html[data-petrifyui-active] [data-d-component="list"][data-d-marker-layout="native"]
+  > [data-d-component="list-item"]::marker {
+  color:#67452c !important;
+  -webkit-text-fill-color:#67452c !important;
+}
+html[data-petrifyui-active] [data-d-component="list"][data-d-marker-layout="native"]
+  > [data-d-component="list-item"]::before {
+  color:#67452c !important;
+  -webkit-text-fill-color:#67452c !important;
+}
+/* Inline code is a DIL <code data-d-component=code>, NOT a Markdown
+   code span; earlier selectors never reached it. */
+html[data-petrifyui-active] code[data-d-component="code"]:not(pre code) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+  background-color:#e1bb8d !important;
+  background-image:none !important;
+  border:1px solid #b08659 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+}
+html[data-petrifyui-active] code[data-d-component="code"]:not(pre code) :is(span,b,strong) {
+  color:#34251a !important;
+  -webkit-text-fill-color:#34251a !important;
+}
+/* Modern code surface has a stable data-code-block attribute. Do not rely
+   on generated class suffixes. Keep syntax highlighting (native spans). */
+html[data-petrifyui-active] [data-code-block="true"] {
+  --text-primary:#f6e3c6;
+  --token-text-primary:#f6e3c6;
+  color:#f6e3c6 !important;
+  background-color:#49372c !important;
+  background-image:none !important;
+  border-color:#7f5c41 !important;
+}
+html[data-petrifyui-active] [data-code-block="true"] :is(
+  [class*="ActionBar-"],[class*="CodeSurface-"],[class*="InlineCodePane-"],
+  [class*="Scrollport-"],[class*="Viewer-"],pre
+) {
+  background-color:#49372c !important;
+  background-image:none !important;
+  color:#f6e3c6 !important;
+}
+/* The saved HTML shows the exact semantic composer form. Paint ONLY the
+   form and clear its own identified dock, not arbitrary ancestor widgets. */
+html[data-petrifyui-active] form[data-chatgpt-composer][data-composer-placement="thread"] {
+  --color-background-composer-primary:#e8c69b;
+  --color-text-composer-primary:#34251a;
+  --composer-layout-surface-background:transparent;
+}
+html[data-petrifyui-active] form[data-chatgpt-composer]
+  :is([class*="ComposerLayoutBody-"],[class*="ComposerLayoutFooter-"],
+      [class*="ComposerModeSurface-"],[data-composer-trailing-controls]) {
+  background-color:transparent !important;
+  background-image:none !important;
+}
+/* Override native dark theme tokens only inside the paper island.
+   No global switch to light theme and no interaction changes. */
+html[data-petrifyui-active] form[data-chatgpt-composer] {
+  --app-color-text-foreground:#34251a;
+  --app-color-text-foreground-secondary:#705139;
+  --app-color-icon-primary:#34251a;
+  --app-color-icon-secondary:#705139;
+}
